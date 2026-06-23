@@ -33,6 +33,7 @@ startTimed <- function(...)
 {
   config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
   config_hid <- read_yaml(config_path_hid)
+  
   fucStep <- paste0(" startTimed_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -62,6 +63,7 @@ endTimed <- function(ptm)
 {
   config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
   config_hid <- read_yaml(config_path_hid)
+  
   fucStep <- paste0(" endTimed_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -86,6 +88,7 @@ writeOutput <- function(data, filename, path)
 {
   config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
   config_hid <- read_yaml(config_path_hid)
+  
   fucStep <- paste0(" writeOutput_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

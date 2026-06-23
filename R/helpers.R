@@ -10,7 +10,7 @@
 #' 
 DebugMsg <- function(fucStep, status, msg)
 {
-  if (msg == TRUE) {
+  if (isTRUE(msg)) {
     msg_str <- paste0("LH: ", status, " function", fucStep)
     print(msg_str)
   }
@@ -31,6 +31,8 @@ DebugMsg <- function(fucStep, status, msg)
 #'
 startTimed <- function(...)
 {
+  config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" startTimed_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -58,6 +60,8 @@ startTimed <- function(...)
 #'
 endTimed <- function(ptm)
 {
+  config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" endTimed_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -80,6 +84,8 @@ endTimed <- function(ptm)
 #'
 writeOutput <- function(data, filename, path)
 {
+  config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" writeOutput_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

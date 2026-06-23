@@ -177,6 +177,7 @@ run_cnvTree_Pipeline <- function(output_dir,
                                  input_dir_RNA, RNAdataSource) 
 {
   config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
+  print(config_path_hid)
   config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 1.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)

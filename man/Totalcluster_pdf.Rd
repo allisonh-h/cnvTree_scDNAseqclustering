@@ -2,8 +2,8 @@
 % Please edit documentation in R/scDNAclustering_06_OthersAndOutput.R
 \name{Totalcluster_pdf}
 \alias{Totalcluster_pdf}
-\title{==============================================================================
-Generate copy number profiles for scDNA-seq cell clustering results in PDF file}
+\title{For creating pdf in total clusters by CN matrix. Generate copy number profiles
+for scDNA-seq cell clustering results in PDF file}
 \usage{
 Totalcluster_pdf(
   Input,
@@ -13,7 +13,7 @@ Totalcluster_pdf(
   step = "Subclone",
   FILEname,
   FILEpath,
-  sexchromosome_plot = FALSE
+  sexchromosome
 )
 }
 \arguments{
@@ -47,7 +47,7 @@ Please ensure the name matches one of these options (default: "Subclone").}
 \item{FILEpath}{A character string specifying the file path where the output
 PDF will be saved.}
 
-\item{sexchromosome_plot}{A logical value. If \code{TRUE}, the output plot includes
+\item{sexchromosome}{A logical value. If \code{TRUE}, the output plot includes
 copy number information for sex chromosomes. Defaults to \code{FALSE}.}
 }
 \value{
@@ -56,23 +56,4 @@ A copy number profile visualization saved as a PDF file.
 \description{
 This function outputs copy number profiles from single-cell DNA sequencing (scDNA-seq)
 clustering results, saving the visualization as a PDF file.
-}
-\examples{
-\dontrun{
-file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
-Example_data <- changeFormat(file = file_path, core = 4)
-clustering_results <- system.file("extdata", "template_example_data.rds", package = "cnvTree")
-clustering_results <- readRDS(file = clustering_results)
-
-Totalcluster_pdf(
-  Input = Example_data,
-  Template = clustering_results,
-  pqArm_file = "hg38",
-  cellcutoff = 10,
-  step="Subclone",
-  FILEname = "cnvTree.scDNAseq_Grouping_fig.pdf",
-  sexchromosome_plot = FALSE
-)
-}
-
 }

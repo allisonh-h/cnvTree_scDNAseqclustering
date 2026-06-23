@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_06_OthersAndOutput.R
 \name{scDNA.superimpose}
 \alias{scDNA.superimpose}
-\title{==============================================================================
-Superimpose defined CNVs onto scDNA-seq copy number results}
+\title{Superimpose defined CNVs onto scDNA-seq copy number results}
 \usage{
 scDNA.superimpose(Template, DefinedCNVs)
 }
@@ -13,8 +12,7 @@ scDNA.superimpose(Template, DefinedCNVs)
 \item \code{final_cluster_output}: Records the clustering history from the pqArm,
 re-clustering, and subclone clustering steps.
 \item \code{Subclone_CN}: Records each subclone's unique chromosome segment template
-and its copy number.
-It includes the following columns:
+and its copy number. It includes the following columns:
 \itemize{
 \item \code{chr}: Chromosome name (chr1, chr2, ...).
 \item \code{start}: Start position of the segment.
@@ -41,8 +39,9 @@ the following columns:
 \value{
 The function returns the updated \code{Template} list with an additional table:
 \itemize{
-\item \code{superimpose}: A data frame where \code{Template$Subclone_CN} overlaps with \code{DefinedCNVs},
-calculating whether each cluster contains or lacks the corresponding CNV.
+\item \code{superimpose}: A data frame where \code{Template$Subclone_CN} overlaps with
+\code{DefinedCNVs}, calculating whether each cluster contains or lacks the
+corresponding CNV.
 }
 }
 \description{
@@ -50,4 +49,3 @@ This function overlays high-confidence copy number variations (CNVs) onto
 single-cell DNA sequencing (scDNA-seq) clustering results to determine
 whether each cluster contains the corresponding CNVs.
 }
-\keyword{internal}

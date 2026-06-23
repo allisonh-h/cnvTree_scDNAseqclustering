@@ -27,4 +27,3 @@ the specified cluster.
 This function calculates the overall similarity of cells within a specified
 cluster using a precomputed cell-to-cell similarity matrix.
 }
-\keyword{internal}

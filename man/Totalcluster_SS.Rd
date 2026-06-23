@@ -2,8 +2,8 @@
 % Please edit documentation in R/scDNAclustering_06_OthersAndOutput.R
 \name{Totalcluster_SS}
 \alias{Totalcluster_SS}
-\title{==============================================================================
-Retrieve cell IDs from a specific cluster}
+\title{Transfer each cluster of cells in the data. Retrieve cell IDs from a specific
+cluster}
 \usage{
 Totalcluster_SS(Template, cluster_name, k)
 }
@@ -25,4 +25,3 @@ A character vector containing the cell IDs that belong to the designated cluster
 This function returns a list of cell IDs belonging to a designated cluster
 based on the clustering results recorded in the \code{Template}.
 }
-\keyword{internal}

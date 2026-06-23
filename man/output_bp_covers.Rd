@@ -2,13 +2,14 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{output_bp_covers}
 \alias{output_bp_covers}
-\title{==============================================================================
-Identify significant breakpoints based on coverage in a specified range}
+\title{Calcuate each bp with cover bps. Identify significant breakpoints based on
+coverage in a specified range}
 \usage{
 output_bp_covers(Template, binsize, overlap, overlap_times)
 }
 \arguments{
-\item{Template}{A data frame containing breakpoint sites with the following columns:
+\item{Template}{A data frame containing breakpoint sites with the following
+columns:
 \itemize{
 \item \code{seqnames}: Chromosome name (chr1, chr2, ...).
 \item \code{start}: Start position of the breakpoint.
@@ -19,17 +20,18 @@ output_bp_covers(Template, binsize, overlap, overlap_times)
 \item \code{cellID}: Identifier of the corresponding cell.
 }}
 
-\item{binsize}{An integer specifying the fixed-bin size, referring to the copy number
-variation calling result where the genomic region is split into bins.}
+\item{binsize}{An integer specifying the fixed-bin size, referring to the copy
+number variation calling result where the genomic region is split into bins.}
 
 \item{overlap}{An integer defining the copy number frequently changed regions.}
 
-\item{overlap_times}{A numeric value used as a filtering criterion for significant
-breakpoints in event region calculation. The default value is set as half the
-number of cells in the cluster.}
+\item{overlap_times}{A numeric value used as a filtering criterion for
+significant breakpoints in event region calculation. The default value is
+set as half the number of cells in the cluster.}
 }
 \value{
-A data frame recording significant breakpoints with the following columns:
+A data frame recording significant breakpoints with the following
+columns:
 \itemize{
 \item \code{chr}: Chromosome name (chr1, chr2, ...).
 \item \code{site}: Breakpoint position.
@@ -41,8 +43,7 @@ A data frame recording significant breakpoints with the following columns:
 }
 }
 \description{
-This function calculates how many breakpoints can be covered within a specified range
-for each breakpoint, treating it as the midpoint. It also filters significant breakpoints
-based on a defined threshold.
+This function calculates how many breakpoints can be covered within a specified
+range for each breakpoint, treating it as the midpoint. It also filters
+significant breakpoints based on a defined threshold.
 }
-\keyword{internal}

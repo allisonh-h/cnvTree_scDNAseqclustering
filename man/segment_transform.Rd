@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_06_OthersAndOutput.R
 \name{segment_transform}
 \alias{segment_transform}
-\title{==============================================================================
-Transform copy number segment information for each cell}
+\title{Transform copy number segment information for each cell}
 \usage{
 segment_transform(data, index, CN_chr_template)
 }
@@ -24,6 +23,6 @@ regions of the same copy number merged.
 \description{
 This function transforms copy number segment information for a single cell,
 organizing continuous regions with the same copy number into unified segments.
-It uses chromosome length and cumulative length data to standardize genomic positions.
+It uses chromosome length and cumulative length data to standardize genomic
+positions.
 }
-\keyword{internal}

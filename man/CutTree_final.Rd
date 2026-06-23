@@ -24,4 +24,3 @@ A data frame with two columns:
 This function performs hierarchical clustering on selected cells based on
 their copy number variations and derives a phylogenetic tree structure.
 }
-\keyword{internal}

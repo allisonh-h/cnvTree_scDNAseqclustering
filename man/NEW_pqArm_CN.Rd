@@ -2,9 +2,17 @@
 % Please edit documentation in R/scDNAclustering_03_pqArmClustering.R
 \name{NEW_pqArm_CN}
 \alias{NEW_pqArm_CN}
-\title{Smooth copy number matrix using arm-level ranges}
+\title{Transform CN matrix to Total Deletion/Loss/Neu/Amp and based on Arm level to
+smooth the CN}
 \usage{
-NEW_pqArm_CN(input, Cluster_label, Clustering_output, pqArm_file)
+NEW_pqArm_CN(
+  input,
+  Cluster_label,
+  Clustering_output,
+  pqArm_file,
+  cluster,
+  sexchromosome
+)
 }
 \arguments{
 \item{input}{A named list where each element is a \code{GRanges} object representing
@@ -13,13 +21,12 @@ a single cell.}
 \item{Cluster_label}{An integer specifying the cluster for which the copy number
 smoothing is performed.}
 
-\item{Clustering_output}{A data frame recording the clustering results for each cell,
-including the clustering history at each step.}
+\item{Clustering_output}{A data frame recording the clustering results for each
+cell, including the clustering history at each step.}
 
 \item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19},
-\code{mm10}, \code{mm39}.
-Or a filepath of a table for cytoband information seen on Giemsa-stained
-chromosomes. It should include the following columns:
+\code{mm10}, \code{mm39}. Or a filepath of a table for cytoband information seen on
+Giemsa-stained chromosomes. It should include the following columns:
 \itemize{
 \item \code{chrom}: Reference sequence chromosome or scaffold.
 \item \code{chromStart}: Start position in genoSeq.
@@ -27,6 +34,8 @@ chromosomes. It should include the following columns:
 \item \code{name}: Name of cytogenetic band.
 \item \code{gieStain}: Giemsa stain results.
 }}
+
+\item{cluster}{The assigned cluster label (k = 2)}
 }
 \value{
 A matrix with smoothed copy number states (Total Deletion, Loss,
@@ -38,4 +47,3 @@ copy number variations (CNVs) at the arm level. It utilizes clustering results
 and cytoband information to assign copy number states (Total Deletion, Loss,
 Neutral, or Amplification) for each chromosomal arm.
 }
-\keyword{internal}

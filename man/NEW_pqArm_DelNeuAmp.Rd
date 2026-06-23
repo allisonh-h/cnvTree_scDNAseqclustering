@@ -2,7 +2,8 @@
 % Please edit documentation in R/scDNAclustering_03_pqArmClustering.R
 \name{NEW_pqArm_DelNeuAmp}
 \alias{NEW_pqArm_DelNeuAmp}
-\title{Categorize copy number variations into three types}
+\title{Transform CN matrix to Del/Neu/Amp four types. Categorize copy number variations
+into three types}
 \usage{
 NEW_pqArm_DelNeuAmp(matrix)
 }
@@ -25,4 +26,3 @@ categories: Total Deletion (CN < 0.5), Loss (CN < 2), Neutral (CN = 2), and
 Amplification (CN > 2). The input matrix represents copy number data across
 genomic regions for multiple cells.
 }
-\keyword{internal}

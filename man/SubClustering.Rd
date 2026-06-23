@@ -2,36 +2,33 @@
 % Please edit documentation in R/scDNAclustering_07_TotalSteps.R
 \name{SubClustering}
 \alias{SubClustering}
-\title{==============================================================================
-Perform subclustering in scDNA-seq data clustering workflow}
+\title{Perform subclustering in scDNA-seq data clustering workflow}
 \usage{
-SubClustering(
-  input,
-  Consolidating_output,
-  min_cell = 5,
-  overlap_region = 10^7,
-  dif_ratio = 0.2
-)
+SubClustering(input, Consolidating_output, min_cell, overlap_region, dif_ratio)
 }
 \arguments{
-\item{input}{A named list where each element is a \code{GRanges} object representing a single cell.}
+\item{input}{A named list where each element is a \code{GRanges} object representing
+a single cell.}
 
-\item{Consolidating_output}{A data frame recording pqArm clustering and consolidating results for each cell.
-This table tracks the clustering history up to this stage.}
+\item{Consolidating_output}{A data frame recording pqArm clustering and consolidating
+results for each cell. This table tracks the clustering history up to this stage.}
 
-\item{min_cell}{An integer specifying the minimum number of cells required for a cluster to be retained.}
+\item{min_cell}{An integer specifying the minimum number of cells required for
+a cluster to be retained.}
 
-\item{overlap_region}{An integer representing the genomic region where copy number frequently changes.}
+\item{overlap_region}{An integer representing the genomic region where copy
+number frequently changes.}
 
-\item{dif_ratio}{A numeric value defining the tolerance threshold for copy number differences
-between cells within a cluster.}
+\item{dif_ratio}{A numeric value defining the tolerance threshold for copy
+number differences between cells within a cluster.}
 }
 \value{
 A list containing two data frames:
 \itemize{
-\item \code{final_cluster_output}: Records the clustering history from the pqArm, consolidating, and subclustering steps.
-\item \code{Subclone_CN}: Records each subclone's unique chromosome segment template and its copy number.
-It includes the following columns:
+\item \code{final_cluster_output}: Records the clustering history from the pqArm,
+consolidating, and subclustering steps.
+\item \code{Subclone_CN}: Records each subclone's unique chromosome segment template
+and its copy number. It includes the following columns:
 \itemize{
 \item \code{chr}: Chromosome name (chr1, chr2, ...).
 \item \code{start}: Start position of the segment.
@@ -43,18 +40,22 @@ It includes the following columns:
 }
 }
 \description{
-This function executes the subclustering step in the single-cell DNA sequencing (scDNA-seq) data clustering workflow,
-refining clusters based on copy number variations (CNVs) within subpopulations of cells.
+This function executes the subclustering step in the single-cell DNA sequencing
+(scDNA-seq) data clustering workflow, refining clusters based on copy number
+variations (CNVs) within subpopulations of cells.
 }
 \examples{
-file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
-Example_data <- changeFormat(file = file_path, core = 4)
-
-pqArm_result <- pqArmClustering(input = Example_data, pqArm_file = "hg38")
-Consolidating_output <- clusterConsolidation(input = Example_data,
-                                            pqArm_output = pqArm_result,
-                                            pqArm_file = "hg38")
-Subclone_output <- SubClustering(input = Example_data,
-                                     Consolidating_output = Consolidating_output)
+\dontrun{
+ file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
+ config <- read_yaml(config_path)
+ input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA, cores = 2)
+ pqArm_result <- NEW_pqArmClustering(input = input_df, 
+                                    pqArm_file = config$pqArm_file) 
+ Consolidation_result <- clusterConsolidation(input = input_df, 
+                                              pqArm_output = pqArm_result, 
+                                              pqArm_file = config$pqArm_file)
+ Subclone_output <- SubClustering(input = input_df,
+                                  Consolidating_output = Consolidation_result)
+}
 
 }

@@ -2,14 +2,13 @@
 % Please edit documentation in R/scDNAclustering_01_Input.R
 \name{changeFormat}
 \alias{changeFormat}
-\title{==============================================================================
-Convert copy number data to GRanges Format}
+\title{Convert copy number data to GRanges Format}
 \usage{
-changeFormat(file, cores = 1)
+changeFormat(input_dir_DNA, cores, sexchromosome)
 }
 \arguments{
-\item{file}{A \code{.rds} file or \code{.txt} file containing a data frame with the
-following required columns:
+\item{input_dir_DNA}{A \code{.rds} file or \code{.txt} file containing a data frame with
+the following required columns:
 \itemize{
 \item \code{cellID}: Unique identifier for each cell.
 \item \code{seqnames}: Chromosome or sequence name.
@@ -29,10 +28,4 @@ corresponding genomic segments as a \code{GRanges} object.
 This function reads a \code{.rds} file or \code{.txt} file containing copy number
 variation (CNV) data and converts it into a list of \code{GRanges} objects, where
 each element corresponds to a single cell.
-}
-\examples{
-
-file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
-Example_data <- changeFormat(file = file_path, core = 4)
-
 }

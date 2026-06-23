@@ -2,10 +2,10 @@
 % Please edit documentation in R/scDNAclustering_06_OthersAndOutput.R
 \name{Totalcluster_Cluster_No}
 \alias{Totalcluster_Cluster_No}
-\title{==============================================================================
-Identify clusters meeting the thershold by number of cell}
+\title{Transfer the number of clusters in the data. Identify clusters meeting the
+thershold by number of cell}
 \usage{
-Totalcluster_Cluster_No(Template, cellnum_name, cellnum, cluster_name)
+Totalcluster_Cluster_No(Template, cellnum_name, cellcutoff, cluster_name)
 }
 \arguments{
 \item{Template}{A data frame recording the pqArm clustering, re-clustering,
@@ -15,7 +15,7 @@ history at each step.}
 \item{cellnum_name}{A character string specifying the column in \code{Template} that
 records the number of cells in each cluster.}
 
-\item{cellnum}{A numeric value defining the minimum number of cells required
+\item{cellcutoff}{A numeric value defining the minimum number of cells required
 for a cluster to be included.}
 
 \item{cluster_name}{A character string specifying the column in \code{Template} that
@@ -29,4 +29,3 @@ cell number threshold.
 This function filters clusters based on the number of cells, returning a list of
 clusters that meet the specified threshold.
 }
-\keyword{internal}

@@ -19,4 +19,3 @@ ranges of the preceding and following cytobands.
 This function processes a UCSC cytoband file to extract the ranges of
 chromosome long and short arms, excluding the centromere regions.
 }
-\keyword{internal}

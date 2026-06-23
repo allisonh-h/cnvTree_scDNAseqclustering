@@ -2,19 +2,20 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{collect_cluster_bp}
 \alias{collect_cluster_bp}
-\title{==============================================================================
-Collect breakpoints from a cluster of cells}
+\title{Collect breakpoints from a cluster of cells}
 \usage{
 collect_cluster_bp(input, Clustering_output, Recluster_label)
 }
 \arguments{
-\item{input}{A named list where each element is a \code{GRanges} object representing a single cell.}
+\item{input}{A named list where each element is a \code{GRanges} object representing
+a single cell.}
 
 \item{Clustering_output}{A data frame recording the pqArm clustering,
-and re-clustering results for each cell. This table tracks the clustering history at each step.}
+and re-clustering results for each cell. This table tracks the clustering
+history at each step.}
 
-\item{Recluster_label}{An integer specifying the cluster from the re-clustering step
-for which breakpoints should be extracted.}
+\item{Recluster_label}{An integer specifying the cluster from the re-clustering
+step for which breakpoints should be extracted.}
 }
 \value{
 A data frame containing breakpoint sites with the following columns:
@@ -32,4 +33,3 @@ A data frame containing breakpoint sites with the following columns:
 This function extracts all breakpoints from a specified cluster of cells
 based on the results of the re-clustering step.
 }
-\keyword{internal}

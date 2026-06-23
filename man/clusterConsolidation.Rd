@@ -2,20 +2,21 @@
 % Please edit documentation in R/scDNAclustering_07_TotalSteps.R
 \name{clusterConsolidation}
 \alias{clusterConsolidation}
-\title{==============================================================================
-Perform Cluster Consolidation in scDNA-seq data clustering workflow}
+\title{Reclustering method. Perform Cluster Consolidation in scDNA-seq data clustering
+workflow}
 \usage{
-clusterConsolidation(input, pqArm_output, pqArm_file, difratio_chr = 0.3)
+clusterConsolidation(input, pqArm_output, pqArm_file, difratio_chr)
 }
 \arguments{
-\item{input}{A named list where each element is a \code{GRanges} object representing a single cell.}
+\item{input}{A named list where each element is a \code{GRanges} object representing
+a single cell.}
 
-\item{pqArm_output}{A data frame recording the pqArm clustering results for each cell.
-This table tracks the clustering history up to this stage.}
+\item{pqArm_output}{A data frame recording the pqArm clustering results for
+each cell. This table tracks the clustering history up to this stage.}
 
-\item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19}, \code{mm10}, \code{mm39}.
-Or a filepath of a table for cytoband information seen on Giemsa-stained chromosomes.
-It should include the following columns:
+\item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19},
+\code{mm10}, \code{mm39}. Or a filepath of a table for cytoband information seen on
+Giemsa-stained chromosomes. It should include the following columns:
 \itemize{
 \item \code{chrom}: Reference sequence chromosome or scaffold.
 \item \code{chromStart}: Start position in genoSeq.
@@ -24,24 +25,28 @@ It should include the following columns:
 \item \code{gieStain}: Giemsa stain results.
 }}
 
-\item{difratio_chr}{A numeric value defining the threshold for acceptable difference ratios across different chromosomes.}
+\item{difratio_chr}{A numeric value defining the threshold for acceptable
+difference ratios across different chromosomes.}
 }
 \value{
-A data frame recording both pqArm clustering and consolidating results for each cell,
-maintaining the clustering history across steps.
+A data frame recording both pqArm clustering and consolidating results
+for each cell, maintaining the clustering history across steps.
 }
 \description{
-This function executes the Cluster Consolidation step in the single-cell DNA sequencing (scDNA-seq)
-data clustering workflow, consolidating clusters based on differences in chromosomal arm-level
-copy number variations.
+This function executes the Cluster Consolidation step in the single-cell DNA
+sequencing (scDNA-seq) data clustering workflow, consolidating clusters based
+on differences in chromosomal arm-level copy number variations.
 }
 \examples{
-file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
-Example_data <- changeFormat(file = file_path, core = 4)
-
-pqArm_result <- pqArmClustering(input = Example_data, pqArm_file = "hg38")
-Consolidating_output <- clusterConsolidation(input = Example_data,
-                                            pqArm_output = pqArm_result,
-                                            pqArm_file = "hg38")
+\dontrun{
+ file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
+ config <- read_yaml(config_path)
+ input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA, cores = 2)
+ pqArm_result <- NEW_pqArmClustering(input = input_df, 
+                                    pqArm_file = config$pqArm_file) 
+ Consolidation_result <- clusterConsolidation(input = input_df, 
+                                              pqArm_output = pqArm_result, 
+                                              pqArm_file = config$pqArm_file)
+}
 
 }

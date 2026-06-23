@@ -11,9 +11,8 @@ NEW_CN_template(input, pqArm_file)
 a single cell.}
 
 \item{pqArm_file}{In-build cytoband template for selection:
-\code{hg38}, \code{hg19}, \code{mm10}, \code{mm39}.
-Or a filepath of a table for cytoband information seen on Giemsa-stained
-chromosomes. It should include the following columns:
+\code{hg38}, \code{hg19}, \code{mm10}, \code{mm39}. Or a filepath of a table for cytoband information
+seen on Giemsa-stained chromosomes. It should include the following columns:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{ - `chrom`: Reference sequence chromosome or scaffold.
  - `chromStart`: Start position in genoSeq.
@@ -27,7 +26,6 @@ A data frame containing the defined genomic ranges for p/q arms across
 all chromosomes.
 }
 \description{
-This function constructs a template for copy number segmentation
-using cytoband information from Giemsa-stained chromosomes.
+This function constructs a template for copy number segmentation using
+cytoband information from Giemsa-stained chromosomes.
 }
-\keyword{internal}

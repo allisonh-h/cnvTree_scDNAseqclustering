@@ -2,8 +2,8 @@
 % Please edit documentation in R/scDNAclustering_04_ReClustering.R
 \name{pqArm_recluster_result}
 \alias{pqArm_recluster_result}
-\title{==============================================================================
-Generate final results of the Re-Clustering step}
+\title{Reset the content in pqArmCluster_CellID.xlsx and merge final result. Generate
+final results of the Re-Clustering step}
 \usage{
 pqArm_recluster_result(pqArm_cluster, pqReclsut_target)
 }
@@ -26,4 +26,3 @@ A data frame containing updated clustering results, including:
 This function updates the clustering results by incorporating the re-clustering
 step, refining the pqArm-based clustering assignments.
 }
-\keyword{internal}

@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_02_Clustering.R
 \name{clusterbyHMM}
 \alias{clusterbyHMM}
-\title{==============================================================================
-Hierarchical clustering of cells based on copy number variation}
+\title{Based on AneuFinder::clusterHMMs, calcuate distance than hierrachical clustering}
 \usage{
 clusterbyHMM(input, selected, exclude.regions = NULL)
 }
@@ -29,11 +28,11 @@ This function computes the pairwise distance between cells based on their
 copy number variations and performs hierarchical clustering.
 }
 \examples{
-
+\dontrun{
 file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
 Example_data <- changeFormat(file = file_path, core = 4)
 Clustering_Result <- clusterbyHMM(input = Example_data, 
                                   selected = names(Example_data)[1:10])
-
+}
 
 }

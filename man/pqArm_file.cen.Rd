@@ -2,7 +2,8 @@
 % Please edit documentation in R/scDNAclustering_03_pqArmClustering.R
 \name{pqArm_file.cen}
 \alias{pqArm_file.cen}
-\title{Process UCSC cytoband data for "acen" and "gvar" regions}
+\title{Remake centromere template into new format (X). Process UCSC cytoband data
+for "acen" and "gvar" regions}
 \usage{
 pqArm_file.cen(FILE)
 }
@@ -21,4 +22,3 @@ specifically for the "acen" (centromeric) and "gvar" (variable heterochromatic)
 cytoband types. The output is structured for defining masking ranges
 to exclude copy number variations (CNVs) from downstream analyses.
 }
-\keyword{internal}

@@ -2,23 +2,21 @@
 % Please edit documentation in R/scDNAclustering_06_OthersAndOutput.R
 \name{scDNA_CNVpattern}
 \alias{scDNA_CNVpattern}
-\title{==============================================================================
-Generate a heatmap of high-confidence CNV patterns with Dendrogram}
+\title{Cluster w/ or w/o CNV pattern plot. Generate a heatmap of high-confidence
+CNV patterns with Dendrogram}
 \usage{
 scDNA_CNVpattern(
-  Input,
+  input,
   final_cluster,
   cellcutoff,
   pqArm_file,
   FILEpath,
   FILEname,
-  sexchromosome = FALSE,
-  smoothing = TRUE
+  sexchromosome,
+  smoothheatmap
 )
 }
 \arguments{
-\item{Input}{A named list where each element is a \code{GRanges} object representing a single cell.}
-
 \item{final_cluster}{A data frame containing high-confidence CNV regions, with
 the following columns:
 \itemize{
@@ -53,33 +51,17 @@ file will be saved.}
 \item{sexchromosome}{A logical value. If \code{TRUE}, the heatmap includes copy number
 information for sex chromosomes.}
 
-\item{smoothing}{A logical value. If \code{TRUE}, the heatmap applies smoothing over
+\item{smoothheatmap}{A logical value. If \code{TRUE}, the heatmap applies smoothing over
 a 10⁶ bp range in chromosome copy number data.}
+
+\item{Input}{A named list where each element is a \code{GRanges} object representing
+a single cell.}
 }
 \value{
 A PNG file containing a heatmap of defined CNVs across clusters.
 }
 \description{
 This function creates a heatmap displaying high-confidence copy number variation
-(CNV) patterns across clusters, with hierarchical clustering represented by a dendrogram.
-}
-\examples{
-\dontrun{
-file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
-Example_data <- changeFormat(file = file_path, core = 4)
-final_cluster <- system.file("extdata", "template_example_data.rds", package = "cnvTree")
-final_cluster <- readRDS(file = final_cluster)
-
-scDNA_CNVpattern(
-  Input = Example_data,
-  final_cluster = final_cluster,
-  cellcutoff = 5,
-  pqArm_file = "hg38",
-  FILEpath = getwd(),
-  FILEname = "cnvTree.scDNAseq_heatmap.png",
-  sexchromosome=FALSE,
-  smoothing = TRUE
-)
-}
-
+(CNV) patterns across clusters, with hierarchical clustering represented by a
+dendrogram.
 }

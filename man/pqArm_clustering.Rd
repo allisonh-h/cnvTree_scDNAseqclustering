@@ -14,9 +14,6 @@ rows correspond to arm-level copy number regions across chromosomes.}
 analysis.}
 }
 \value{
-A data frame recording the clustering results for each cell, including
-the clustering history at each step.
-
 A table recorded the clustering result for each cell. This table recorded
 the clustering history in each step.
 }
@@ -25,4 +22,3 @@ This function performs clustering on cells using arm-level copy number variation
 (CNVs). It groups cells into clusters based on chromosomal arm-level CNV profiles,
 providing a hierarchical clustering history at each step.
 }
-\keyword{internal}

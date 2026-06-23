@@ -23,4 +23,3 @@ An integer representing the number of cells in the specified cluster.
 This function calculates the total number of cells that belong to a specified
 cluster.
 }
-\keyword{internal}

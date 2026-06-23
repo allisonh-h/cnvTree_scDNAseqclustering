@@ -2,25 +2,26 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{Subclone_clustering}
 \alias{Subclone_clustering}
-\title{==============================================================================
+\title{Check cell to cell whether with >?\% of different chromosome than clustering.
 Perform subclone clustering based on copy number patterns}
 \usage{
 Subclone_clustering(CN_incells_input, event_region, dif_ratio, Subclone_num)
 }
 \arguments{
-\item{CN_incells_input}{A numeric data frame where each column corresponds to a cell,
-and each row maps to a chromosome segment from the segment template.}
+\item{CN_incells_input}{A numeric data frame where each column corresponds to
+a cell, and each row maps to a chromosome segment from the segment template.}
 
-\item{event_region}{A data frame containing continuous bin-level chromosome segments,
-divided by event region templates.}
+\item{event_region}{A data frame containing continuous bin-level chromosome
+segments, divided by event region templates.}
 
-\item{dif_ratio}{A numeric value specifying the tolerance threshold for differences
-in copy number patterns between cells during clustering.}
+\item{dif_ratio}{A numeric value specifying the tolerance threshold for
+differences in copy number patterns between cells during clustering.}
 
 \item{Subclone_num}{An integer used as the index for the subclone.}
 }
 \value{
-A data frame recording the final result of subclone clustering, containing:
+A data frame recording the final result of subclone clustering,
+containing:
 \itemize{
 \item \code{Subclone}: The subclone identifier.
 \item \code{cellID}: The unique identifier for each cell.
@@ -33,4 +34,3 @@ in predefined chromosome segment templates. It groups cells into subclones by
 comparing copy number variations (CNVs) while tolerating a specified level
 of difference between cells.
 }
-\keyword{internal}

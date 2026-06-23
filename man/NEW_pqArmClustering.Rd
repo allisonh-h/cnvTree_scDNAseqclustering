@@ -2,17 +2,17 @@
 % Please edit documentation in R/scDNAclustering_07_TotalSteps.R
 \name{NEW_pqArmClustering}
 \alias{NEW_pqArmClustering}
-\title{==============================================================================
-Perform pqArm clustering step in scDNA-seq data clustering Workflow}
+\title{Perform pqArm clustering step in scDNA-seq data clustering Workflow}
 \usage{
-NEW_pqArmClustering(input, pqArm_file)
+NEW_pqArmClustering(input, pqArm_file, cluster, sexchromosome)
 }
 \arguments{
-\item{input}{A named list where each element is a \code{GRanges} object representing a single cell.}
+\item{input}{A named list where each element is a \code{GRanges} object representing
+a single cell.}
 
-\item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19}, \code{mm10}, \code{mm39}.
-Or a filepath of a table for cytoband information seen on Giemsa-stained chromosomes.
-It should include the following columns:
+\item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19},
+\code{mm10}, \code{mm39}. Or a filepath of a table for cytoband information seen on
+Giemsa-stained chromosomes. It should include the following columns:
 \itemize{
 \item \code{chrom}: Reference sequence chromosome or scaffold.
 \item \code{chromStart}: Start position in genoSeq.
@@ -20,18 +20,25 @@ It should include the following columns:
 \item \code{name}: Name of cytogenetic band.
 \item \code{gieStain}: Giemsa stain results.
 }}
+
+\item{cluster}{The assigned cluster label (k = 2)}
 }
 \value{
-A data frame recording the pqArm clustering results for each cell, tracking the clustering history at this stage.
+A data frame recording the pqArm clustering results for each cell,
+tracking the clustering history at this stage.
 }
 \description{
-This function executes the pqArm clustering step in the single-cell DNA sequencing (scDNA-seq)
-data clustering workflow, grouping cells based on chromosomal arm-level copy number variations.
+This function executes the pqArm clustering step in the single-cell DNA
+sequencing (scDNA-seq) data clustering workflow, grouping cells based on
+chromosomal arm-level copy number variations.
 }
 \examples{
-file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
-Example_data <- changeFormat(file = file_path, core = 4)
-
-pqArm_result <- pqArmClustering(input = Example_data, pqArm_file = "hg38")
+\dontrun{
+ file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
+ config <- read_yaml(config_path)
+ input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA, cores = 2)
+ pqArm_result <- NEW_pqArmClustering(input = input_df, 
+                                     pqArm_file = config$pqArm_file) 
+}
 
 }

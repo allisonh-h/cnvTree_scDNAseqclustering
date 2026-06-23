@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{Subclone_CNregion}
 \alias{Subclone_CNregion}
-\title{==============================================================================
+\title{Output each region copy number in each subclone, as the basement of CNV template.
 Output copy number by unique segment template for each subclone}
 \usage{
 Subclone_CNregion(
@@ -23,8 +23,8 @@ and each row maps to a chromosome segment from the segment template.}
 \item{each_subclone}{A data frame recording the clustering history, including
 pqArm clustering, re-clustering, and subclone clustering results for each cell.}
 
-\item{min_cell}{An integer specifying the minimum cell count required for a cluster
-to be included in the output.}
+\item{min_cell}{An integer specifying the minimum cell count required for a
+cluster to be included in the output.}
 
 \item{output}{A character string specifying the column name in \code{each_subclone}
 to be used as output information.}
@@ -32,7 +32,6 @@ to be used as output information.}
 \value{
 A data frame recording each subclone's unique chromosome segment template
 and its corresponding copy number (CN).
-
 The output includes the following columns:
 \itemize{
 \item \code{chr}: Chromosome name (chr1, chr2, ...).
@@ -48,4 +47,3 @@ This function generates copy number (CN) outputs for each subclone using a uniqu
 chromosome segment template. It filters clusters based on a minimum cell count
 and outputs CN values for each region.
 }
-\keyword{internal}

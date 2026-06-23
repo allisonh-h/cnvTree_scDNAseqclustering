@@ -25,10 +25,3 @@ This function extracts copy number variations from a list of \code{GRanges} obje
 and organizes them into an integer matrix. The matrix contains selected cells
 as columns, with genomic regions (fixed bins) as rows.
 }
-\examples{
-
-file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
-Example_data <- changeFormat(file = file_path, core = 4)
-CNmatrix <- NEW_CN_seq(input = Example_data, Template = names(Example_data)[1:10])
-
-}

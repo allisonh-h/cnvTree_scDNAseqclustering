@@ -30,4 +30,3 @@ A data frame with two columns:
 This function separates cells into two groups based on copy number variation
 in a specified cluster label from a provided clustering result table.
 }
-\keyword{internal}

@@ -1,0 +1,11 @@
+'': X
+pqArm_file: hg38
+input_dir_DNA: ~/Demodata/example_AneuFinder_output/MODELS/method-edivisive
+input_dir_RNA: ~/Demodata/example_InferCNV_output/
+output_dir: ~/Result_0622_AneuFinder_chrsex_T
+RNAdataSource: '2'
+cellcutoff: 10.0
+cellcutoffRNA: 10.0
+cnv_ratio: 0.8
+filterZero: no
+cnv_ratio_dna: 0.5

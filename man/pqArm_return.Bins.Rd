@@ -2,8 +2,8 @@
 % Please edit documentation in R/scDNAclustering_04_ReClustering.R
 \name{pqArm_return.Bins}
 \alias{pqArm_return.Bins}
-\title{==============================================================================
-Extract bin-level copy number sequence in differentiated chromosome arms}
+\title{Select different pqArm to output the region at bin-level. Extract bin-level
+copy number sequence in differentiated chromosome arms}
 \usage{
 pqArm_return.Bins(Pattern, which_Arm, Tem, CN_matrix)
 }
@@ -31,4 +31,3 @@ for a given bin within a cluster of cells.
 This function retrieves the bin-level copy number sequence for chromosome p/q arms
 that show differences between two clusters.
 }
-\keyword{internal}

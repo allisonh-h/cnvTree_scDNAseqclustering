@@ -2,18 +2,19 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{cnvRegion.toPQarm}
 \alias{cnvRegion.toPQarm}
-\title{==============================================================================
+\title{Input cnvRegions in defined format then add p, q arm information automatically.
 Map copy number variation regions to cytoband sites}
 \usage{
 cnvRegion.toPQarm(FILE, pqArm_file)
 }
 \arguments{
 \item{FILE}{Either a character string specifying the file path for output,
-or a connection open for writing. An empty string (\code{""}) indicates output to the console.}
+or a connection open for writing. An empty string (\code{""}) indicates output
+to the console.}
 
-\item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19}, \code{mm10}, \code{mm39}.
-Or a filepath of a table for cytoband information seen on Giemsa-stained chromosomes.
-It should include the following columns:
+\item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19},
+\code{mm10}, \code{mm39}. Or a filepath of a table for cytoband information seen on
+Giemsa-stained chromosomes. It should include the following columns:
 \itemize{
 \item \code{chrom}: Reference sequence chromosome or scaffold.
 \item \code{chromStart}: Start position in genoSeq.
@@ -39,4 +40,3 @@ This function maps copy number variation (CNV) regions to cytoband sites,
 based on Giemsa-stained chromosome information. It annotates CNV regions
 with the corresponding cytoband labels for the first and last affected bands.
 }
-\keyword{internal}

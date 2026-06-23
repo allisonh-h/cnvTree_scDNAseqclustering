@@ -2,28 +2,30 @@
 % Please edit documentation in R/scDNAclustering_07_TotalSteps.R
 \name{scDNA_Output}
 \alias{scDNA_Output}
-\title{==============================================================================
-Generate final output in scDNA-seq data clustering workflow}
+\title{Outputting scDNA clustering final outputs. Generate final output in scDNA-seq
+data clustering workflow}
 \usage{
 scDNA_Output(
   input,
   Summary,
   pqArm_file,
-  output.dir = outdir,
-  consecutive_region = 10^7,
-  cellcutoff = cellcutoff,
-  sexchromosome_plot = FALSE,
-  smoothheatmap = TRUE
+  output_dir,
+  consecutive_region,
+  cellcutoff,
+  sexchromosome,
+  smoothheatmap
 )
 }
 \arguments{
-\item{input}{A named list where each element is a \code{GRanges} object representing a single cell.}
+\item{input}{A named list where each element is a \code{GRanges} object representing
+a single cell.}
 
 \item{Summary}{A list containing two data frames:
 \itemize{
-\item \code{final_cluster_output}: Records the clustering history from the pqArm, consolidating, and subclustering steps.
-\item \code{Subclone_CN}: Records each subclone's unique chromosome segment template and its copy number.
-It includes the following columns:
+\item \code{final_cluster_output}: Records the clustering history from the pqArm,
+consolidating, and subclustering steps.
+\item \code{Subclone_CN}: Records each subclone's unique chromosome segment template
+and its copy number. It includes the following columns:
 \itemize{
 \item \code{chr}: Chromosome name (chr1, chr2, ...).
 \item \code{start}: Start position of the segment.
@@ -34,9 +36,9 @@ It includes the following columns:
 }
 }}
 
-\item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19}, \code{mm10}, \code{mm39}.
-Or a filepath of a table for cytoband information seen on Giemsa-stained chromosomes.
-It should include the following columns:
+\item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19},
+\code{mm10}, \code{mm39}. Or a filepath of a table for cytoband information seen on
+Giemsa-stained chromosomes. It should include the following columns:
 \itemize{
 \item \code{chrom}: Reference sequence chromosome or scaffold.
 \item \code{chromStart}: Start position in genoSeq.
@@ -45,18 +47,24 @@ It should include the following columns:
 \item \code{gieStain}: Giemsa stain results.
 }}
 
-\item{output.dir}{A character string specifying the directory where the output files will be saved.}
+\item{output_dir}{A character string specifying the directory where the output
+files will be saved.}
 
-\item{consecutive_region}{A numeric value defining the minimum length threshold for filtering copy number variation (CNV) regions.}
+\item{consecutive_region}{A numeric value defining the minimum length threshold
+for filtering copy number variation (CNV) regions.}
 
-\item{cellcutoff}{A numeric value specifying the minimum number of cells required for a cluster to be retained.}
+\item{cellcutoff}{A numeric value specifying the minimum number of cells required
+for a cluster to be retained.}
 
-\item{sexchromosome_plot}{A logical value. If \code{TRUE}, the output includes plots with sex chromosome copy number information.}
+\item{sexchromosome}{A logical value. If \code{TRUE}, the output includes plots
+with sex chromosome copy number information.}
 
-\item{smoothheatmap}{A logical value. If \code{TRUE}, the output applies smoothing over a 10⁶ bp range in chromosome copy number visualizations.}
+\item{smoothheatmap}{A logical value. If \code{TRUE}, the output applies smoothing
+over a 10⁶ bp range in chromosome copy number visualizations.}
 }
 \value{
-The function generates final clustering results and visualizations, saving them to the specified output directory.
+The function generates final clustering results and visualizations,
+saving them to the specified output directory.
 }
 \description{
 This function produces the final output for the single-cell DNA sequencing (scDNA-seq)
@@ -64,18 +72,22 @@ clustering workflow, integrating clustering results and generating visualization
 }
 \examples{
 \dontrun{
-file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
-Example_data <- changeFormat(file = file_path, core = 4)
-
-pqArm_result <- pqArmClustering(input = Example_data, pqArm_file = "hg38")
-Consolidating_output <- clusterConsolidation(input = Example_data,
-                                            pqArm_output = pqArm_result,
-                                            pqArm_file = "hg38")
-Subclone_output <- SubClustering(input = Example_data,
-                                     Consolidating_output = Consolidating_output)
-scDNA_Output(input = Example_data,
-             Summary = Final_output,
-             pqArm_file = "hg38")
-}
+ file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
+ config <- read_yaml(config_path)
+ input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA, cores = 2)
+ pqArm_result <- NEW_pqArmClustering(input = input_df, 
+                                    pqArm_file = config$pqArm_file) 
+ Consolidation_result <- clusterConsolidation(input = input_df, 
+                                              pqArm_output = pqArm_result, 
+                                              pqArm_file = config$pqArm_file)
+ Subclone_output <- SubClustering(input = input_df,
+                                  Consolidating_output = Consolidation_result)
+ scDNA_Output(input = input_df,
+              Summary = Subclone_output,
+              output_dir = config$output_dir,
+              pqArm_file = config$pqArm_file
+              cellcutoff = config$cellcutoff,
+              smoothheatmap = config_hid$smoothheatmap)
+ }
 
 }

@@ -2,7 +2,8 @@
 % Please edit documentation in R/scDNAclustering_03_pqArmClustering.R
 \name{NEW_pqArm_file.pq}
 \alias{NEW_pqArm_file.pq}
-\title{Convert UCSC cytoband data to arm-level chromosomal ranges}
+\title{Remake pqArm template into new format. Convert UCSC cytoband data to arm-level
+chromosomal ranges}
 \usage{
 NEW_pqArm_file.pq(Template)
 }
@@ -20,4 +21,3 @@ reformats it into a structured table containing p/q arm regions for each
 chromosome. The output is designed for downstream copy number variation (CNV)
 analysis.
 }
-\keyword{internal}

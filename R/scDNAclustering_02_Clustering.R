@@ -1,9 +1,4 @@
-# scDNAclustering_02_Clustering.R
-
-# 2. clusterbyHMM() based on AneuFinder::clusterHMMs(), calcuate distance than
-#   hierrachical clustering
-#'==============================================================================
-#' Hierarchical clustering of cells based on copy number variation
+#' Based on AneuFinder::clusterHMMs, calcuate distance than hierrachical clustering
 #'
 #' This function computes the pairwise distance between cells based on their 
 #' copy number variations and performs hierarchical clustering.
@@ -18,22 +13,21 @@
 #'
 #' @return A list containing:
 #'   - `ordered_indices`: The ordered indices of cells based on hierarchical clustering.
-
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
 #' Example_data <- changeFormat(file = file_path, core = 4)
 #' Clustering_Result <- clusterbyHMM(input = Example_data, 
 #'                                   selected = names(Example_data)[1:10])
-#'
+#' }
 #'
 clusterbyHMM <- function(input, selected, exclude.regions = NULL)
 {
-  fucStep <- " 2.0_cnvTree_v030"
-  DebugMsg(fucStep, "start")
-  ptm <- startTimed("Checking column 'copy.number'  ...")
+  fucStep <- paste0(" 2.0_cnvTree_", config_hid$v_num)
+  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  message("Checking column 'copy.number'  ...")
   
   hmms <- input[selected]
   hmms2use <- numeric()
@@ -47,11 +41,10 @@ clusterbyHMM <- function(input, selected, exclude.regions = NULL)
     }
   }
   hmms <- hmms[hmms2use]
-  endTimed(ptm)
-
   hc <- NULL
 
-  ptm <- startTimed("Making consensus template ...")
+  message("Making consensus template ...")
+  
   if (!is.null(hmms[[1]]$bins$copy.number)) {
     constates <- sapply(hmms, function(hmm) {
       hmm$bins$copy.number
@@ -59,36 +52,32 @@ clusterbyHMM <- function(input, selected, exclude.regions = NULL)
   }
   constates[is.na(constates)] <- 0
   vars <- apply(constates, 1, stats::var, na.rm = TRUE)
-  endTimed(ptm)
 
-  ptm <- startTimed("Clustering ...")
+  message("Clustering ...")
   if (!is.null(exclude.regions)) {
     ind <- GenomicRanges::findOverlaps(hmms[[1]]$bins, exclude.regions)@from
     constates <- constates[-ind, ]
   }
 
-  # ptm <- startTimed("Distance calculating...")
+  message("Distance calculating...")
   Dist <- Rfast::Dist(t(constates), method = "euclidean")
-  # endTimed(ptm)
 
   # dist <- parallelDist::parDist(t(constates),
   #                               method = "euclidean",
   #                               threads = 5) # threads
 
   Dist_as_dist <- stats::as.dist(Dist)
-  # ptm <- startTimed("hierarchical clustering...")
+  message("hierarchical clustering...")
   hc <- stats::hclust(Dist_as_dist)
-  endTimed(ptm)
 
   # message("Reordering ...")
   hmms2use <- hmms2use[hc$order]
 
-  DebugMsg(fucStep, "end")
+  DebugMsg(fucStep, "end", msg = config_hid$msg)
   return(list(IDorder = hmms2use, hclust = hc))
 }
 
 
-# 2.1: CutTree_final() get the phylogenetic tree template
 #' Construct a phylogenetic tree from copy number variation data
 #'
 #' This function performs hierarchical clustering on selected cells based on 
@@ -103,12 +92,10 @@ clusterbyHMM <- function(input, selected, exclude.regions = NULL)
 #'   - `cellID`: The unique identifier of each cell.
 #'   - `cluster`: The assigned cluster label (k = 2).
 #'
-#' @keywords internal
-#'
 CutTree_final <- function(input, selected)
 {
-  fucStep <- " 2.1_cnvTree_v030"
-  DebugMsg(fucStep, "start")
+  fucStep <- paste0(" 2.1_cnvTree_", config_hid$v_num)
+  DebugMsg(fucStep, "start", msg = config_hid$msg)
   # 分群的原始檔，後面要用他作為基底
   message("Clustering and Data processing ...")
 
@@ -117,15 +104,15 @@ CutTree_final <- function(input, selected)
                               cell = names(clust$IDorder))
 
   Clust_cuttree <- Clust_cuttree %>%
-    dplyr::mutate(cluster = as.numeric(.data$cluster)) %>%
-    dplyr::arrange(dplyr::desc(.data$cluster))
+                   dplyr::mutate(cluster = as.numeric(.data$cluster)) %>%
+                   dplyr::arrange(dplyr::desc(.data$cluster))
 
-
-  DebugMsg(fucStep, "end")
+  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  
   return(Clust_cuttree)
 }
 
-# 2.2: CutTree() Cut the tree repeatably
+
 #' Divide cells into two groups based on copy number variation in a specific cluster
 #'
 #' This function separates cells into two groups based on copy number variation 
@@ -146,17 +133,15 @@ CutTree_final <- function(input, selected)
 #'   - `cellID`: The unique identifier of each cell.
 #'   - `cluster`: The updated cluster assignment (k = 2).
 #'
-#' @keywords internal
-#'
 CutTree <- function(input, Template, Cluster_label)
 {
-  fucStep <- " 2.2_cnvTree_v030"
-  DebugMsg(fucStep, "start")
+  fucStep <- paste0(" 2.2_cnvTree_", config_hid$v_num)
+  DebugMsg(fucStep, "start", msg = config_hid$msg)
   
   # selected.files建立
   # Cluster_label: Clust_cuttree$cluster中的分群數字
   selected.files <- NULL
-  selected.files <- subset(Template, .data$cluster%in%c(Cluster_label))$cell
+  selected.files <- subset(Template, .data$cluster %in% c(Cluster_label))$cell
 
   message("Divided the cluster in k=2 ")
   clust <- clusterbyHMM(input = input, selected = selected.files, exclude.regions = NULL)
@@ -180,12 +165,12 @@ CutTree <- function(input, Template, Cluster_label)
 
   Template <- Template[, !colnames(Template) %in% "NewCluster"]
 
-  DebugMsg(fucStep, "end")
+  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  
   return(Template)
 }
 
 
-# 2.3: Cluster_num() calculate the number of cells in cluster
 #' Count the number of cells in a specific cluster
 #'
 #' This function calculates the total number of cells that belong to a specified 
@@ -199,21 +184,21 @@ CutTree <- function(input, Template, Cluster_label)
 #'
 #' @return An integer representing the number of cells in the specified cluster.
 #'
-#' @keywords internal
 Cluster_num <- function(Template, Cluster_label)
 {
-  fucStep <- " 2.3_cnvTree_v030"
-  DebugMsg(fucStep, "start")
+  fucStep <- paste0(" 2.3_cnvTree_", config_hid$v_num)
+  DebugMsg(fucStep, "start", msg = config_hid$msg)
   # cat("Calculating numbers of cell in Cluster", Cluster_label, "...\n")
 
   num <- data.frame(table(Template$cluster))
   num <- num[which(num$Var1 == Cluster_label), 2]
 
+  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  
   return(num)
 }
 
 
-# 2.4: Cluster_sim() calculate the similarity of cells in cluster
 #' Compute the similarity of cells within a cluster
 #'
 #' This function calculates the overall similarity of cells within a specified 
@@ -227,18 +212,13 @@ Cluster_num <- function(Template, Cluster_label)
 #' @param Cluster_label A character vector containing the `cellID`s of cells that 
 #'  belong to the specified cluster.
 #'
-#' @importFrom rlang .data
-#' @importFrom magrittr %>%
-#'
 #' @return A numeric value representing the overall similarity of the cells within 
 #'  the specified cluster.
 #'
-#' @keywords internal
-#'
 Cluster_sim <- function(Template, SimCells, Cluster_label)
 {
-  fucStep <- " 2.4_cnvTree_v030"
-  DebugMsg(fucStep, "start")
+  fucStep <- paste0(" 2.4_cnvTree_", config_hid$v_num)
+  DebugMsg(fucStep, "start", msg = config_hid$msg)
   # cat("Calculating cell similarity in Cluster ",  Cluster_label, " ...\n")
 
   selected <- Template %>% 
@@ -250,12 +230,13 @@ Cluster_sim <- function(Template, SimCells, Cluster_label)
   Similarity[is.na(Similarity)] <- 0
   Similarity <- mean(Similarity)
 
-  DebugMsg(fucStep, "end")
+  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  
   return(Similarity)
 }
 
 
-# Cluster_SimTem() Computes pairwise similarity between cells
+#' Computes pairwise similarity between cells
 #'
 #' This function calculates the similarity values between cells based on their 
 #' copy number variations at the bin level.
@@ -266,13 +247,11 @@ Cluster_sim <- function(Template, SimCells, Cluster_label)
 #' @return A square numeric matrix where each element `[i, j]` represents the 
 #'  similarity score between `cell[i]` and `cell[j]`.
 #'
-#' @keywords internal
-#'
 Cluster_SimTem <- function(binsMatrix) 
 {
-  fucStep <- " Cluster_SimTem()_cnvTree_v030"
-  DebugMsg(fucStep, "start")
-  ptm <- startTimed("Making similarity template ... ")
+  fucStep <- paste0(" Cluster_SimTem()_cnvTree_", config_hid$v_num)
+  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  message("Making similarity template ... ")
 
   totalcells <- ncol(binsMatrix)
   num_bins <- nrow(binsMatrix)
@@ -288,11 +267,10 @@ Cluster_SimTem <- function(binsMatrix)
     similarity[i:totalcells, i] <- result[[i]]
   }
 
-  endTimed(ptm)
-
   SIM <- list(IDorder = colnames(binsMatrix),
               similarity = as.matrix(similarity))
 
-  DebugMsg(fucStep, "end")
+  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  
   return(SIM)
 }

@@ -2,8 +2,8 @@
 % Please edit documentation in R/scDNAclustering_04_ReClustering.R
 \name{pqArm_reclusterBy_ratio_target}
 \alias{pqArm_reclusterBy_ratio_target}
-\title{==============================================================================
-Validate pqArm clusters based on difference ratio criteria}
+\title{Filter ratio and merge the clusters if criteria meets. Validate pqArm clusters
+based on difference ratio criteria}
 \usage{
 pqArm_reclusterBy_ratio_target(
   pqArm_cluster,
@@ -34,4 +34,3 @@ be grouped together.
 This function evaluates whether pqArm clusters meet a predefined difference
 ratio criterion across different chromosomes.
 }
-\keyword{internal}

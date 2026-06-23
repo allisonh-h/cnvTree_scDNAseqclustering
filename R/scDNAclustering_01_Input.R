@@ -22,12 +22,12 @@
 #'
 changeFormat <- function(input_dir_DNA, cores, sexchromosome) 
 {
+  config_path_hid <- system.file("inst", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 1.0_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
   # Locked variable
-  config_hid_path <- "~/cnvTree_040/inst/cnvTree_config_hid.yaml"
-  config_hid <- read_yaml(config_hid_path)
   cores = config_hid$cores
   sexchromosome = config_hid$sexchromosome
   

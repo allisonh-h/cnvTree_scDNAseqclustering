@@ -22,7 +22,7 @@
 #'
 changeFormat <- function(input_dir_DNA, cores, sexchromosome) 
 {
-  config_path_hid <- system.file("inst", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
   config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 1.0_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
@@ -129,7 +129,7 @@ changeFormat <- function(input_dir_DNA, cores, sexchromosome)
 #'
 NEW_CN_seq <- function(input, Template)
 {
-  config_path_hid <- system.file("inst", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
   config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 1.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
@@ -176,10 +176,8 @@ NEW_CN_seq <- function(input, Template)
 run_cnvTree_Pipeline <- function(config, output_dir,
                                  input_dir_RNA, RNAdataSource) 
 {
-  browser()
-  config_path_hid <- system.file("inst", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
   config_hid <- read_yaml(config_hid_path)
-  browser()
   fucStep <- paste0(" 1.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -214,7 +212,7 @@ run_cnvTree_Pipeline <- function(config, output_dir,
 #' 
 setup_pipeline_folders <- function(input_dir_RNA, output_dir, RNAdataSource)
 {
-  config_path_hid <- system.file("inst", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
   config_hid <- read_yaml(config_hid_path)
   
   fucStep <- paste0(" 1.2.1_cnvTree_", config_hid$v_num)
@@ -277,7 +275,7 @@ setup_pipeline_folders <- function(input_dir_RNA, output_dir, RNAdataSource)
 #' 
 select_groups <- function(input_dir_RNA, RNAdataSource)
 {
-  config_path_hid <- system.file("inst", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
   config_hid <- read_yaml(config_hid_path)
   
   fucStep <- paste0(" 1.2.1_cnvTree_", config_hid$v_num)

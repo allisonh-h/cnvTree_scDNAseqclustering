@@ -129,6 +129,8 @@ changeFormat <- function(input_dir_DNA, cores, sexchromosome)
 #'
 NEW_CN_seq <- function(input, Template)
 {
+  config_path_hid <- system.file("inst", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 1.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -174,6 +176,8 @@ NEW_CN_seq <- function(input, Template)
 run_cnvTree_Pipeline <- function(config, output_dir,
                                  input_dir_RNA, RNAdataSource) 
 {
+  config_path_hid <- system.file("inst", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 1.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -380,6 +384,8 @@ select_groups <- function(input_dir_RNA, RNAdataSource)
 #'
 ProcessHmmList <- function(input_dir_DNA) 
 {
+  config_path_hid <- system.file("inst", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 1.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

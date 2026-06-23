@@ -10,6 +10,7 @@
 #' 
 DebugMsg <- function(fucStep, status, msg)
 {
+  msg <- msg
   if (msg == TRUE) {
     msg_str <- paste0("LH: ", status, " function", fucStep)
     print(msg_str)

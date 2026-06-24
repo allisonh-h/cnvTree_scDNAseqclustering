@@ -35,8 +35,8 @@
 NEW_pqArmClustering <- function(input, pqArm_file, cluster, sexchromosome)
 {
   # Locked variable
-  config_hid_path <- "~/cnvTree_040/inst/cnvTree_config_hid.yaml"
-  config_hid <- read_yaml(config_hid_path)
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   cluster = config_hid$cluster
   sexchromosome = config_hid$sexchromosome
   
@@ -113,13 +113,14 @@ NEW_pqArmClustering <- function(input, pqArm_file, cluster, sexchromosome)
 #'
 clusterConsolidation <- function(input, pqArm_output, pqArm_file, difratio_chr)
 {
-  # Locked variable
-  config_hid_path <- "~/cnvTree_040/inst/cnvTree_config_hid.yaml"
-  config_hid <- read_yaml(config_hid_path)
-  difratio_chr <- config_hid$difratio_chr
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   
   fucStep <- paste0(" 7.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
+  
+  # Locked variable
+  difratio_chr <- config_hid$difratio_chr
   
   message("=== Step 03: Cluster consolidation ===")
   
@@ -217,16 +218,15 @@ clusterConsolidation <- function(input, pqArm_output, pqArm_file, difratio_chr)
 SubClustering <- function(input, Consolidating_output, min_cell, overlap_region, 
                           dif_ratio)
 {
-  # Locked variable
-  config_hid_path <- "~/cnvTree_040/inst/cnvTree_config_hid.yaml"
-  config_hid <- read_yaml(config_hid_path)
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
+  fucStep <- paste0(" 7.3_cnvTree_", config_hid$v_num)
+  DebugMsg(fucStep, "start", msg = config_hid$msg)
   
+  # Locked variable
   min_cell = config_hid$min_cell
   overlap_region = config_hid$overlap_region
   dif_ratio = config_hid$dif_ratio
-  
-  fucStep <- paste0(" 7.3_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
   
   message("=== Step 04: Subclustering ===")
   
@@ -373,14 +373,14 @@ scDNA_Output <- function(input, Summary, pqArm_file, output_dir,
                          consecutive_region, cellcutoff,
                          sexchromosome, smoothheatmap)
 {
-  # Locked variable
-  config_hid_path <- "~/cnvTree_040/inst/cnvTree_config_hid.yaml"
-  config_hid <- read_yaml(config_hid_path)
-  consecutive_region = config_hid$consecutive_region 
-  sexchromosome = config_hid$sexchromosome
-  
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 7.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
+  
+  # Locked variable
+  consecutive_region = config_hid$consecutive_region 
+  sexchromosome = config_hid$sexchromosome
   
   message("=== Step 05: Output cnvTree results ===")
   timestamp <- format(Sys.time(), "%m%d_%H")
@@ -537,10 +537,9 @@ cnvTree_scDNAclustering <- function(input_dir_DNA,
                                     consecutive_region, 
                                     sexchromosome) 
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   # Locked variable
-  config_hid_path <- "~/cnvTree_040/inst/cnvTree_config_hid.yaml"
-  config_hid <- read_yaml(config_hid_path)
-  
   difratio_chr = config_hid$difratio_chr
   min_cell = config_hid$min_cell 
   overlap_region = config_hid$overlap_region
@@ -645,10 +644,9 @@ cnvTree_scDNAclustering_df <- function(input_dir_DNA,
                                        cellcutoff,
                                        smoothheatmap) 
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   # Locked variable
-  config_hid_path <- "~/cnvTree_040/inst/cnvTree_config_hid.yaml"
-  config_hid <- read_yaml(config_hid_path)
-  
   difratio_chr = config_hid$difratio_chr
   min_cell = config_hid$min_cell 
   overlap_region = config_hid$overlap_region

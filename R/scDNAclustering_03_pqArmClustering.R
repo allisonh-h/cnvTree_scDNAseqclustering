@@ -30,12 +30,12 @@
 NEW_pqArm_CN <- function(input, Cluster_label, Clustering_output, pqArm_file, 
                          cluster, sexchromosome)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 3.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
   # Locked variable
-  config_hid_path <- "~/cnvTree_040/inst/cnvTree_config_hid.yaml"
-  config_hid <- read_yaml(config_hid_path)
   cluster = config_hid$cluster
   
   Clustering_output <- data.frame(cluster = cluster, cell = names(input))

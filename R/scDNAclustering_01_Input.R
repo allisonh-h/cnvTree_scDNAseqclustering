@@ -215,7 +215,6 @@ setup_pipeline_folders <- function(input_dir_RNA, output_dir, RNAdataSource)
 {
   config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
   config_hid <- read_yaml(config_path_hid)
-  
   fucStep <- paste0(" 1.2.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
 
@@ -278,7 +277,6 @@ select_groups <- function(input_dir_RNA, RNAdataSource)
 {
   config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
   config_hid <- read_yaml(config_path_hid)
-  
   fucStep <- paste0(" 1.2.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
 
@@ -387,7 +385,6 @@ ProcessHmmList <- function(input_dir_DNA)
 {
   config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
   config_hid <- read_yaml(config_path_hid)
-  
   fucStep <- paste0(" 1.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

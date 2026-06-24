@@ -34,16 +34,13 @@
 #'
 NEW_pqArmClustering <- function(input, pqArm_file, cluster, sexchromosome)
 {
-  # Locked variable
   config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-    # mark to remove
-
   config_hid <- read_yaml(config_path_hid)
-  cluster = config_hid$cluster
-  sexchromosome = config_hid$sexchromosome
-  
   fucStep <- paste0(" 7.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
+  # Locked variable
+  cluster = config_hid$cluster
+  sexchromosome = config_hid$sexchromosome
   
   message("=== Step 02: pqArm Clustering ===")
 
@@ -117,7 +114,6 @@ clusterConsolidation <- function(input, pqArm_output, pqArm_file, difratio_chr)
 {
   config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
   config_hid <- read_yaml(config_path_hid)
-  
   fucStep <- paste0(" 7.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

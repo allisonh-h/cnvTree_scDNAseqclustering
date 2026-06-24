@@ -33,6 +33,8 @@
 #'
 superimpose.data <- function(inputFILE, DeterminedCNVs, cnv_ratio)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 9.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -110,6 +112,8 @@ superimpose.data <- function(inputFILE, DeterminedCNVs, cnv_ratio)
 #'
 superimpose.FileLevel <- function(inputFILE, DeterminedCNVs) 
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 9.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

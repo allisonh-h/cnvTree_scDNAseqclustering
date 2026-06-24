@@ -22,6 +22,8 @@
 #'
 collect_cluster_bp <- function(input, Clustering_output, Recluster_label)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 5.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -80,6 +82,8 @@ collect_cluster_bp <- function(input, Clustering_output, Recluster_label)
 #'
 output_bp_covers <- function(Template, binsize, overlap, overlap_times)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 5.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -191,6 +195,8 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
 #'
 bp_events <- function(input, Template, binsize)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 5.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -256,6 +262,8 @@ bp_events <- function(input, Template, binsize)
 #'
 event_region.bin <- function(input, Template)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 5.3.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -299,6 +307,8 @@ event_region.bin <- function(input, Template)
 #'
 bp_region <- function(event, binsize)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 5.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -399,6 +409,8 @@ bp_region <- function(event, binsize)
 #'
 Region_CN <- function(input, Reclustering_output, Recluster_label, events)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 5.5_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -458,6 +470,8 @@ Region_CN <- function(input, Reclustering_output, Recluster_label, events)
 Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio, 
                                 Subclone_num)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 5.6_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -567,6 +581,8 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
 Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell, 
                               output = c("SubcloneCNVRegion", "SubcloneRegionCN"))
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 5.7_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
 
@@ -657,6 +673,8 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
 #'
 Total_cnvRegion <- function(input, Template, pqArm_file, consecutive_region)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 5.8_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -753,6 +771,8 @@ Total_cnvRegion <- function(input, Template, pqArm_file, consecutive_region)
 #'
 Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 5.8.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -832,6 +852,8 @@ Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
 #'
 cnvRegion.toPQarm <- function(FILE, pqArm_file)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 5.9_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

@@ -22,6 +22,8 @@
 #'
 scRNA_input.infercnv <- function(input_dir_RNA, selected_groups, RNAdataSource) 
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 11.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -94,6 +96,8 @@ scRNA_input.infercnv <- function(input_dir_RNA, selected_groups, RNAdataSource)
 #'
 scRNA_superimpose <- function(RNA_output, DeterminedCNVs, cnv_ratio) 
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 11.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -153,6 +157,8 @@ scRNA_superimpose <- function(RNA_output, DeterminedCNVs, cnv_ratio)
 scRNA_output <- function(Summary, output_dir, DeterminedCNVs, cellcutoff, 
                          cellcutoffRNA, filterZero) 
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 11.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -237,6 +243,8 @@ cnvTree_scRNAclustering <- function(input_dir_RNA, selected_groups, output_dir,
                                     cellcutoff, cellcutoffRNA, RNAdataSource, 
                                     cnv_ratio, filterZero) 
 { 
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 11.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
 

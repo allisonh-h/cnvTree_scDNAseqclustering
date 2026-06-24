@@ -116,6 +116,8 @@ NEW_pqArm_CN <- function(input, Cluster_label, Clustering_output, pqArm_file,
 #'    
 NEW_CN_template <- function(input, pqArm_file)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 3.1.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -176,6 +178,8 @@ NEW_CN_template <- function(input, pqArm_file)
 #'
 NEW_pqArm_file.pq <- function(Template) 
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 3.1.1.1_cnvTree_", config_hid$v_num) #3.1.1.2_cnvTree_
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -215,6 +219,8 @@ NEW_pqArm_file.pq <- function(Template)
 #'
 NEW_pqArm_DelNeuAmp <- function(matrix) ## function: 3.1.2 ##
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   new_matrix <- base::matrix(NA, nrow(matrix), ncol(matrix)) 
   
   #new_matrix[matrix < 0.5] <- 0               # Total Deletion
@@ -247,6 +253,8 @@ NEW_pqArm_DelNeuAmp <- function(matrix) ## function: 3.1.2 ##
 #'
 pqArm_file.cen <- function(FILE)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 3.1.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -303,6 +311,8 @@ pqArm_file.cen <- function(FILE)
 #'  
 pqArm_clustering <- function(matrix, Label)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 3.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -341,6 +351,8 @@ pqArm_clustering <- function(matrix, Label)
 #'
 NEW_pqArm_clustering_summary <- function(matrix, Label)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 3.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -373,6 +385,8 @@ NEW_pqArm_clustering_summary <- function(matrix, Label)
 #'
 NEW_pqArm_file.remake <- function(FILE)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 3.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

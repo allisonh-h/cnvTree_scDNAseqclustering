@@ -36,6 +36,8 @@
 #'
 scDNA.superimpose <- function(Template, DefinedCNVs)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 6.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -129,6 +131,8 @@ scDNA.superimpose <- function(Template, DefinedCNVs)
 #'
 scDNA.clustering <- function(Template)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 6.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -194,7 +198,8 @@ scDNA.clustering <- function(Template)
 Totalcluster_pdf <- function(Input, Template, pqArm_file, cellcutoff, step = "Subclone", 
                              FILEname, FILEpath, sexchromosome)
 {
-  # select computed column name
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 6.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -278,6 +283,8 @@ Totalcluster_pdf <- function(Input, Template, pqArm_file, cellcutoff, step = "Su
 #'
 Totalcluster_Cluster_No <- function(Template, cellnum_name, cellcutoff, cluster_name)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 6.3.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -310,6 +317,8 @@ Totalcluster_Cluster_No <- function(Template, cellnum_name, cellcutoff, cluster_
 #'
 Totalcluster_SS <- function(Template, cluster_name, k)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 6.3.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -347,6 +356,8 @@ Totalcluster_SS <- function(Template, cluster_name, k)
 #'
 GenomeHeatmap <- function(Input, cellID, pqArm_file, sexchromosome)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 6.3.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
 
@@ -537,6 +548,8 @@ segment_transform <- function(data, index, CN_chr_template) # Function 6.3.3.1 #
 scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file, 
                              FILEpath, FILEname, sexchromosome, smoothheatmap)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 6.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -747,6 +760,8 @@ scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file,
 #'
 generate_dynamic_colormap <- function(data_matrix)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 6.4.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -822,6 +837,8 @@ generate_dynamic_colormap <- function(data_matrix)
 NEW_scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file, 
                              FILEpath, FILEname, sexchromosome, smoothheatmap)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 6.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

@@ -25,6 +25,8 @@
 #'
 clusterbyHMM <- function(input, selected, exclude.regions = NULL)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 2.0_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   message("Checking column 'copy.number'  ...")
@@ -94,6 +96,8 @@ clusterbyHMM <- function(input, selected, exclude.regions = NULL)
 #'
 CutTree_final <- function(input, selected)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 2.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   # 分群的原始檔，後面要用他作為基底
@@ -135,6 +139,8 @@ CutTree_final <- function(input, selected)
 #'
 CutTree <- function(input, Template, Cluster_label)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 2.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -186,6 +192,8 @@ CutTree <- function(input, Template, Cluster_label)
 #'
 Cluster_num <- function(Template, Cluster_label)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 2.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   # cat("Calculating numbers of cell in Cluster", Cluster_label, "...\n")
@@ -217,6 +225,8 @@ Cluster_num <- function(Template, Cluster_label)
 #'
 Cluster_sim <- function(Template, SimCells, Cluster_label)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 2.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   # cat("Calculating cell similarity in Cluster ",  Cluster_label, " ...\n")

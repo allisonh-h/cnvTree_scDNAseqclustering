@@ -32,6 +32,8 @@
 #' 
 infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 8.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -106,6 +108,8 @@ infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
 #'
 check_dims <- function(x, name = "selected_groups") 
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 8.1.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -159,6 +163,8 @@ check_dims <- function(x, name = "selected_groups")
 #'
 infercnv_cnvgrouping <- function(input_dir_RNA, selected_groups, RNAdataSource) 
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 8.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -221,6 +227,8 @@ infercnv_cnvgrouping <- function(input_dir_RNA, selected_groups, RNAdataSource)
 #'
 infercnv_groups_summary <- function(input_dir_RNA, selected_groups) 
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 8.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

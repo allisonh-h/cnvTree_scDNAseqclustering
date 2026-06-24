@@ -16,6 +16,8 @@
 #'
 pqArm_recluster <- function(pqArm_cluster, Cluster)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 4.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -140,6 +142,8 @@ euclidean <- function(a, b) # function 4.1.2
 pqArm_reclustering_dif <- function(input, pqArm_recluster_sim, pqArm_cluster, 
                                    Cluster, pqArm_file)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 4.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -312,6 +316,8 @@ pqArm_return.Bins <- function(Pattern, which_Arm, Tem, CN_matrix)
 pqArm_reclusterBy_ratio_target <- function(pqArm_cluster, Cluster, 
                                            pqReclsut_sim, difratio_chr)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 4.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -401,6 +407,8 @@ pqArm_reclusterBy_ratio_target <- function(pqArm_cluster, Cluster,
 #'
 pqArm_recluster_result <- function(pqArm_cluster, pqReclsut_target)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 4.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -443,6 +451,8 @@ pqArm_recluster_result <- function(pqArm_cluster, pqReclsut_target)
 #'
 pqArm_reclustering_summary <- function(Data)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 4.4.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

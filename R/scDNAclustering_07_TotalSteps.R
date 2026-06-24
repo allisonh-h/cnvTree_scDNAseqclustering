@@ -36,6 +36,8 @@ NEW_pqArmClustering <- function(input, pqArm_file, cluster, sexchromosome)
 {
   # Locked variable
   config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+    # mark to remove
+
   config_hid <- read_yaml(config_path_hid)
   cluster = config_hid$cluster
   sexchromosome = config_hid$sexchromosome

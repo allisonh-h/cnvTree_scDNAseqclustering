@@ -103,6 +103,8 @@ scRNA_output.format <- function(inputFILE, cellcutoffRNA, filterZero, Determined
 }
 scRNA_output.format <- function(inputFILE, cellcutoffRNA, filterZero, DeterminedCNVs)
 {
+  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_path_hid)
   fucStep <- paste0(" 10.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   inputFILE <- inputFILE

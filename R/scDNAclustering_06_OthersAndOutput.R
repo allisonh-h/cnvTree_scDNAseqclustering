@@ -851,6 +851,7 @@ NEW_scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file,
   config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 6.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
+  smoothheatmap <- config_hid$smoothheatmap
   
   if (smoothheatmap == TRUE) {
     # bins template

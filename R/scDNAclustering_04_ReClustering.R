@@ -1,9 +1,9 @@
+#' pqArm_recluster
+#' 
 #' Calculate the similarity between small clusters and >2 cells clusters. Compute 
-#' similarity between pqArm clusters
-#'
-#' This function calculates the similarity between pqArm clusters using Euclidean 
-#' distance. The similarity matrix quantifies the differences in arm-level 
-#' copy number variation (CNV) patterns across clusters.
+#' similarity between pqArm clusters; this function calculates the similarity 
+#' between pqArm clusters using Euclidean distance. The similarity matrix quantifies 
+#' the differences in arm-level copy number variation (CNV) patterns across clusters.
 #'
 #' @param pqArm_cluster A data frame recording the pqArm clustering results for 
 #'  each cell, including the clustering history at each step.
@@ -16,8 +16,8 @@
 #'
 pqArm_recluster <- function(pqArm_cluster, Cluster)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 4.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -63,10 +63,11 @@ pqArm_recluster <- function(pqArm_cluster, Cluster)
 }
 
 
-#' Convert pqArm pattern string to vector format
-#'
-#' This function transforms a pqArm pattern string into a numeric vector,
-#' where each element represents the copy number of a chromosome's p or q arm.
+#' pqArm_cluster.pattern
+#' 
+#' Convert pqArm pattern string to vector format; this function transforms a 
+#' pqArm pattern string into a numeric vector, where each element represents 
+#' the copy number of a chromosome's p or q arm.
 #'
 #' @param pattern A character string encoding copy number values for each chromosome's
 #'  p and q arms, separated by underscores ("_").
@@ -87,10 +88,11 @@ pqArm_cluster.pattern <- function (pattern) # function 4.1.1
 }
 
 
-#' Compute Euclidean distance between two vectors
+#' euclidean
 #'
-#' This function calculates the Euclidean distance (L₂ norm) between two numeric 
-#'vectors. The Euclidean distance is computed as:
+#' Compute Euclidean distance between two vectors; this function calculates the 
+#' Euclidean distance (L₂ norm) between two numeric vectors. The Euclidean distance 
+#' is computed as:
 #' \deqn{\sqrt{\sum (a_i - b_i)^2}}
 #'
 #' @param a A numeric vector of the same length as \code{b}.
@@ -105,13 +107,14 @@ euclidean <- function(a, b) # function 4.1.2
 }
 
 
+#' pqArm_reclustering_dif
+#' 
 #' Output the different ratio in different pqArm at bins-level between two clusters. 
-#' Compute bin-level difference ratios between pqArm clusters
-#'
-#' This function calculates the bin-level difference ratios between different
-#' pqArm clusters. The ratio represents the degree of difference in copy number
-#' variations (CNVs) between each cluster and its most similar cluster,
-#' considering variations at the p and q arms.
+#' Compute bin-level difference ratios between pqArm clusters; this function 
+#' calculates the bin-level difference ratios between different pqArm clusters. 
+#' The ratio represents the degree of difference in copy number variations (CNVs) 
+#' between each cluster and its most similar cluster, considering variations at 
+#' the p and q arms.
 #'
 #' @param input A named list where each element is a `GRanges` object representing 
 #'  a single cell.
@@ -142,8 +145,8 @@ euclidean <- function(a, b) # function 4.1.2
 pqArm_reclustering_dif <- function(input, pqArm_recluster_sim, pqArm_cluster, 
                                    Cluster, pqArm_file)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 4.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -224,11 +227,12 @@ pqArm_reclustering_dif <- function(input, pqArm_recluster_sim, pqArm_cluster,
 }
 
 
+#' pqArm_return.PQ
+#' 
 #' Output the different pqArm between two clusters. Identify differences in 
-#' p/q arm positions between chromosome clusters
-#'
-#' This function detects differences in the p or q arm positions of chromosomes
-#' between two clusters based on copy number variation (CNV) patterns.
+#' p/q arm positions between chromosome clusters; this function detects differences 
+#' in the p or q arm positions of chromosomes between two clusters based on 
+#' copy number variation (CNV) patterns.
 #'
 #' @param pattern A data frame with two columns representing paired CNV patterns.
 #'   Each row corresponds to a specific chromosome region comparison.
@@ -248,10 +252,11 @@ pqArm_return.PQ <- function(pattern, PQarm)
 }
 
 
+#' pqArm_return.Bins
+#' 
 #' Select different pqArm to output the region at bin-level. Extract bin-level 
-#' copy number sequence in differentiated chromosome arms
-#'
-#' This function retrieves the bin-level copy number sequence for chromosome p/q arms
+#' copy number sequence in differentiated chromosome arms; this function retrieves 
+#' the bin-level copy number sequence for chromosome p/q arms
 #' that show differences between two clusters.
 #'
 #' @param Pattern A character string encoding copy number values for each chromosome p/q arm,
@@ -294,11 +299,11 @@ pqArm_return.Bins <- function(Pattern, which_Arm, Tem, CN_matrix)
 }
 
 
+#' pqArm_reclusterBy_ratio_target
+#' 
 #' Filter ratio and merge the clusters if criteria meets. Validate pqArm clusters 
-#' based on difference ratio criteria
-#'
-#' This function evaluates whether pqArm clusters meet a predefined difference 
-#' ratio criterion across different chromosomes.
+#' based on difference ratio criteria; this function evaluates whether pqArm clusters 
+#' meet a predefined difference ratio criterion across different chromosomes.
 #'
 #' @param pqArm_cluster A data frame recording the pqArm-specific clustering results 
 #'  for each cell. This table tracks the clustering history at each step.
@@ -316,8 +321,8 @@ pqArm_return.Bins <- function(Pattern, which_Arm, Tem, CN_matrix)
 pqArm_reclusterBy_ratio_target <- function(pqArm_cluster, Cluster, 
                                            pqReclsut_sim, difratio_chr)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 4.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -389,11 +394,12 @@ pqArm_reclusterBy_ratio_target <- function(pqArm_cluster, Cluster,
 }
 
 
+#' pqArm_recluster_result
+#' 
 #' Reset the content in pqArmCluster_CellID.xlsx and merge final result. Generate 
-#' final results of the Re-Clustering step
-#'
-#' This function updates the clustering results by incorporating the re-clustering 
-#' step, refining the pqArm-based clustering assignments.
+#' final results of the Re-Clustering step; this function updates the clustering 
+#' results by incorporating the re-clustering step, refining the pqArm-based 
+#' clustering assignments.
 #'
 #' @param pqArm_cluster A data frame recording the pqArm-specific clustering results 
 #'  for each cell. This table tracks the clustering history at each step.
@@ -407,8 +413,8 @@ pqArm_reclusterBy_ratio_target <- function(pqArm_cluster, Cluster,
 #'
 pqArm_recluster_result <- function(pqArm_cluster, pqReclsut_target)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 4.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -433,10 +439,10 @@ pqArm_recluster_result <- function(pqArm_cluster, pqReclsut_target)
 }
 
 
+#' pqArm_reclustering_summary
+#' 
 #' Create pqArm clustering final results. Summarize the results of the Re-Clustering 
-#' step
-#'
-#' This function generates a summary table of the re-clustering process,
+#' step; this function generates a summary table of the re-clustering process,
 #' providing an overview of the reclustered patterns, cell counts, and assigned 
 #' clusters.
 #'
@@ -451,8 +457,8 @@ pqArm_recluster_result <- function(pqArm_cluster, pqReclsut_target)
 #'
 pqArm_reclustering_summary <- function(Data)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 4.4.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

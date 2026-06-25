@@ -1,7 +1,7 @@
-#' Transform CN matrix to Total Deletion/Loss/Neu/Amp and based on Arm level to 
-#' smooth the CN
+#' NEW_pqArm_CN
 #'
-#' This function processes single-cell copy number data by smoothing
+#' Transform CN matrix to Total Deletion/Loss/Neu/Amp and based on Arm level to
+#' smooth the CN; this function processes single-cell copy number data by smoothing
 #' copy number variations (CNVs) at the arm level. It utilizes clustering results
 #' and cytoband information to assign copy number states (Total Deletion, Loss, 
 #' Neutral, or Amplification) for each chromosomal arm.
@@ -30,8 +30,8 @@
 NEW_pqArm_CN <- function(input, Cluster_label, Clustering_output, pqArm_file, 
                          cluster, sexchromosome)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 3.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -94,10 +94,11 @@ NEW_pqArm_CN <- function(input, Cluster_label, Clustering_output, pqArm_file,
 }
 
 
-#' Generate a copy number segment template based on chromosomal arms
+#' NEW_CN_template
 #'
-#' This function constructs a template for copy number segmentation using
-#' cytoband information from Giemsa-stained chromosomes.
+#' Generate a copy number segment template based on chromosomal arms; this function 
+#' constructs a template for copy number segmentation using cytoband information 
+#' from Giemsa-stained chromosomes.
 #'
 #' @param input A named list where each element is a `GRanges` object representing 
 #'   a single cell.
@@ -116,8 +117,8 @@ NEW_pqArm_CN <- function(input, Cluster_label, Clustering_output, pqArm_file,
 #'    
 NEW_CN_template <- function(input, pqArm_file)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 3.1.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -162,13 +163,13 @@ NEW_CN_template <- function(input, pqArm_file)
 }
 
 
+#' NEW_pqArm_file.pq
+#' 
 #' Remake pqArm template into new format. Convert UCSC cytoband data to arm-level 
-#' chromosomal ranges
-#'
-#' This function processes cytoband information from the UCSC database and
-#' reformats it into a structured table containing p/q arm regions for each 
-#' chromosome. The output is designed for downstream copy number variation (CNV)
-#' analysis.
+#' chromosomal ranges; this function processes cytoband information from the UCSC 
+#' database and reformats it into a structured table containing p/q arm regions 
+#' for each chromosome. The output is designed for downstream copy number 
+#' variation (CNV) analysis.
 #'
 #' @param Template A character string specifying the file path to the UCSC cytoband 
 #'    data.
@@ -178,8 +179,8 @@ NEW_CN_template <- function(input, pqArm_file)
 #'
 NEW_pqArm_file.pq <- function(Template) 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 3.1.1.1_cnvTree_", config_hid$v_num) #3.1.1.2_cnvTree_
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -199,13 +200,13 @@ NEW_pqArm_file.pq <- function(Template)
 }
 
 
+#' NEW_pqArm_DelNeuAmp
+#' 
 #' Transform CN matrix to Del/Neu/Amp four types. Categorize copy number variations 
-#' into three types
-#'
-#' This function classifies copy number variations (CNVs) into three discrete 
-#' categories: Total Deletion (CN < 0.5), Loss (CN < 2), Neutral (CN = 2), and 
-#' Amplification (CN > 2). The input matrix represents copy number data across 
-#' genomic regions for multiple cells.
+#' into three types; this function classifies copy number variations (CNVs) into 
+#' three discrete categories: Total Deletion (CN < 0.5), Loss (CN < 2), Neutral 
+#' (CN = 2), and Amplification (CN > 2). The input matrix represents copy number 
+#' data across genomic regions for multiple cells.
 #'
 #' @param matrix An integer matrix where columns represent individual cells, and 
 #'    rows correspond to fixed-bin size genomic regions across all chromosomes.
@@ -219,8 +220,8 @@ NEW_pqArm_file.pq <- function(Template)
 #'
 NEW_pqArm_DelNeuAmp <- function(matrix) ## function: 3.1.2 ##
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   new_matrix <- base::matrix(NA, nrow(matrix), ncol(matrix)) 
   
   #new_matrix[matrix < 0.5] <- 0               # Total Deletion
@@ -236,13 +237,14 @@ NEW_pqArm_DelNeuAmp <- function(matrix) ## function: 3.1.2 ##
 }
 
 
+#' pqArm_file.cen
+#' 
 #' Remake centromere template into new format (X). Process UCSC cytoband data 
-#' for "acen" and "gvar" regions
-#'
-#' This function extracts and formats cytoband information from the UCSC database,
-#' specifically for the "acen" (centromeric) and "gvar" (variable heterochromatic)
-#' cytoband types. The output is structured for defining masking ranges
-#' to exclude copy number variations (CNVs) from downstream analyses.
+#' for "acen" and "gvar" regions; this function extracts and formats cytoband 
+#' information from the UCSC database, specifically for the "acen" (centromeric) 
+#' and "gvar" (variable heterochromatic) cytoband types. The output is structured 
+#' for defining masking ranges to exclude copy number variations (CNVs) from 
+#' downstream analyses.
 #'
 #' @param FILE A character string specifying the file path to the UCSC cytoband 
 #'  data file.
@@ -253,8 +255,8 @@ NEW_pqArm_DelNeuAmp <- function(matrix) ## function: 3.1.2 ##
 #'
 pqArm_file.cen <- function(FILE)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 3.1.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -295,11 +297,12 @@ pqArm_file.cen <- function(FILE)
 }
 
 
-#' Cluster cells based on arm-level copy number patterns
-#'
-#' This function performs clustering on cells using arm-level copy number variations 
-#' (CNVs). It groups cells into clusters based on chromosomal arm-level CNV profiles, 
-#' providing a hierarchical clustering history at each step.
+#' pqArm_clustering
+#' 
+#' Cluster cells based on arm-level copy number patterns; this function performs 
+#' clustering on cells using arm-level copy number variations (CNVs). It groups 
+#' cells into clusters based on chromosomal arm-level CNV profiles, providing 
+#' a hierarchical clustering history at each step.
 #'
 #' @param matrix An integer matrix where columns represent individual cells, and 
 #'  rows correspond to arm-level copy number regions across chromosomes.
@@ -311,8 +314,8 @@ pqArm_file.cen <- function(FILE)
 #'  
 pqArm_clustering <- function(matrix, Label)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 3.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -330,11 +333,11 @@ pqArm_clustering <- function(matrix, Label)
 }
 
 
-#' Summarize pqArm clustering step results
-#'
-#' This function provides a summary of the pqArm clustering process,
-#' detailing the distribution of arm-level copy number variation (CNV) patterns
-#' across different clusters.
+#' NEW_pqArm_clustering_summary
+#' 
+#' Summarize pqArm clustering step results; this function provides a summary of 
+#' the pqArm clustering process, detailing the distribution of arm-level copy 
+#' number variation (CNV) patterns across different clusters.
 #'
 #' @param matrix A data frame recording the clustering results for each cell,
 #'  including the clustering history at each step.
@@ -351,8 +354,8 @@ pqArm_clustering <- function(matrix, Label)
 #'
 NEW_pqArm_clustering_summary <- function(matrix, Label)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 3.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -371,10 +374,11 @@ NEW_pqArm_clustering_summary <- function(matrix, Label)
 }
 
 
-#' Extract chromosome arm ranges from UCSC cytoband data
+#' NEW_pqArm_file.remake
 #'
-#' This function processes a UCSC cytoband file to extract the ranges of 
-#' chromosome long and short arms, excluding the centromere regions.
+#' Extract chromosome arm ranges from UCSC cytoband data; this function processes 
+#' a UCSC cytoband file to extract the ranges of chromosome long and short arms, 
+#' excluding the centromere regions.
 #'
 #' @param FILE A character string specifying the file path to the UCSC cytoband 
 #'    file.
@@ -385,8 +389,8 @@ NEW_pqArm_clustering_summary <- function(matrix, Label)
 #'
 NEW_pqArm_file.remake <- function(FILE)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 3.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

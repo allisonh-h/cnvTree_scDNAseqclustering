@@ -1,8 +1,9 @@
-#' Perform pqArm clustering step in scDNA-seq data clustering Workflow
-#'
-#' This function executes the pqArm clustering step in the single-cell DNA  
-#' sequencing (scDNA-seq) data clustering workflow, grouping cells based on  
-#' chromosomal arm-level copy number variations.
+#' NEW_pqArmClustering
+#' 
+#' Perform pqArm clustering step in scDNA-seq data clustering Workflow; this 
+#' function executes the pqArm clustering step in the single-cell DNA sequencing  
+#' (scDNA-seq) data clustering workflow, grouping cells based on chromosomal 
+#' arm-level copy number variations.
 #'
 #' @param input A named list where each element is a `GRanges` object representing 
 #'  a single cell.
@@ -25,17 +26,20 @@
 #'
 #' @examples
 #' \dontrun{
-#'  file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
-#'  config <- read_yaml(config_path)
-#'  input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA, cores = 2)
-#'  pqArm_result <- NEW_pqArmClustering(input = input_df, 
-#'                                      pqArm_file = config$pqArm_file) 
-#' }
+#' config_path <- "~/cnvTree_040/inst/cnvTree_config.yaml"
+#' config <- read_yaml(config_path)
+#' selected_groups <- run_cnvTree_Pipeline(output_dir = config$output_dir,
+#'                                        input_dir_RNA = config$input_dir_RNA,
+#'                                        RNAdataSource = config$RNAdataSource) 
+#' input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA)
+#' pqArm_result <- NEW_pqArmClustering(input = input_df, 
+#'                                     pqArm_file = config$pqArm_file)
+#'  }
 #'
 NEW_pqArmClustering <- function(input, pqArm_file, cluster, sexchromosome)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 7.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   # Locked variable
@@ -69,11 +73,11 @@ NEW_pqArmClustering <- function(input, pqArm_file, cluster, sexchromosome)
 }
 
 
+#' clusterConsolidation
+#' 
 #' Reclustering method. Perform Cluster Consolidation in scDNA-seq data clustering 
-#' workflow
-#'
-#' This function executes the Cluster Consolidation step in the single-cell DNA 
-#' sequencing (scDNA-seq) data clustering workflow, consolidating clusters based 
+#' workflow; this function executes the Cluster Consolidation step in the single-cell 
+#' DNA sequencing (scDNA-seq) data clustering workflow, consolidating clusters based 
 #' on differences in chromosomal arm-level copy number variations.
 #'
 #' @param input A named list where each element is a `GRanges` object representing 
@@ -100,20 +104,23 @@ NEW_pqArmClustering <- function(input, pqArm_file, cluster, sexchromosome)
 #'
 #' @examples
 #' \dontrun{
-#'  file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
-#'  config <- read_yaml(config_path)
-#'  input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA, cores = 2)
-#'  pqArm_result <- NEW_pqArmClustering(input = input_df, 
-#'                                     pqArm_file = config$pqArm_file) 
-#'  Consolidation_result <- clusterConsolidation(input = input_df, 
-#'                                               pqArm_output = pqArm_result, 
-#'                                               pqArm_file = config$pqArm_file)
-#' }
+#' config_path <- "~/cnvTree_040/inst/cnvTree_config.yaml"
+#' config <- read_yaml(config_path)
+#' selected_groups <- run_cnvTree_Pipeline(output_dir = config$output_dir,
+#'                                        input_dir_RNA = config$input_dir_RNA,
+#'                                        RNAdataSource = config$RNAdataSource) 
+#' input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA)
+#' pqArm_result <- NEW_pqArmClustering(input = input_df, 
+#'                                     pqArm_file = config$pqArm_file)
+#' Consolidation_result <- clusterConsolidation(input = input_df, 
+#'                                              pqArm_output = pqArm_result, 
+#'                                              pqArm_file = config$pqArm_file)
+#'  }
 #'
 clusterConsolidation <- function(input, pqArm_output, pqArm_file, difratio_chr)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 7.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -168,11 +175,12 @@ clusterConsolidation <- function(input, pqArm_output, pqArm_file, difratio_chr)
 }
 
 
-#' Perform subclustering in scDNA-seq data clustering workflow
-#'
-#' This function executes the subclustering step in the single-cell DNA sequencing 
-#' (scDNA-seq) data clustering workflow, refining clusters based on copy number 
-#' variations (CNVs) within subpopulations of cells.
+#' SubClustering
+#' 
+#' Perform subclustering in scDNA-seq data clustering workflow; this function 
+#' executes the subclustering step in the single-cell DNA sequencing (scDNA-seq) 
+#' data clustering workflow, refining clusters based on copy number variations 
+#' (CNVs) within subpopulations of cells.
 #'
 #' @param input A named list where each element is a `GRanges` object representing 
 #'  a single cell.
@@ -201,23 +209,26 @@ clusterConsolidation <- function(input, pqArm_output, pqArm_file, difratio_chr)
 #'
 #' @examples
 #' \dontrun{
-#'  file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
-#'  config <- read_yaml(config_path)
-#'  input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA, cores = 2)
-#'  pqArm_result <- NEW_pqArmClustering(input = input_df, 
-#'                                     pqArm_file = config$pqArm_file) 
-#'  Consolidation_result <- clusterConsolidation(input = input_df, 
-#'                                               pqArm_output = pqArm_result, 
-#'                                               pqArm_file = config$pqArm_file)
-#'  Subclone_output <- SubClustering(input = input_df,
-#'                                   Consolidating_output = Consolidation_result)
-#' }
+#' config_path <- "~/cnvTree_040/inst/cnvTree_config.yaml"
+#' config <- read_yaml(config_path)
+#' selected_groups <- run_cnvTree_Pipeline(output_dir = config$output_dir,
+#'                                        input_dir_RNA = config$input_dir_RNA,
+#'                                        RNAdataSource = config$RNAdataSource) 
+#' input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA)
+#' pqArm_result <- NEW_pqArmClustering(input = input_df, 
+#'                                     pqArm_file = config$pqArm_file)
+#' Consolidation_result <- clusterConsolidation(input = input_df, 
+#'                                              pqArm_output = pqArm_result, 
+#'                                              pqArm_file = config$pqArm_file)
+#' Subclone_output <- SubClustering(input = input_df,
+#'                                  Consolidating_output = Consolidation_result)
+#'  }
 #'
 SubClustering <- function(input, Consolidating_output, min_cell, overlap_region, 
                           dif_ratio)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 7.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -300,11 +311,12 @@ SubClustering <- function(input, Consolidating_output, min_cell, overlap_region,
 }
 
 
+#' scDNA_Output
+#' 
 #' Outputting scDNA clustering final outputs. Generate final output in scDNA-seq 
-#' data clustering workflow
-#'
-#' This function produces the final output for the single-cell DNA sequencing (scDNA-seq)
-#' clustering workflow, integrating clustering results and generating visualizations.
+#' data clustering workflow; this function produces the final output for the 
+#' single-cell DNA sequencing (scDNA-seq) clustering workflow, integrating clustering 
+#' results and generating visualizations.
 #'
 #' @param input A named list where each element is a `GRanges` object representing 
 #'  a single cell.
@@ -349,30 +361,32 @@ SubClustering <- function(input, Consolidating_output, min_cell, overlap_region,
 #'
 #' @examples
 #' \dontrun{
-#'  file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
-#'  config <- read_yaml(config_path)
-#'  input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA, cores = 2)
-#'  pqArm_result <- NEW_pqArmClustering(input = input_df, 
-#'                                     pqArm_file = config$pqArm_file) 
-#'  Consolidation_result <- clusterConsolidation(input = input_df, 
-#'                                               pqArm_output = pqArm_result, 
-#'                                               pqArm_file = config$pqArm_file)
-#'  Subclone_output <- SubClustering(input = input_df,
-#'                                   Consolidating_output = Consolidation_result)
-#'  scDNA_Output(input = input_df,
-#'               Summary = Subclone_output,
-#'               output_dir = config$output_dir,
-#'               pqArm_file = config$pqArm_file
-#'               cellcutoff = config$cellcutoff,
-#'               smoothheatmap = config_hid$smoothheatmap)
+#' config_path <- "~/cnvTree_040/inst/cnvTree_config.yaml"
+#' config <- read_yaml(config_path)
+#' selected_groups <- run_cnvTree_Pipeline(output_dir = config$output_dir,
+#'                                        input_dir_RNA = config$input_dir_RNA,
+#'                                        RNAdataSource = config$RNAdataSource) 
+#' input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA)
+#' pqArm_result <- NEW_pqArmClustering(input = input_df, 
+#'                                     pqArm_file = config$pqArm_file)
+#' Consolidation_result <- clusterConsolidation(input = input_df, 
+#'                                              pqArm_output = pqArm_result, 
+#'                                              pqArm_file = config$pqArm_file)
+#' Subclone_output <- SubClustering(input = input_df,
+#'                                  Consolidating_output = Consolidation_result)
+#' DNA_superimpose <- scDNA_Output(input = input_df,
+#'                                 Summary = Subclone_output,
+#'                                 output_dir = config$output_dir,
+#'                                 pqArm_file = config$pqArm_file,
+#'                                 cellcutoff = config$cellcutoff)
 #'  }
 #'
 scDNA_Output <- function(input, Summary, pqArm_file, output_dir, 
                          consecutive_region, cellcutoff,
                          sexchromosome, smoothheatmap)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 7.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -465,11 +479,12 @@ scDNA_Output <- function(input, Summary, pqArm_file, output_dir,
 }
 
 
-#' One-Step scDNA-seq Cell Clustering Pipeline
-#'
-#' This function executes the entire single-cell DNA sequencing (scDNA-seq) clustering 
-#' workflow in one step, including NEW_pqArm_clustering, consolidating, subclustering, 
-#' and final CNV-based output generation.
+#' cnvTree_scDNAclustering
+#' 
+#' One-Step scDNA-seq Cell Clustering Pipeline; this function executes the entire 
+#' single-cell DNA sequencing (scDNA-seq) clusteringworkflow in one step, including 
+#' NEW_pqArm_clustering, consolidating, subclustering, and final CNV-based output 
+#' generation.
 #'
 #' @param input_dir_DNA A named list where each element is a `GRanges` object 
 #'  representing a single cell.
@@ -509,18 +524,15 @@ scDNA_Output <- function(input, Summary, pqArm_file, output_dir,
 #'
 #' @examples
 #' \dontrun{
-#'   file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
-#'   config <- read_yaml(config_path)
-#'   selected_groups <- run_cnvTree_Pipeline(config = config, 
-#'                                           output_dir = config$output_dir,
-#'                                           input_dir_RNA = config$input_dir_RNA,
-#'                                           RNAdataSource = config$RNAdataSource)
-#'                            
-#'   cnvTree_scDNAclustering(input_dir_DNA = config$input_dir_DNA,
-#'                           output_dir = config$output_dir,
-#'                           pqArm_file = config$pqArm_file, 
-#'                           cellcutoff = config$cellcutoff,
-#'                           smoothheatmap = config_hid$smoothheatmap)
+#' config_path <- system.file("extdata", "cnvTree_config.yaml", package = "cnvTree")
+#' config <- read_yaml(config_path)
+#' selected_groups <- run_cnvTree_Pipeline(output_dir = config$output_dir,
+#'                                         input_dir_RNA = config$input_dir_RNA,
+#'                                         RNAdataSource = config$RNAdataSource) 
+#' cnvTree_scDNAclustering(input_dir_DNA = config$input_dir_DNA,
+#'                         output_dir = config$output_dir,
+#'                         pqArm_file = config$pqArm_file, 
+#'                         cellcutoff = config$cellcutoff)
 #' }
 #'
 cnvTree_scDNAclustering <- function(input_dir_DNA, 
@@ -535,8 +547,8 @@ cnvTree_scDNAclustering <- function(input_dir_DNA,
                                     consecutive_region, 
                                     sexchromosome) 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   # Locked variable
   difratio_chr = config_hid$difratio_chr
   min_cell = config_hid$min_cell 
@@ -579,11 +591,12 @@ cnvTree_scDNAclustering <- function(input_dir_DNA,
 }
 
 
-#' One-Step scDNA-seq Cell Clustering Pipeline
-#'
-#' This function executes the entire single-cell DNA sequencing (scDNA-seq) clustering 
-#' workflow in one step, including pqArm clustering, consolidating, subclustering, 
-#' and final CNV-based output generation.
+#' cnvTree_scDNAclustering_df
+#' 
+#' One-Step scDNA-seq Cell Clustering Pipeline; this function executes the entire 
+#' single-cell DNA sequencing (scDNA-seq) clustering workflow in one step, including 
+#' pqArm clustering, consolidating, subclustering, and final CNV-based output 
+#' generation.
 #'
 #' @param input_dir_DNA A named list where each element is a `GRanges` object 
 #'   representing a single cell.
@@ -623,18 +636,16 @@ cnvTree_scDNAclustering <- function(input_dir_DNA,
 #'
 #' @examples
 #' \dontrun{
-#'#' file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
+#' config_path <- system.file("extdata", "cnvTree_config.yaml", package = "cnvTree")
 #' config <- read_yaml(config_path)
-#' selected_groups <- run_cnvTree_Pipeline(config = config, 
-#'                                         output_dir = config$output_dir,
+#' selected_groups <- run_cnvTree_Pipeline(output_dir = config$output_dir,
 #'                                         input_dir_RNA = config$input_dir_RNA,
-#'                                         RNAdataSource = config$RNAdataSource)
-#' cnvTree_scDNAclustering_df(input_dir_DNA = config$input_dir_DNA, 
+#'                                         RNAdataSource = config$RNAdataSource) 
+#' cnvTree_scDNAclustering_df(input_dir_DNA = config$input_dir_DNA,
 #'                            output_dir = config$output_dir,
 #'                            pqArm_file = config$pqArm_file, 
-#'                            cellcutoff = config$cellcutoff,
-#'                            smoothheatmap = config$smoothheatmap)
-#'  }                          
+#'                            cellcutoff = config$cellcutoff)
+#' }                         
 #'
 cnvTree_scDNAclustering_df <- function(input_dir_DNA, 
                                        pqArm_file, 
@@ -642,8 +653,8 @@ cnvTree_scDNAclustering_df <- function(input_dir_DNA,
                                        cellcutoff,
                                        smoothheatmap) 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   # Locked variable
   difratio_chr = config_hid$difratio_chr
   min_cell = config_hid$min_cell 

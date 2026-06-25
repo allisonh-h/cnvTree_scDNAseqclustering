@@ -1,10 +1,10 @@
-#' Import and Parse InferCNV Outputs
-#'
-#' This function parses InferCNV output directories to extract CNV regions and  
-#' cell groupings. It is capable of handling both single, consolidated output  
-#' folders and outputs that have been split across multiple directories. It also  
-#' performs a quality control check to ensure there are no duplicated `cellID`s 
-#' across the merged datasets.
+#' scRNA_input.infercnv
+#' 
+#' Import and Parse InferCNV Outputs; this function parses InferCNV output 
+#' directories to extract CNV regions and cell groupings. It is capable of handling 
+#' both single, consolidated output folders and outputs that have been split across 
+#' multiple directories. It also performs a quality control check to ensure there 
+#' are no duplicated `cellID`s across the merged datasets.
 #'
 #' @param input_dir_RNA A character string specifying the main directory path 
 #'   containing the InferCNV output.
@@ -22,8 +22,8 @@
 #'
 scRNA_input.infercnv <- function(input_dir_RNA, selected_groups, RNAdataSource) 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 11.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -66,11 +66,12 @@ scRNA_input.infercnv <- function(input_dir_RNA, selected_groups, RNAdataSource)
 }
 
 
-#' Batch Superimpose scDNA-seq CNVs onto scRNA-seq Datasets
-#'
-#' This wrapper function processes multiple scRNA-seq output files, superimposing 
-#' scDNA-seq CNV regions onto InferCNV observational data. It supports 
-#' both flat list structures and nested list structures (split outputs).
+#' scRNA_superimpose
+#' 
+#' Batch Superimpose scDNA-seq CNVs onto scRNA-seq Datasets; this wrapper function 
+#' processes multiple scRNA-seq output files, superimposing scDNA-seq CNV regions 
+#' onto InferCNV observational data. It supports both flat list structures and 
+#' nested list structures (split outputs).
 #'
 #' @param RNA_output A list of objects, where each object contains \code{cnv_region} 
 #'  and \code{cnv_grouping}. If \code{splitOutput} is TRUE, this should be a 
@@ -125,10 +126,11 @@ scRNA_superimpose <- function(RNA_output, DeterminedCNVs, cnv_ratio)
 }
 
 
-#' Final output coordinator for the scRNA-seq CNV analysis pipeline
+#' scRNA_output
 #' 
-#' It extracts the clustered cell groupings, formats the summarized RNA cluster 
-#' data, and triggers the generation of the final CNV pattern heatmap. All results 
+#' Final output coordinator for the scRNA-seq CNV analysis pipeline; this function
+#' extracts the clustered cell groupings, formats the summarized RNA cluster data, 
+#' and triggers the generation of the final CNV pattern heatmap. All results 
 #' are exported directly to a specified output directory.
 #'
 #' @param Summary A list object containing the final clustering results. It must 
@@ -157,8 +159,8 @@ scRNA_superimpose <- function(RNA_output, DeterminedCNVs, cnv_ratio)
 scRNA_output <- function(Summary, output_dir, DeterminedCNVs, cellcutoff, 
                          cellcutoffRNA, filterZero) 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 11.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -201,12 +203,13 @@ scRNA_output <- function(Summary, output_dir, DeterminedCNVs, cellcutoff,
 
 
 
-#' Execute the Full cnvTree scRNA-seq Clustering Pipeline
+#' cnvTree_scRNAclustering
 #' 
-#' This master wrapper function sequentially executes the entire scRNA-seq CNV  
-#' analysis pipeline. It parses the InferCNV outputs, superimposes high-confidence  
-#' CNV regions, performs consensus clustering across multiple iterations (if applicable),  
-#' and generates the final tabular files and heatmap visualizations in the specified 
+#' Execute the Full cnvTree scRNA-seq Clustering Pipeline; this master wrapper 
+#' function sequentially executes the entire scRNA-seq CNV analysis pipeline. 
+#' It parses the InferCNV outputs, superimposes high-confidence CNV regions, 
+#' performs consensus clustering across multiple iterations (if applicable), and 
+#' generates the final tabular files and heatmap visualizations in the specified 
 #' directory.
 #'
 #' @param input_dir_RNA A character string specifying the main directory path containing the 
@@ -243,8 +246,8 @@ cnvTree_scRNAclustering <- function(input_dir_RNA, selected_groups, output_dir,
                                     cellcutoff, cellcutoffRNA, RNAdataSource, 
                                     cnv_ratio, filterZero) 
 { 
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 11.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
 

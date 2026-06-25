@@ -1,8 +1,9 @@
-#' Filter and Format InferCNV HMM Predictions
-#'
-#' This function reads InferCNV HMM prediction files and extracts CNV regions 
-#' for a specified set of cell groups. It filters out neutral states (state 3) 
-#' and calculates the size and type (amplification or deletion) for each region.
+#' infercnv_cnvregion
+#' 
+#' Filter and Format InferCNV HMM Predictions; this function reads InferCNV 
+#' HMM prediction files and extracts CNV regions for a specified set of cell groups. 
+#' It filters out neutral states (state 3) and calculates the size and type 
+#' (amplification or deletion) for each region.
 #'
 #' @param input_dir_RNA A character string specifying the directory path containing 
 #'  the InferCNV output files (specifically matching "cnv_regions" and 
@@ -32,8 +33,8 @@
 #' 
 infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 8.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -98,18 +99,19 @@ infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
 }
 
 
-#' checks Dimensions of an Object
-#'
-#' This function checks whether an object has valid dimensions. It stops
-#' execution if the object has no dimensions or has zero rows
+#' check_dims
+#' 
+#' checks Dimensions of an Object; this function checks whether an object has 
+#' valid dimensions. It stops execution if the object has no dimensions or has 
+#' zero rows
 #'
 #' @param x An R Object to check
 #' @param name
 #'
 check_dims <- function(x, name = "selected_groups") 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 8.1.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -127,11 +129,12 @@ check_dims <- function(x, name = "selected_groups")
 }
 
 
-#' Maps individual cells to Selected CNV Groups
-#'
-#' This function parses the \code{infercnv.observation_groupings.txt} file 
-#' to create a mapping between individual cell IDs and their assigned CNV groups.
-#' It can return 'all observations' or 'filter for specific user-selected groups'.
+#' infercnv_cnvgrouping
+#' 
+#' Maps individual cells to Selected CNV Groups; this function parses the 
+#' \code{infercnv.observation_groupings.txt} file to create a mapping between 
+#' individual cell IDs and their assigned CNV groups. It can return 'all 
+#' observations' or 'filter for specific user-selected groups'.
 #'
 #' @param input_dir_RNA A character string specifying the directory path containing 
 #'  the InferCNV output files (specifically matching "cnv_regions" and 
@@ -163,8 +166,8 @@ check_dims <- function(x, name = "selected_groups")
 #'
 infercnv_cnvgrouping <- function(input_dir_RNA, selected_groups, RNAdataSource) 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 8.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -207,12 +210,12 @@ infercnv_cnvgrouping <- function(input_dir_RNA, selected_groups, RNAdataSource)
 }
 
 
-#' Summarize InferCNV Observation Groupings
-#'
-#' This function reads the `infercnv.observation_groupings.txt` file from a  
-#' specified InferCNV output directory. It calculates the total number of cells  
-#' assigned to each dendrogram group and filters the final summary to include 
-#' only the specified groups.
+#' infercnv_groups_summary
+#' 
+#' Summarize InferCNV Observation Groupings; this function reads the 
+#' `infercnv.observation_groupings.txt` file from a  specified InferCNV output 
+#' directory. It calculates the total number of cells assigned to each dendrogram 
+#' group and filters the final summary to include only the specified groups.
 #'
 #' @param input_dir_RNA A character string specifying the directory path containing 
 #'  the InferCNV output files (specifically matching "cnv_regions" and 
@@ -227,8 +230,8 @@ infercnv_cnvgrouping <- function(input_dir_RNA, selected_groups, RNAdataSource)
 #'
 infercnv_groups_summary <- function(input_dir_RNA, selected_groups) 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 8.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

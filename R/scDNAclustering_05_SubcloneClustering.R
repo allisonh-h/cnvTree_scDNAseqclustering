@@ -1,7 +1,7 @@
-#' Collect breakpoints from a cluster of cells
-#'
-#' This function extracts all breakpoints from a specified cluster of cells
-#' based on the results of the re-clustering step.
+#' collect_cluster_bp
+#' 
+#' Collect breakpoints from a cluster of cells; this function extracts all breakpoints 
+#' from a specified cluster of cells based on the results of the re-clustering step.
 #'
 #' @param input A named list where each element is a `GRanges` object representing 
 #'  a single cell.
@@ -22,8 +22,8 @@
 #'
 collect_cluster_bp <- function(input, Clustering_output, Recluster_label)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 5.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -46,12 +46,13 @@ collect_cluster_bp <- function(input, Clustering_output, Recluster_label)
 }
 
 
+#' output_bp_covers
+#' 
 #' Calcuate each bp with cover bps. Identify significant breakpoints based on 
-#' coverage in a specified range
-#'
-#' This function calculates how many breakpoints can be covered within a specified 
-#' range for each breakpoint, treating it as the midpoint. It also filters 
-#' significant breakpoints based on a defined threshold.
+#' coverage in a specified range; this function calculates how many breakpoints 
+#' can be covered within a specified range for each breakpoint, treating it as 
+#' the midpoint. It also filters significant breakpoints based on a defined 
+#' threshold.
 #'
 #' @param Template A data frame containing breakpoint sites with the following 
 #'   columns:
@@ -82,8 +83,8 @@ collect_cluster_bp <- function(input, Clustering_output, Recluster_label)
 #'
 output_bp_covers <- function(Template, binsize, overlap, overlap_times)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 5.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -168,11 +169,12 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
 }
 
 
+#' bp_events
+#' 
 #' Use the distribution of breakpoints to define the events. Define copy number 
-#' variation hotspots based on significant breakpoints
-#'
-#' This function identifies genomic regions where copy number variations (CNVs)
-#' frequently occur, based on a list of significant breakpoints.
+#' variation hotspots based on significant breakpoints; this function identifies 
+#' genomic regions where copy number variations (CNVs) frequently occur, based 
+#' on a list of significant breakpoints.
 #'
 #' @param input A named list where each element is a `GRanges` object representing 
 #'   a single cell.
@@ -195,8 +197,8 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
 #'
 bp_events <- function(input, Template, binsize)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 5.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -245,10 +247,11 @@ bp_events <- function(input, Template, binsize)
 }
 
 
-#' Convert event region data to continuous bin-level sites
-#'
-#' This function transforms event region data from discrete chromosome sites
-#' into continuous bin-level sites for further analysis.
+#' event_region.bin
+#' 
+#' Convert event region data to continuous bin-level sites; this function transforms 
+#' event region data from discrete chromosome sites into continuous bin-level 
+#' sites for further analysis.
 #'
 #' @param input A named list where each element is a `GRanges` object representing 
 #'  a single cell.
@@ -262,8 +265,8 @@ bp_events <- function(input, Template, binsize)
 #'
 event_region.bin <- function(input, Template)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 5.3.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -292,9 +295,10 @@ event_region.bin <- function(input, Template)
 }
 
 
-#' Define segments in continuous bin-level sites based on event regions
-#'
-#' This function segments the genome into continuous bin-level regions based on 
+#' bp_region
+#' 
+#' Define segments in continuous bin-level sites based on event regions; this 
+#' function segments the genome into continuous bin-level regions based on 
 #' an event region template.
 #'
 #' @param event A data frame recording event regions in continuous bin-level sites,
@@ -307,8 +311,8 @@ event_region.bin <- function(input, Template)
 #'
 bp_region <- function(event, binsize)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 5.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -389,9 +393,10 @@ bp_region <- function(event, binsize)
 }
 
 
+#' Region_CN
+#' 
 #' Smooth CN based on defined regions. Calculate copy number for chromosome segments
-#'
-#' This function calculates the copy number in each chromosome segment based on
+#' ;this function calculates the copy number in each chromosome segment based on
 #' a continuous bin-level segment template. It uses re-clustering results and event
 #' region templates to determine copy number variations (CNVs) for each cell.
 #'
@@ -409,8 +414,8 @@ bp_region <- function(event, binsize)
 #'
 Region_CN <- function(input, Reclustering_output, Recluster_label, events)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 5.5_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -445,13 +450,13 @@ Region_CN <- function(input, Reclustering_output, Recluster_label, events)
 }
 
 
+#' Subclone_clustering
+#' 
 #' Check cell to cell whether with >?% of different chromosome than clustering.
-#' Perform subclone clustering based on copy number patterns
-#'
-#' This function performs subclone clustering by analyzing copy number patterns 
-#' in predefined chromosome segment templates. It groups cells into subclones by 
-#' comparing copy number variations (CNVs) while tolerating a specified level
-#' of difference between cells.
+#' Perform subclone clustering based on copy number patterns; this function performs 
+#' subclone clustering by analyzing copy number patterns in predefined chromosome 
+#' segment templates. It groups cells into subclones by comparing copy number 
+#' variations (CNVs) while tolerating a specified level of difference between cells.
 #'
 #' @param CN_incells_input A numeric data frame where each column corresponds to 
 #'   a cell, and each row maps to a chromosome segment from the segment template.
@@ -470,8 +475,8 @@ Region_CN <- function(input, Reclustering_output, Recluster_label, events)
 Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio, 
                                 Subclone_num)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 5.6_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -549,12 +554,12 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
 }
 
 
-#' Output each region copy number in each subclone, as the basement of CNV template.
-#' Output copy number by unique segment template for each subclone
-#'
-#' This function generates copy number (CN) outputs for each subclone using a unique 
-#' chromosome segment template. It filters clusters based on a minimum cell count 
-#' and outputs CN values for each region.
+#' Subclone_CNregion
+#' 
+#' Output copy number by unique segment template for each subclone; this function 
+#' generates copy number (CN) outputs for each subclone using a unique chromosome 
+#' segment template. It filters clusters based on a minimum cell count and outputs  
+#' CN values for each region.
 #'
 #' @param sep_region A data frame recording chromosome segments, divided by event 
 #'  region template.
@@ -581,8 +586,8 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
 Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell, 
                               output = c("SubcloneCNVRegion", "SubcloneRegionCN"))
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 5.7_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
 
@@ -629,12 +634,12 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
 }
 
 
-#' Output total cnv regions across subclones.
-#'
-#' This function identifies and outputs copy number variation (CNV) regions across 
-#' subclones, using a predefined segment template and cytoband information.
-#' The CNV regions are classified into two types: amplifications ("amp") and 
-#' deletions ("del").
+#' Total_cnvRegion
+#' 
+#' Output total cnv regions across subclones; this function identifies and outputs 
+#' copy number variation (CNV) regions across subclones, using a predefined segment 
+#' template and cytoband information. The CNV regions are classified into two types: 
+#' amplifications ("amp") and deletions ("del").
 #'
 #' @param input A named list where each element is a `GRanges` object representing 
 #'  a single cell.
@@ -673,8 +678,8 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
 #'
 Total_cnvRegion <- function(input, Template, pqArm_file, consecutive_region)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 5.8_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -738,12 +743,13 @@ Total_cnvRegion <- function(input, Template, pqArm_file, consecutive_region)
 }
 
 
+#' Total_cnvRegion.DelAmp
+#' 
 #' Calculate the cnv happends in Deletion and Amplification in whole chromosome.
-#' Classify copy number variations as deletion or amplification
-#'
-#' This function identifies and classifies copy number variations (CNVs) into two types:
-#' Deletion ("Del") or Amplification ("Amp"). It uses a fixed-bin size genome template
-#' and processes each CNV type separately to generate bin-level summaries.
+#' Classify copy number variations as deletion or amplification; this function 
+#' identifies and classifies copy number variations (CNVs) into two types:
+#' Deletion ("Del") or Amplification ("Amp"). It uses a fixed-bin size genome 
+#' template and processes each CNV type separately to generate bin-level summaries.
 #'
 #' @param Template A data frame recording each subclone's unique chromosome segment 
 #'  template and its corresponding copy number (CN).
@@ -771,8 +777,8 @@ Total_cnvRegion <- function(input, Template, pqArm_file, consecutive_region)
 #'
 Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 5.8.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -820,12 +826,13 @@ Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
 }
 
 
+#' cnvRegion.toPQarm
+#' 
 #' Input cnvRegions in defined format then add p, q arm information automatically.
-#' Map copy number variation regions to cytoband sites
-#'
-#' This function maps copy number variation (CNV) regions to cytoband sites,
-#' based on Giemsa-stained chromosome information. It annotates CNV regions
-#' with the corresponding cytoband labels for the first and last affected bands.
+#' Map copy number variation regions to cytoband sites; his function maps copy number 
+#' variation (CNV) regions to cytoband sites, based on Giemsa-stained chromosome 
+#' information. It annotates CNV regions with the corresponding cytoband labels 
+#' for the first and last affected bands.
 #'
 #' @param FILE Either a character string specifying the file path for output,
 #' or a connection open for writing. An empty string (\code{""}) indicates output 
@@ -852,8 +859,8 @@ Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
 #'
 cnvRegion.toPQarm <- function(FILE, pqArm_file)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 5.9_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

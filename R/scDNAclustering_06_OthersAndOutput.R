@@ -1,8 +1,9 @@
-#' Superimpose defined CNVs onto scDNA-seq copy number results
-#'
-#' This function overlays high-confidence copy number variations (CNVs) onto
-#' single-cell DNA sequencing (scDNA-seq) clustering results to determine
-#' whether each cluster contains the corresponding CNVs.
+#' scDNA.superimpose
+#' 
+#' Superimpose defined CNVs onto scDNA-seq copy number results; this function 
+#' overlays high-confidence copy number variations (CNVs) onto single-cell DNA 
+#' sequencing (scDNA-seq) clustering results to determine whether each cluster 
+#' contains the corresponding CNVs.
 #'
 #' @param Template A list containing two data frames:
 #'   - `final_cluster_output`: Records the clustering history from the pqArm, 
@@ -36,8 +37,8 @@
 #'
 scDNA.superimpose <- function(Template, DefinedCNVs)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 6.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -104,10 +105,11 @@ scDNA.superimpose <- function(Template, DefinedCNVs)
 }
 
 
+#' scDNA.clustering
+#' 
 #' Function for receiving DNA clustering output in superimpose range. Generate 
-#' superimposition results between scDNA clustering and defined CNVs
-#'
-#' This function calculates the overlap between single-cell DNA sequencing (scDNA-seq) 
+#' superimposition results between scDNA clustering and defined CNVs; this function 
+#' calculates the overlap between single-cell DNA sequencing (scDNA-seq) 
 #' clustering results and high-confidence defined copy number variations (CNVs), 
 #' indicating whether each cluster contains the corresponding CNVs.
 #'
@@ -131,8 +133,8 @@ scDNA.superimpose <- function(Template, DefinedCNVs)
 #'
 scDNA.clustering <- function(Template)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 6.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -163,25 +165,28 @@ scDNA.clustering <- function(Template)
 }
 
 
+#' Totalcluster_pdf
+#' 
 #' For creating pdf in total clusters by CN matrix. Generate copy number profiles 
-#' for scDNA-seq cell clustering results in PDF file
-#'
-#' This function outputs copy number profiles from single-cell DNA sequencing (scDNA-seq) 
-#' clustering results, saving the visualization as a PDF file.
+#' for scDNA-seq cell clustering results in PDF file; this function outputs copy 
+#' number profiles from single-cell DNA sequencing (scDNA-seq) clustering results, 
+#' saving the visualization as a PDF file.
 #'
 #' @param Input A named list where each element is a `GRanges` object representing 
 #'  a single cell.
 #' @param Template A table recorded the clustering, pqArm clustering, re-clustering, 
 #'  and subclone clustering step result for each cell. This table recorded the 
 #'  clustering history in each step.
-#' @param pqArm_file In-build cytoband template for selection: `hg38`, `hg19`, `mm10`, `mm39`.
-#' Or a filepath of a table for cytoband information seen on Giemsa-stained chromosomes.
-#' It should include the following columns:
+#' @param pqArm_file In-build cytoband template for selection: `hg38`, `hg19`, 
+#'  `mm10`, `mm39`. Or a filepath of a table for cytoband information seen on 
+#'  Giemsa-stained chromosomes. It should include the following columns:
+#'  
 #'   - `chrom`: Reference sequence chromosome or scaffold.
 #'   - `chromStart`: Start position in genoSeq.
 #'   - `chromEnd`: End position in genoSeq.
 #'   - `name`: Name of cytogenetic band.
 #'   - `gieStain`: Giemsa stain results.
+#'   
 #' @param cellcutoff A numeric value defining the minimum number of cells required 
 #'  for a cluster to be included.
 #' @param step A character string specifying the name of the output clustering 
@@ -198,8 +203,8 @@ scDNA.clustering <- function(Template)
 Totalcluster_pdf <- function(Input, Template, pqArm_file, cellcutoff, step = "Subclone", 
                              FILEname, FILEpath, sexchromosome)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 6.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -262,11 +267,11 @@ Totalcluster_pdf <- function(Input, Template, pqArm_file, cellcutoff, step = "Su
 }
 
 
+#' Totalcluster_Cluster_No
+#' 
 #' Transfer the number of clusters in the data. Identify clusters meeting the 
-#' thershold by number of cell
-#'
-#' This function filters clusters based on the number of cells, returning a list of 
-#' clusters that meet the specified threshold.
+#' thershold by number of cell; his function filters clusters based on the number 
+#' of cells, returning a list of clusters that meet the specified threshold.
 #'
 #' @param Template  A data frame recording the pqArm clustering, re-clustering, 
 #'  nd subclone clustering results for each cell. This table tracks the clustering 
@@ -283,8 +288,8 @@ Totalcluster_pdf <- function(Input, Template, pqArm_file, cellcutoff, step = "Su
 #'
 Totalcluster_Cluster_No <- function(Template, cellnum_name, cellcutoff, cluster_name)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 6.3.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -299,11 +304,11 @@ Totalcluster_Cluster_No <- function(Template, cellnum_name, cellcutoff, cluster_
 }
 
 
+#' Totalcluster_SS
+#' 
 #' Transfer each cluster of cells in the data. Retrieve cell IDs from a specific 
-#' cluster
-#'
-#' This function returns a list of cell IDs belonging to a designated cluster 
-#' based on the clustering results recorded in the `Template`.
+#' cluster; this function returns a list of cell IDs belonging to a designated 
+#' cluster based on the clustering results recorded in the `Template`.
 #'
 #' @param Template A data frame recording the pqArm clustering, re-clustering, 
 #'  and subclone clustering results for each cell. This table tracks the clustering 
@@ -317,8 +322,8 @@ Totalcluster_Cluster_No <- function(Template, cellnum_name, cellcutoff, cluster_
 #'
 Totalcluster_SS <- function(Template, cluster_name, k)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 6.3.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -332,11 +337,12 @@ Totalcluster_SS <- function(Template, cluster_name, k)
 }
 
 
-#' Plot copy number pattern for each cell in heatmap
-#'
-#' This function visualizes the copy number variation (CNV) pattern for each cell,
-#' using cytoband information to annotate chromosomal regions. It supports optional
-#' inclusion of sex chromosome CNV data in the output plot.
+#' GenomeHeatmap
+#' 
+#' Plot copy number pattern for each cell in heatmap; this function visualizes 
+#' the copy number variation (CNV) pattern for each cell, using cytoband information 
+#' to annotate chromosomal regions. It supports optional inclusion of sex chromosome 
+#' CNV data in the output plot.
 #'
 #' @param Input A named list where each element is a `GRanges` object representing 
 #'  a single cell.
@@ -356,8 +362,8 @@ Totalcluster_SS <- function(Template, cluster_name, k)
 #'
 GenomeHeatmap <- function(Input, cellID, pqArm_file, sexchromosome)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 6.3.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
 
@@ -462,12 +468,12 @@ GenomeHeatmap <- function(Input, cellID, pqArm_file, sexchromosome)
 }
 
 
-#' Transform copy number segment information for each cell
-#'
-#' This function transforms copy number segment information for a single cell,
-#' organizing continuous regions with the same copy number into unified segments.
-#' It uses chromosome length and cumulative length data to standardize genomic 
-#' positions.
+#' segment_transform
+#' 
+#' Transform copy number segment information for each cell; this function transforms 
+#' copy number segment information for a single cell, organizing continuous regions 
+#' with the same copy number into unified segments. It uses chromosome length and 
+#' cumulative length data to standardize genomic positions.
 #'
 #' @param data A `GRanges` object representing copy number segments for a single 
 #'  cell.
@@ -505,12 +511,12 @@ segment_transform <- function(data, index, CN_chr_template) # Function 6.3.3.1 #
 }
 
 
+#' scDNA_CNVpattern
+#' 
 #' Cluster w/ or w/o CNV pattern plot. Generate a heatmap of high-confidence 
-#' CNV patterns with Dendrogram
-#'
-#' This function creates a heatmap displaying high-confidence copy number variation 
-#' (CNV) patterns across clusters, with hierarchical clustering represented by a 
-#' dendrogram.
+#' CNV patterns with Dendrogram; this function creates a heatmap displaying 
+#' high-confidence copy number variation (CNV) patterns across clusters, with 
+#' hierarchical clustering represented by a dendrogram.
 #'
 #' @param Input A named list where each element is a `GRanges` object representing 
 #'  a single cell.
@@ -519,7 +525,8 @@ segment_transform <- function(data, index, CN_chr_template) # Function 6.3.3.1 #
 #'  
 #'   - `chr`: Chromosome name (chr1, chr2, ...).
 #'   - `CNV_region`: The index of CNV regions.
-#'   - `CN`: Copy number state, categorized as either "amp" (Amplification) or "del" (Deletion).
+#'   - `CN`: Copy number state, categorized as either "amp" (Amplification) or 
+#'   "del" (Deletion).
 #'   - `CNV_start`: Start position of the CNV region.
 #'   - `CNV_end`: End position of the CNV region.
 #'   - `first_band`: Cytoband label of the first affected band.
@@ -527,14 +534,16 @@ segment_transform <- function(data, index, CN_chr_template) # Function 6.3.3.1 #
 #'   
 #' @param cellcutoff A numeric value defining the minimum number of cells required 
 #'  for a cluster to be included.
-#' @param pqArm_file In-build cytoband template for selection: `hg38`, `hg19`, `mm10`, `mm39`.
-#'  Or a filepath of a table for cytoband information seen on Giemsa-stained chromosomes.
-#'  It should include the following columns:
+#' @param pqArm_file In-build cytoband template for selection: `hg38`, `hg19`, 
+#'  `mm10`, `mm39`. Or a filepath of a table for cytoband information seen on 
+#'  Giemsa-stained chromosomes. It should include the following columns:
+#'  
 #'   - `chrom`: Reference sequence chromosome or scaffold.
 #'   - `chromStart`: Start position in genoSeq.
 #'   - `chromEnd`: End position in genoSeq.
 #'   - `name`: Name of cytogenetic band.
 #'   - `gieStain`: Giemsa stain results.
+#'   
 #' @param FILEpath A character string specifying the directory where the output 
 #'  file will be saved.
 #' @param FILEname A character string specifying the name of the output `.png` file.
@@ -548,8 +557,8 @@ segment_transform <- function(data, index, CN_chr_template) # Function 6.3.3.1 #
 scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file, 
                              FILEpath, FILEname, sexchromosome, smoothheatmap)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 6.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -745,11 +754,11 @@ scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file,
 }
 
 
+#' generate_dynamic_colormap
+#' 
 #' Color template for heatmaps (Customize color + RColorBrewer template). Assign 
-#' colors to copy number states
-#'
-#' This function maps numerical copy number states to a corresponding color scheme 
-#' for visualization purposes.
+#' colors to copy number states; this function maps numerical copy number states 
+#' to a corresponding color scheme for visualization purposes.
 #'
 #' @param data_matrix A numeric matrix representing copy number states,
 #'  where rows correspond to genomic regions and columns correspond to samples or 
@@ -760,8 +769,8 @@ scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file,
 #'
 generate_dynamic_colormap <- function(data_matrix)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 6.4.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -794,12 +803,12 @@ generate_dynamic_colormap <- function(data_matrix)
 }
 
 
+#' NEW_scDNA_CNVpattern
+#' 
 #' Cluster w/ or w/o CNV pattern plot. Generate a heatmap of high-confidence 
-#' CNV patterns with Dendrogram
-#'
-#' This function creates a heatmap displaying high-confidence copy number variation 
-#' (CNV) patterns across clusters, with hierarchical clustering represented by a 
-#' dendrogram.
+#' CNV patterns with Dendrogram; this function creates a heatmap displaying 
+#' high-confidence copy number variation (CNV) patterns across clusters, with 
+#' hierarchical clustering represented by a dendrogram.
 #'
 #' @param Input A named list where each element is a `GRanges` object representing 
 #'  a single cell.
@@ -837,8 +846,8 @@ generate_dynamic_colormap <- function(data_matrix)
 NEW_scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file, 
                              FILEpath, FILEname, sexchromosome, smoothheatmap)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 6.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

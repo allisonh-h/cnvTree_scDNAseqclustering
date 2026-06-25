@@ -1,9 +1,9 @@
-#' Format single-cell RNA copy number variation (CNV) data
-#'
-#' @description
-#' Processes, filters, and formats single-cell RNA-seq CNV data based on cell  
-#' cutoffs and frequency filters. It clusters CNV patterns, renames genomic columns  
-#' with readable cytoband notation, adjusts values based on amplification/deletion  
+#' scRNA_output.format
+#' 
+#' Format single-cell RNA copy number variation (CNV) data; this function processes, 
+#' filters, and formats single-cell RNA-seq CNV data based on cell cutoffs and 
+#' frequency filters. It clusters CNV patterns, renames genomic columns with 
+#' readable cytoband notation, adjusts values based on amplification/deletion  
 #' status, and optionally filters out columns containing only zeroes.
 #'
 #' @param inputFILE A list containing a data frame named \code{Round_noVoting}.  
@@ -24,8 +24,8 @@
 #' 
 scRNA_output.format <- function(inputFILE, cellcutoffRNA, filterZero, DeterminedCNVs)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 10.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   inputFILE <- inputFILE
@@ -202,8 +202,8 @@ scRNA_output.format <- function(inputFILE, cellcutoffRNA, filterZero, Determined
 #' 
 scDNA_output.format <- function(inputFILE, cellcutoff, filterZero) 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 10.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   inputFILE <- inputFILE
@@ -271,14 +271,15 @@ scDNA_output.format <- function(inputFILE, cellcutoff, filterZero)
 }
 
 
-#' Generate a Heatmap of CNV Patterns 
-#'
-#' This function visualizes the presence of Copy Number Variations (CNVs) across 
-#' different single-cell DNA sequencing (scDNA-seq) clusters. It takes cluster 
-#' data and high-confidence CNV regions, formats the labels (e.g., adding cell 
-#' counts to clusters and formatting cytobands), and generates a highly customized, 
-#' publication-ready heatmap using `ComplexHeatmap`. The resulting plot is saved 
-#' directly to a specified directory as a PNG file.
+#' CNVpattern
+#' 
+#' Generate a Heatmap of CNV Patterns; this function visualizes the presence of 
+#' Copy Number Variations (CNVs) across different single-cell DNA sequencing 
+#' (scDNA-seq) clusters. It takes cluster data and high-confidence CNV regions, 
+#' formats the labels (e.g., adding cell counts to clusters and formatting 
+#' cytobands), and generates a highly customized, publication-ready heatmap 
+#' using `ComplexHeatmap`. The resulting plot is saved directly to a specified 
+#' directory as a PNG file.
 #'
 #' @param Input A data frame containing scRNA-seq cluster data. It must include 
 #'  the columns `RNA_cluster`, `RNA_Cellnum`, and `sum_cnv`. The remaining columns 
@@ -295,11 +296,10 @@ scDNA_output.format <- function(inputFILE, cellcutoff, filterZero)
 #' @return This function does not return an R object. Instead, it generates and 
 #'  saves a `.png` image file containing the CNV heatmap to the specified path.
 #'
-
 CNVpattern <- function(Input, FILEpath, FILEname, patternType) 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 10.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

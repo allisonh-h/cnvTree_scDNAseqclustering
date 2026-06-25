@@ -1,9 +1,9 @@
-#' Superimpose scRNA-seq CNVs onto scDNA-seq CNVs
-#'
-#' This function integrates high-confidence "Determined CNVs" (typically from 
-#' scDNA-seq) with experimental CNV regions (typically from scRNA-seq). 
-#' It calculates the genomic overlap ratio for each cell group to determine if a 
-#' specific CNV event is functionally present.
+#' superimpose.data
+#' 
+#' Superimpose scRNA-seq CNVs onto scDNA-seq CNVs; this function integrates 
+#' high-confidence "Determined CNVs" (typically from scDNA-seq) with experimental 
+#' CNV regions (typically from scRNA-seq). It calculates the genomic overlap ratio 
+#' for each cell group to determine if a specific CNV event is functionally present.
 #'
 #' @param inputFILE A list object containing \code{cnv_region} (data.frame) and 
 #'   \code{cnv_grouping} (data.frame) from the infercnv pipeline.
@@ -33,8 +33,8 @@
 #'
 superimpose.data <- function(inputFILE, DeterminedCNVs, cnv_ratio)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 9.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -86,11 +86,12 @@ superimpose.data <- function(inputFILE, DeterminedCNVs, cnv_ratio)
 }
 
 
-#' Expand Group-Level CNV Calls to Individual Cell Level
-#'
-#' This function transforms summarized group-level CNV results into a cell-by-CNV
-#' binary matrix. It maps the \code{final_cnv} status of each cell group back to
-#' every individual cell (\code{cellID}) belonging to that group.
+#' superimpose.FileLevel
+#' 
+#' Expand Group-Level CNV Calls to Individual Cell Level; this function transforms 
+#' summarized group-level CNV results into a cell-by-CNV binary matrix. It maps 
+#' the \code{final_cnv} status of each cell group back to every individual cell 
+#' (\code{cellID}) belonging to that group.
 #'
 #' @param inputFILE A list object containing the \code{superimpose} data.frame 
 #'   (output from \code{superimpose.data}) and the \code{cnv_grouping} mapping.
@@ -112,8 +113,8 @@ superimpose.data <- function(inputFILE, DeterminedCNVs, cnv_ratio)
 #'
 superimpose.FileLevel <- function(inputFILE, DeterminedCNVs) 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 9.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

@@ -1,8 +1,8 @@
-#' Convert copy number data to GRanges Format
+#' changeFormat
 #'
-#' This function reads a `.rds` file or `.txt` file containing copy number 
-#' variation (CNV) data and converts it into a list of `GRanges` objects, where 
-#' each element corresponds to a single cell.
+#' Convert copy number data to GRanges Format; this function reads a `.rds` file 
+#' or `.txt` file containing copy number variation (CNV) data and converts it into 
+#' a list of `GRanges` objects, where each element corresponds to a single cell.
 #'
 #' @param input_dir_DNA A `.rds` file or `.txt` file containing a data frame with 
 #'  the following required columns:
@@ -22,8 +22,8 @@
 #'
 changeFormat <- function(input_dir_DNA, cores, sexchromosome) 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 1.0_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -112,11 +112,12 @@ changeFormat <- function(input_dir_DNA, cores, sexchromosome)
 }
 
 
-#' Generate copy number matrix for selected cells
+#' NEW_CN_seq
 #'
-#' This function extracts copy number variations from a list of `GRanges` objects
-#' and organizes them into an integer matrix. The matrix contains selected cells 
-#' as columns, with genomic regions (fixed bins) as rows.
+#' Generate copy number matrix for selected cells; this function extracts copy 
+#' number variations from a list of `GRanges` objects and organizes them into an 
+#' integer matrix. The matrix contains selected cells as columns, with genomic 
+#' regions (fixed bins) as rows.
 #'
 #' @param input A named list where each element represents a single cell as a 
 #'  `GRanges` object.
@@ -129,8 +130,8 @@ changeFormat <- function(input_dir_DNA, cores, sexchromosome)
 #'
 NEW_CN_seq <- function(input, Template)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 1.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -154,10 +155,11 @@ NEW_CN_seq <- function(input, Template)
 }
 
 
-#' Run the cnvTree Setup Pipeline
+#' run_cnvTree_Pipeline
 #' 
-#' This initializes the output environment, sets up necessary folder structures 
-#' for RNA data, and extracts the available cell groups/types for selection.
+#' Run the cnvTree Setup Pipeline; this initializes the output environment, sets 
+#' up necessary folder structures for RNA data, and extracts the available cell 
+#' groups/types for selection.
 #' 
 #' @param config List. Internal configuration parameters containing versioning 
 #'   and message flags (e.g., \code{config$input_dir_RNA}).
@@ -173,12 +175,10 @@ NEW_CN_seq <- function(input, Template)
 #' 
 #' @export 
 #' 
-run_cnvTree_Pipeline <- function(output_dir,
-                                 input_dir_RNA, RNAdataSource) 
+run_cnvTree_Pipeline <- function(output_dir, input_dir_RNA, RNAdataSource) 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  print(config_path_hid)
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 1.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -196,10 +196,11 @@ run_cnvTree_Pipeline <- function(output_dir,
 }
 
 
-#' Setup Directory Paths Based on RNA Data Source Type
+#' setup_pipeline_folders
 #'
-#' Scans the single-cell RNA input directory to dynamically identify and select 
-#' the target data folder based on the structure of the specified data source.
+#' Setup Directory Paths Based on RNA Data Source Type; scans the single-cell RNA 
+#' input directory to dynamically identify and select the target data folder based 
+#' on the structure of the specified data source.
 #'
 #' @param input_dir_RNA Character. The root input directory path to recursively scan.
 #' @param output_dir Character. Path to the output folder.
@@ -213,8 +214,8 @@ run_cnvTree_Pipeline <- function(output_dir,
 #' 
 setup_pipeline_folders <- function(input_dir_RNA, output_dir, RNAdataSource)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 1.2.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
 
@@ -247,11 +248,12 @@ setup_pipeline_folders <- function(input_dir_RNA, output_dir, RNAdataSource)
 }
 
 
-#' Selects Cell Groups Interactively from CNV region File
+#' select_groups
 #'
-#' This function scans a specified directory for CNV prediction files, extracts 
-#' unique cell group names, and provides an interactive menu for the user to 
-#' select one or more groups for downstream analysis.
+#' Selects Cell Groups Interactively from CNV region File; this function scans a 
+#' specified directory for CNV prediction files, extracts unique cell group names, 
+#' and provides an interactive menu for the user to select one or more groups for 
+#' downstream analysis.
 #'
 #' @param input_dir_RNA A character string specifying the path to the directory containing 
 #'   the CNV results (specifically looking for files containing "cnv_regions" 
@@ -275,8 +277,8 @@ setup_pipeline_folders <- function(input_dir_RNA, output_dir, RNAdataSource)
 #' 
 select_groups <- function(input_dir_RNA, RNAdataSource)
 {
-  config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 1.2.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
 
@@ -370,11 +372,12 @@ select_groups <- function(input_dir_RNA, RNAdataSource)
 }
 
 
-#' Load and Standardize AneuFinder HMM Objects
+#' ProcessHmmList
 #'
-#' This function imports AneuFinder Hidden Markov Model (HMM) files from a specified 
-#' directory. It ensures that the list names and internal object IDs match the file 
-#' basenames rather than absolute system paths.
+#' Load and Standardize AneuFinder HMM Objects; This function imports AneuFinder 
+#' Hidden Markov Model (HMM) files from a specified directory. It ensures that 
+#' the list names and internal object IDs match the file basenames rather than 
+#' absolute system paths.
 #'
 #' @param input_dir_DNA A string specifying the directory containing the \code{.RData} 
 #'   or \code{.rds} HMM files (typically the 'method-edivisive' output folder).
@@ -383,8 +386,8 @@ select_groups <- function(input_dir_RNA, RNAdataSource)
 #'
 ProcessHmmList <- function(input_dir_DNA) 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 1.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   

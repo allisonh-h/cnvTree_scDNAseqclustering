@@ -1,7 +1,8 @@
-#' Print Debugging Messages
+#' DebugMsg
 #'
-#' A helper function to print standardized status messages to the console
-#' during package execution when the config_hid.yaml `msg` variable is set to TRUE.
+#' Print Debugging Messages; a helper function to print standardized status messages 
+#' to the console during package execution when the config_hid.yaml `msg` variable 
+#' is set to TRUE.
 #' 
 #' @param fucStep A character string indicating the current step or name of the 
 #'  function being executed.
@@ -17,11 +18,11 @@ DebugMsg <- function(fucStep, status, msg)
 }
 
 
-#' Record current time for function started timing
+#' startTimed
 #'
-#' This utility function records the current system time, typically used
-#' for timing the execution of other functions. It is useful for benchmarking
-#' or logging the duration of function calls.
+#' Record current time for function started timing; this utility function records 
+#' the current system time, typically used for timing the execution of other functions. 
+#' It is useful for benchmarking or logging the duration of function calls.
 #'
 #' @param ... Additional arguments passed to methods. Currently not used but included 
 #'  for compatibility and extensibility.
@@ -47,11 +48,12 @@ startTimed <- function(...)
 }
 
 
-#' Calculate time elapsed since start time
+#' endTimed
 #'
-#' This utility function calculates the time elapsed since a recorded start time,
-#' typically used for measuring function execution duration. It provides a message
-#' displaying the time consumed between two lines of code.
+#' Calculate time elapsed since start time; this utility function calculates the 
+#' time elapsed since a recorded start time, typically used for measuring function 
+#' execution duration. It provides a message displaying the time consumed between 
+#' two lines of code.
 #'
 #' @param ptm A POSIXct object representing the start time, typically obtained from 
 #'  a call to \code{record_time()}.
@@ -74,9 +76,10 @@ endTimed <- function(ptm)
 }
 
 
-#' Export data as a TXT file
+#' writeOutput
 #'
-#' This function writes a data table to a `.txt` file, saving it to a specified path.
+#' Export data as a TXT file; this function writes a data table to a `.txt` file, 
+#' saving it to a specified path.
 #'
 #' @param data A data frame or matrix to be exported as a `.txt` file.
 #' @param filename A character string specifying the name of the output `.txt` file.

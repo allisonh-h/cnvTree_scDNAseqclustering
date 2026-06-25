@@ -1,6 +1,6 @@
 Package: cnvTree
 Title: Clustering and evolutionary history construction based on copy number variations in single-cell data
-Version: 0.1.0
+Version: 0.4.0
 Authors@R: c(
     person(given = "Ting-Wen",
            family = "Chen",
@@ -10,6 +10,10 @@ Authors@R: c(
     person(given = "Yi-Tzu",
            family = "Lo",
            email = "it35101.bt11@nycu.edu.tw",
+           role = c("cre")))
+    person(given = "Ling-Yi",
+           family = "Huang",
+           email = "lingyihuang@nycu.edu.tw",
            role = c("cre")))
 Description: Provides functionality for clustering and evolutionary history construction 
     based on copy number variation in single-cell data.

@@ -1,6 +1,7 @@
-#' Based on AneuFinder::clusterHMMs, calcuate distance than hierrachical clustering
+#' clusterbyHMM
 #'
-#' This function computes the pairwise distance between cells based on their 
+#' Based on AneuFinder::clusterHMMs, calcuate distance than hierrachical clustering;
+#' this function computes the pairwise distance between cells based on their 
 #' copy number variations and performs hierarchical clustering.
 #'
 #' @param input A named list where each element is a `GRanges` object representing 
@@ -13,8 +14,7 @@
 #'
 #' @return A list containing:
 #'   - `ordered_indices`: The ordered indices of cells based on hierarchical clustering.
-#' @export
-#'
+#'   
 #' @examples
 #' \dontrun{
 #' file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
@@ -25,8 +25,8 @@
 #'
 clusterbyHMM <- function(input, selected, exclude.regions = NULL)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 2.0_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   message("Checking column 'copy.number'  ...")
@@ -80,10 +80,11 @@ clusterbyHMM <- function(input, selected, exclude.regions = NULL)
 }
 
 
-#' Construct a phylogenetic tree from copy number variation data
+#' CutTree_final
 #'
-#' This function performs hierarchical clustering on selected cells based on 
-#' their copy number variations and derives a phylogenetic tree structure.
+#' Construct a phylogenetic tree from copy number variation data; this function 
+#' performs hierarchical clustering on selected cells based on their copy number 
+#' variations and derives a phylogenetic tree structure.
 #'
 #' @param input A named list where each element is a `GRanges` object representing 
 #'  a single cell.
@@ -96,8 +97,8 @@ clusterbyHMM <- function(input, selected, exclude.regions = NULL)
 #'
 CutTree_final <- function(input, selected)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 2.1_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   # 分群的原始檔，後面要用他作為基底
@@ -117,10 +118,11 @@ CutTree_final <- function(input, selected)
 }
 
 
-#' Divide cells into two groups based on copy number variation in a specific cluster
+#' CutTree
 #'
-#' This function separates cells into two groups based on copy number variation 
-#' in a specified cluster label from a provided clustering result table.
+#' Divide cells into two groups based on copy number variation in a specific 
+#' cluster; this function separates cells into two groups based on copy number 
+#' variation in a specified cluster label from a provided clustering result table.
 #'
 #' @param input A named list where each element is a `GRanges` object representing 
 #'  a single cell.
@@ -139,8 +141,8 @@ CutTree_final <- function(input, selected)
 #'
 CutTree <- function(input, Template, Cluster_label)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 2.2_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   
@@ -177,10 +179,10 @@ CutTree <- function(input, Template, Cluster_label)
 }
 
 
-#' Count the number of cells in a specific cluster
+#' Cluster_num
 #'
-#' This function calculates the total number of cells that belong to a specified 
-#' cluster.
+#' Count the number of cells in a specific cluster; this function calculates the 
+#' total number of cells that belong to a specified cluster.
 #'
 #' @param Template A data frame containing two columns:
 #'   - `cellID`: Unique identifier for each cell.
@@ -192,8 +194,8 @@ CutTree <- function(input, Template, Cluster_label)
 #'
 Cluster_num <- function(Template, Cluster_label)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 2.3_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   # cat("Calculating numbers of cell in Cluster", Cluster_label, "...\n")
@@ -207,10 +209,11 @@ Cluster_num <- function(Template, Cluster_label)
 }
 
 
-#' Compute the similarity of cells within a cluster
+#' Cluster_sim
 #'
-#' This function calculates the overall similarity of cells within a specified 
-#' cluster using a precomputed cell-to-cell similarity matrix.
+#' Compute the similarity of cells within a cluster; this function calculates 
+#' the overall similarity of cells within a specified cluster using a pre-computed 
+#' cell-to-cell similarity matrix.
 #'
 #' @param Template A data frame containing two columns:
 #'   - `cellID`: Unique identifier for each cell.
@@ -225,8 +228,8 @@ Cluster_num <- function(Template, Cluster_label)
 #'
 Cluster_sim <- function(Template, SimCells, Cluster_label)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" 2.4_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   # cat("Calculating cell similarity in Cluster ",  Cluster_label, " ...\n")
@@ -246,10 +249,11 @@ Cluster_sim <- function(Template, SimCells, Cluster_label)
 }
 
 
-#' Computes pairwise similarity between cells
+#' Cluster_SimTem
 #'
-#' This function calculates the similarity values between cells based on their 
-#' copy number variations at the bin level.
+#' Computes pairwise similarity between cells; this function calculates the 
+#' similarity values between cells based on their copy number variations at the 
+#' bin level.
 #'
 #' @param binsMatrix A numeric matrix where each row represents a genomic bin
 #'   and each column represents a cell. The values indicate copy number variations.
@@ -259,6 +263,8 @@ Cluster_sim <- function(Template, SimCells, Cluster_label)
 #'
 Cluster_SimTem <- function(binsMatrix) 
 {
+  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
+  config_hid <- read_yaml(config_hid_path)
   fucStep <- paste0(" Cluster_SimTem()_cnvTree_", config_hid$v_num)
   DebugMsg(fucStep, "start", msg = config_hid$msg)
   message("Making similarity template ... ")

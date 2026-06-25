@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_06_OthersAndOutput.R
 \name{scDNA_CNVpattern}
 \alias{scDNA_CNVpattern}
-\title{Cluster w/ or w/o CNV pattern plot. Generate a heatmap of high-confidence
-CNV patterns with Dendrogram}
+\title{scDNA_CNVpattern}
 \usage{
 scDNA_CNVpattern(
   input,
@@ -22,7 +21,8 @@ the following columns:
 \itemize{
 \item \code{chr}: Chromosome name (chr1, chr2, ...).
 \item \code{CNV_region}: The index of CNV regions.
-\item \code{CN}: Copy number state, categorized as either "amp" (Amplification) or "del" (Deletion).
+\item \code{CN}: Copy number state, categorized as either "amp" (Amplification) or
+"del" (Deletion).
 \item \code{CNV_start}: Start position of the CNV region.
 \item \code{CNV_end}: End position of the CNV region.
 \item \code{first_band}: Cytoband label of the first affected band.
@@ -32,9 +32,9 @@ the following columns:
 \item{cellcutoff}{A numeric value defining the minimum number of cells required
 for a cluster to be included.}
 
-\item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19}, \code{mm10}, \code{mm39}.
-Or a filepath of a table for cytoband information seen on Giemsa-stained chromosomes.
-It should include the following columns:
+\item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19},
+\code{mm10}, \code{mm39}. Or a filepath of a table for cytoband information seen on
+Giemsa-stained chromosomes. It should include the following columns:
 \itemize{
 \item \code{chrom}: Reference sequence chromosome or scaffold.
 \item \code{chromStart}: Start position in genoSeq.
@@ -61,7 +61,8 @@ a single cell.}
 A PNG file containing a heatmap of defined CNVs across clusters.
 }
 \description{
-This function creates a heatmap displaying high-confidence copy number variation
-(CNV) patterns across clusters, with hierarchical clustering represented by a
-dendrogram.
+Cluster w/ or w/o CNV pattern plot. Generate a heatmap of high-confidence
+CNV patterns with Dendrogram; this function creates a heatmap displaying
+high-confidence copy number variation (CNV) patterns across clusters, with
+hierarchical clustering represented by a dendrogram.
 }

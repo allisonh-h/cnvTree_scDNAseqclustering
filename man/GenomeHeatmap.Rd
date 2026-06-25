@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_06_OthersAndOutput.R
 \name{GenomeHeatmap}
 \alias{GenomeHeatmap}
-\title{Plot copy number pattern for each cell in heatmap}
+\title{GenomeHeatmap}
 \usage{
 GenomeHeatmap(Input, cellID, pqArm_file, sexchromosome)
 }
@@ -30,7 +30,8 @@ for sex chromosomes. Defaults to \code{FALSE}.}
 A \code{ggplot} object displaying the copy number pattern for each cell.
 }
 \description{
-This function visualizes the copy number variation (CNV) pattern for each cell,
-using cytoband information to annotate chromosomal regions. It supports optional
-inclusion of sex chromosome CNV data in the output plot.
+Plot copy number pattern for each cell in heatmap; this function visualizes
+the copy number variation (CNV) pattern for each cell, using cytoband information
+to annotate chromosomal regions. It supports optional inclusion of sex chromosome
+CNV data in the output plot.
 }

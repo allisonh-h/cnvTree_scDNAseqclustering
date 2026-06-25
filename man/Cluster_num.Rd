@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_02_Clustering.R
 \name{Cluster_num}
 \alias{Cluster_num}
-\title{Count the number of cells in a specific cluster}
+\title{Cluster_num}
 \usage{
 Cluster_num(Template, Cluster_label)
 }
@@ -20,6 +20,6 @@ cells will be counted.}
 An integer representing the number of cells in the specified cluster.
 }
 \description{
-This function calculates the total number of cells that belong to a specified
-cluster.
+Count the number of cells in a specific cluster; this function calculates the
+total number of cells that belong to a specified cluster.
 }

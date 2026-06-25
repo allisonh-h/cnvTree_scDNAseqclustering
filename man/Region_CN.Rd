@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{Region_CN}
 \alias{Region_CN}
-\title{Smooth CN based on defined regions. Calculate copy number for chromosome segments}
+\title{Region_CN}
 \usage{
 Region_CN(input, Reclustering_output, Recluster_label, events)
 }
@@ -24,7 +24,8 @@ A numeric data frame where each column corresponds to a cell and each
 row maps to a chromosome segment from the input event region template.
 }
 \description{
-This function calculates the copy number in each chromosome segment based on
+Smooth CN based on defined regions. Calculate copy number for chromosome segments
+;this function calculates the copy number in each chromosome segment based on
 a continuous bin-level segment template. It uses re-clustering results and event
 region templates to determine copy number variations (CNVs) for each cell.
 }

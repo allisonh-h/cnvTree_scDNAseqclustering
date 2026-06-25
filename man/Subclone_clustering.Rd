@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{Subclone_clustering}
 \alias{Subclone_clustering}
-\title{Check cell to cell whether with >?\% of different chromosome than clustering.
-Perform subclone clustering based on copy number patterns}
+\title{Subclone_clustering}
 \usage{
 Subclone_clustering(CN_incells_input, event_region, dif_ratio, Subclone_num)
 }
@@ -29,8 +28,9 @@ containing:
 }
 }
 \description{
-This function performs subclone clustering by analyzing copy number patterns
-in predefined chromosome segment templates. It groups cells into subclones by
-comparing copy number variations (CNVs) while tolerating a specified level
-of difference between cells.
+Check cell to cell whether with >?\% of different chromosome than clustering.
+Perform subclone clustering based on copy number patterns; this function performs
+subclone clustering by analyzing copy number patterns in predefined chromosome
+segment templates. It groups cells into subclones by comparing copy number
+variations (CNVs) while tolerating a specified level of difference between cells.
 }

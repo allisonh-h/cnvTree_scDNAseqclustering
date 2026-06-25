@@ -2,7 +2,7 @@
 % Please edit documentation in R/scRNAclustering_10_RNAOutput.R
 \name{CNVpattern}
 \alias{CNVpattern}
-\title{Generate a Heatmap of CNV Patterns}
+\title{CNVpattern}
 \usage{
 CNVpattern(Input, FILEpath, FILEname, patternType)
 }
@@ -27,10 +27,11 @@ This function does not return an R object. Instead, it generates and
 saves a \code{.png} image file containing the CNV heatmap to the specified path.
 }
 \description{
-This function visualizes the presence of Copy Number Variations (CNVs) across
-different single-cell DNA sequencing (scDNA-seq) clusters. It takes cluster
-data and high-confidence CNV regions, formats the labels (e.g., adding cell
-counts to clusters and formatting cytobands), and generates a highly customized,
-publication-ready heatmap using \code{ComplexHeatmap}. The resulting plot is saved
-directly to a specified directory as a PNG file.
+Generate a Heatmap of CNV Patterns; this function visualizes the presence of
+Copy Number Variations (CNVs) across different single-cell DNA sequencing
+(scDNA-seq) clusters. It takes cluster data and high-confidence CNV regions,
+formats the labels (e.g., adding cell counts to clusters and formatting
+cytobands), and generates a highly customized, publication-ready heatmap
+using \code{ComplexHeatmap}. The resulting plot is saved directly to a specified
+directory as a PNG file.
 }

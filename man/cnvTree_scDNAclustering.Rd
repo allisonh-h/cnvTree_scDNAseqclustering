@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_07_TotalSteps.R
 \name{cnvTree_scDNAclustering}
 \alias{cnvTree_scDNAclustering}
-\title{One-Step scDNA-seq Cell Clustering Pipeline}
+\title{cnvTree_scDNAclustering}
 \usage{
 cnvTree_scDNAclustering(
   input_dir_DNA,
@@ -65,24 +65,22 @@ The function performs complete clustering and CNV analysis, saving final
 results and visualizations in the specified output directory.
 }
 \description{
-This function executes the entire single-cell DNA sequencing (scDNA-seq) clustering
-workflow in one step, including NEW_pqArm_clustering, consolidating, subclustering,
-and final CNV-based output generation.
+One-Step scDNA-seq Cell Clustering Pipeline; this function executes the entire
+single-cell DNA sequencing (scDNA-seq) clusteringworkflow in one step, including
+NEW_pqArm_clustering, consolidating, subclustering, and final CNV-based output
+generation.
 }
 \examples{
 \dontrun{
-  file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
-  config <- read_yaml(config_path)
-  selected_groups <- run_cnvTree_Pipeline(config = config, 
-                                          output_dir = config$output_dir,
-                                          input_dir_RNA = config$input_dir_RNA,
-                                          RNAdataSource = config$RNAdataSource)
-                           
-  cnvTree_scDNAclustering(input_dir_DNA = config$input_dir_DNA,
-                          output_dir = config$output_dir,
-                          pqArm_file = config$pqArm_file, 
-                          cellcutoff = config$cellcutoff,
-                          smoothheatmap = config_hid$smoothheatmap)
+config_path <- system.file("extdata", "cnvTree_config.yaml", package = "cnvTree")
+config <- read_yaml(config_path)
+selected_groups <- run_cnvTree_Pipeline(output_dir = config$output_dir,
+                                        input_dir_RNA = config$input_dir_RNA,
+                                        RNAdataSource = config$RNAdataSource) 
+cnvTree_scDNAclustering(input_dir_DNA = config$input_dir_DNA,
+                        output_dir = config$output_dir,
+                        pqArm_file = config$pqArm_file, 
+                        cellcutoff = config$cellcutoff)
 }
 
 }

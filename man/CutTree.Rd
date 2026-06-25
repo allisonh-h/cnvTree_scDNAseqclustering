@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_02_Clustering.R
 \name{CutTree}
 \alias{CutTree}
-\title{Divide cells into two groups based on copy number variation in a specific cluster}
+\title{CutTree}
 \usage{
 CutTree(input, Template, Cluster_label)
 }
@@ -27,6 +27,7 @@ A data frame with two columns:
 }
 }
 \description{
-This function separates cells into two groups based on copy number variation
-in a specified cluster label from a provided clustering result table.
+Divide cells into two groups based on copy number variation in a specific
+cluster; this function separates cells into two groups based on copy number
+variation in a specified cluster label from a provided clustering result table.
 }

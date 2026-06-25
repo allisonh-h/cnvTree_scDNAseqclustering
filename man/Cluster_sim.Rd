@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_02_Clustering.R
 \name{Cluster_sim}
 \alias{Cluster_sim}
-\title{Compute the similarity of cells within a cluster}
+\title{Cluster_sim}
 \usage{
 Cluster_sim(Template, SimCells, Cluster_label)
 }
@@ -24,6 +24,7 @@ A numeric value representing the overall similarity of the cells within
 the specified cluster.
 }
 \description{
-This function calculates the overall similarity of cells within a specified
-cluster using a precomputed cell-to-cell similarity matrix.
+Compute the similarity of cells within a cluster; this function calculates
+the overall similarity of cells within a specified cluster using a pre-computed
+cell-to-cell similarity matrix.
 }

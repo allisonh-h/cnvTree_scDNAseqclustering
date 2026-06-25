@@ -2,14 +2,11 @@
 % Please edit documentation in R/scDNAclustering_01_Input.R
 \name{run_cnvTree_Pipeline}
 \alias{run_cnvTree_Pipeline}
-\title{Run the cnvTree Setup Pipeline}
+\title{run_cnvTree_Pipeline}
 \usage{
-run_cnvTree_Pipeline(config, output_dir, input_dir_RNA, RNAdataSource)
+run_cnvTree_Pipeline(output_dir, input_dir_RNA, RNAdataSource)
 }
 \arguments{
-\item{config}{List. Internal configuration parameters containing versioning
-and message flags (e.g., \code{config$input_dir_RNA}).}
-
 \item{output_dir}{Character. Path to the directory where results and output
 folders will be created and saved.}
 
@@ -18,12 +15,16 @@ data directory (e.g., inferCNV output folder).}
 
 \item{RNAdataSource}{Character. The format or source type of the RNA data
 (e.g., "dataframe" or "inferCNV").}
+
+\item{config}{List. Internal configuration parameters containing versioning
+and message flags (e.g., \code{config$input_dir_RNA}).}
 }
 \value{
 A character vector or list of identified cell groups/types extracted
 by \code{select_groups()} for the next steps of the pipeline.
 }
 \description{
-This initializes the output environment, sets up necessary folder structures
-for RNA data, and extracts the available cell groups/types for selection.
+Run the cnvTree Setup Pipeline; this initializes the output environment, sets
+up necessary folder structures for RNA data, and extracts the available cell
+groups/types for selection.
 }

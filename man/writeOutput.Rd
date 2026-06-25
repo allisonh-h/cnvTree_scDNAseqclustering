@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{writeOutput}
 \alias{writeOutput}
-\title{Export data as a TXT file}
+\title{writeOutput}
 \usage{
 writeOutput(data, filename, path)
 }
@@ -17,5 +17,6 @@ writeOutput(data, filename, path)
 No return value, called for side effects (writing a file to disk).
 }
 \description{
-This function writes a data table to a \code{.txt} file, saving it to a specified path.
+Export data as a TXT file; this function writes a data table to a \code{.txt} file,
+saving it to a specified path.
 }

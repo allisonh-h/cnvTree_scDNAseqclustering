@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_01_Input.R
 \name{changeFormat}
 \alias{changeFormat}
-\title{Convert copy number data to GRanges Format}
+\title{changeFormat}
 \usage{
 changeFormat(input_dir_DNA, cores, sexchromosome)
 }
@@ -25,7 +25,7 @@ A named list where each element represents a cell, containing its
 corresponding genomic segments as a \code{GRanges} object.
 }
 \description{
-This function reads a \code{.rds} file or \code{.txt} file containing copy number
-variation (CNV) data and converts it into a list of \code{GRanges} objects, where
-each element corresponds to a single cell.
+Convert copy number data to GRanges Format; this function reads a \code{.rds} file
+or \code{.txt} file containing copy number variation (CNV) data and converts it into
+a list of \code{GRanges} objects, where each element corresponds to a single cell.
 }

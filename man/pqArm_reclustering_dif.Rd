@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_04_ReClustering.R
 \name{pqArm_reclustering_dif}
 \alias{pqArm_reclustering_dif}
-\title{Output the different ratio in different pqArm at bins-level between two clusters.
-Compute bin-level difference ratios between pqArm clusters}
+\title{pqArm_reclustering_dif}
 \usage{
 pqArm_reclustering_dif(
   input,
@@ -50,8 +49,10 @@ cluster and its most similar cluster.
 }
 }
 \description{
-This function calculates the bin-level difference ratios between different
-pqArm clusters. The ratio represents the degree of difference in copy number
-variations (CNVs) between each cluster and its most similar cluster,
-considering variations at the p and q arms.
+Output the different ratio in different pqArm at bins-level between two clusters.
+Compute bin-level difference ratios between pqArm clusters; this function
+calculates the bin-level difference ratios between different pqArm clusters.
+The ratio represents the degree of difference in copy number variations (CNVs)
+between each cluster and its most similar cluster, considering variations at
+the p and q arms.
 }

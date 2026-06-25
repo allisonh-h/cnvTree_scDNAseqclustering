@@ -2,7 +2,7 @@
 % Please edit documentation in R/scRNAclustering_08_Input.R
 \name{check_dims}
 \alias{check_dims}
-\title{checks Dimensions of an Object}
+\title{check_dims}
 \usage{
 check_dims(x, name = "selected_groups")
 }
@@ -12,6 +12,7 @@ check_dims(x, name = "selected_groups")
 \item{name}{}
 }
 \description{
-This function checks whether an object has valid dimensions. It stops
-execution if the object has no dimensions or has zero rows
+checks Dimensions of an Object; this function checks whether an object has
+valid dimensions. It stops execution if the object has no dimensions or has
+zero rows
 }

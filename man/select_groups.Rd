@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_01_Input.R
 \name{select_groups}
 \alias{select_groups}
-\title{Selects Cell Groups Interactively from CNV region File}
+\title{select_groups}
 \usage{
 select_groups(input_dir_RNA, RNAdataSource)
 }
@@ -21,9 +21,10 @@ and "HMM_CNV_predictions").}
 A character vector containing the unique names of the selected cell groups.
 }
 \description{
-This function scans a specified directory for CNV prediction files, extracts
-unique cell group names, and provides an interactive menu for the user to
-select one or more groups for downstream analysis.
+Selects Cell Groups Interactively from CNV region File; this function scans a
+specified directory for CNV prediction files, extracts unique cell group names,
+and provides an interactive menu for the user to select one or more groups for
+downstream analysis.
 }
 \details{
 The function identifies the relevant file in the directory, reads the

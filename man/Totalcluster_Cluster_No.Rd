@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_06_OthersAndOutput.R
 \name{Totalcluster_Cluster_No}
 \alias{Totalcluster_Cluster_No}
-\title{Transfer the number of clusters in the data. Identify clusters meeting the
-thershold by number of cell}
+\title{Totalcluster_Cluster_No}
 \usage{
 Totalcluster_Cluster_No(Template, cellnum_name, cellcutoff, cluster_name)
 }
@@ -26,6 +25,7 @@ A character vector containing cluster names that meet the specified
 cell number threshold.
 }
 \description{
-This function filters clusters based on the number of cells, returning a list of
-clusters that meet the specified threshold.
+Transfer the number of clusters in the data. Identify clusters meeting the
+thershold by number of cell; his function filters clusters based on the number
+of cells, returning a list of clusters that meet the specified threshold.
 }

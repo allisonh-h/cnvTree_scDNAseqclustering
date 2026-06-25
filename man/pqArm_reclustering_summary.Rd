@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_04_ReClustering.R
 \name{pqArm_reclustering_summary}
 \alias{pqArm_reclustering_summary}
-\title{Create pqArm clustering final results. Summarize the results of the Re-Clustering
-step}
+\title{pqArm_reclustering_summary}
 \usage{
 pqArm_reclustering_summary(Data)
 }
@@ -21,7 +20,8 @@ A data frame summarizing the re-clustering step with the following columns:
 }
 }
 \description{
-This function generates a summary table of the re-clustering process,
+Create pqArm clustering final results. Summarize the results of the Re-Clustering
+step; this function generates a summary table of the re-clustering process,
 providing an overview of the reclustered patterns, cell counts, and assigned
 clusters.
 }

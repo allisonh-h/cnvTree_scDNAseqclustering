@@ -2,7 +2,7 @@
 % Please edit documentation in R/scRNAclustering_09_clustering.R
 \name{superimpose.data}
 \alias{superimpose.data}
-\title{Superimpose scRNA-seq CNVs onto scDNA-seq CNVs}
+\title{superimpose.data}
 \usage{
 superimpose.data(inputFILE, DeterminedCNVs, cnv_ratio)
 }
@@ -23,10 +23,10 @@ The original \code{inputFILE} list with an additional \code{superimpose}
 data.frame containing the overlap statistics and final CNV calls.
 }
 \description{
-This function integrates high-confidence "Determined CNVs" (typically from
-scDNA-seq) with experimental CNV regions (typically from scRNA-seq).
-It calculates the genomic overlap ratio for each cell group to determine if a
-specific CNV event is functionally present.
+Superimpose scRNA-seq CNVs onto scDNA-seq CNVs; this function integrates
+high-confidence "Determined CNVs" (typically from scDNA-seq) with experimental
+CNV regions (typically from scRNA-seq). It calculates the genomic overlap ratio
+for each cell group to determine if a specific CNV event is functionally present.
 }
 \details{
 The function iterates through each cell group and performs the following:

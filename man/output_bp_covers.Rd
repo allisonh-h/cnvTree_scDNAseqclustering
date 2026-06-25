@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{output_bp_covers}
 \alias{output_bp_covers}
-\title{Calcuate each bp with cover bps. Identify significant breakpoints based on
-coverage in a specified range}
+\title{output_bp_covers}
 \usage{
 output_bp_covers(Template, binsize, overlap, overlap_times)
 }
@@ -43,7 +42,9 @@ columns:
 }
 }
 \description{
-This function calculates how many breakpoints can be covered within a specified
-range for each breakpoint, treating it as the midpoint. It also filters
-significant breakpoints based on a defined threshold.
+Calcuate each bp with cover bps. Identify significant breakpoints based on
+coverage in a specified range; this function calculates how many breakpoints
+can be covered within a specified range for each breakpoint, treating it as
+the midpoint. It also filters significant breakpoints based on a defined
+threshold.
 }

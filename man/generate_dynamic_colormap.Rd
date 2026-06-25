@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_06_OthersAndOutput.R
 \name{generate_dynamic_colormap}
 \alias{generate_dynamic_colormap}
-\title{Color template for heatmaps (Customize color + RColorBrewer template). Assign
-colors to copy number states}
+\title{generate_dynamic_colormap}
 \usage{
 generate_dynamic_colormap(data_matrix)
 }
@@ -17,6 +16,7 @@ A matrix of the same dimensions as \code{data_matrix}, with each numeric
 copy number state replaced by a corresponding color code.
 }
 \description{
-This function maps numerical copy number states to a corresponding color scheme
-for visualization purposes.
+Color template for heatmaps (Customize color + RColorBrewer template). Assign
+colors to copy number states; this function maps numerical copy number states
+to a corresponding color scheme for visualization purposes.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_06_OthersAndOutput.R
 \name{scDNA.superimpose}
 \alias{scDNA.superimpose}
-\title{Superimpose defined CNVs onto scDNA-seq copy number results}
+\title{scDNA.superimpose}
 \usage{
 scDNA.superimpose(Template, DefinedCNVs)
 }
@@ -45,7 +45,8 @@ corresponding CNV.
 }
 }
 \description{
-This function overlays high-confidence copy number variations (CNVs) onto
-single-cell DNA sequencing (scDNA-seq) clustering results to determine
-whether each cluster contains the corresponding CNVs.
+Superimpose defined CNVs onto scDNA-seq copy number results; this function
+overlays high-confidence copy number variations (CNVs) onto single-cell DNA
+sequencing (scDNA-seq) clustering results to determine whether each cluster
+contains the corresponding CNVs.
 }

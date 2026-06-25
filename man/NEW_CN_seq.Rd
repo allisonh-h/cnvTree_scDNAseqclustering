@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_01_Input.R
 \name{NEW_CN_seq}
 \alias{NEW_CN_seq}
-\title{Generate copy number matrix for selected cells}
+\title{NEW_CN_seq}
 \usage{
 NEW_CN_seq(input, Template)
 }
@@ -21,7 +21,8 @@ An integer matrix:
 }
 }
 \description{
-This function extracts copy number variations from a list of \code{GRanges} objects
-and organizes them into an integer matrix. The matrix contains selected cells
-as columns, with genomic regions (fixed bins) as rows.
+Generate copy number matrix for selected cells; this function extracts copy
+number variations from a list of \code{GRanges} objects and organizes them into an
+integer matrix. The matrix contains selected cells as columns, with genomic
+regions (fixed bins) as rows.
 }

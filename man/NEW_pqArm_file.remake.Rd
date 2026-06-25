@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_03_pqArmClustering.R
 \name{NEW_pqArm_file.remake}
 \alias{NEW_pqArm_file.remake}
-\title{Extract chromosome arm ranges from UCSC cytoband data}
+\title{NEW_pqArm_file.remake}
 \usage{
 NEW_pqArm_file.remake(FILE)
 }
@@ -16,6 +16,7 @@ regions. It includes cytobands of type \code{acen} and \code{gvar}, along with t
 ranges of the preceding and following cytobands.
 }
 \description{
-This function processes a UCSC cytoband file to extract the ranges of
-chromosome long and short arms, excluding the centromere regions.
+Extract chromosome arm ranges from UCSC cytoband data; this function processes
+a UCSC cytoband file to extract the ranges of chromosome long and short arms,
+excluding the centromere regions.
 }

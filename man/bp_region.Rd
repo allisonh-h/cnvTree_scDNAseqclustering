@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{bp_region}
 \alias{bp_region}
-\title{Define segments in continuous bin-level sites based on event regions}
+\title{bp_region}
 \usage{
 bp_region(event, binsize)
 }
@@ -18,6 +18,7 @@ A data frame representing chromosome segments at a continuous bin-level
 resolution, divided according to the event region template.
 }
 \description{
-This function segments the genome into continuous bin-level regions based on
+Define segments in continuous bin-level sites based on event regions; this
+function segments the genome into continuous bin-level regions based on
 an event region template.
 }

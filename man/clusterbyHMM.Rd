@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_02_Clustering.R
 \name{clusterbyHMM}
 \alias{clusterbyHMM}
-\title{Based on AneuFinder::clusterHMMs, calcuate distance than hierrachical clustering}
+\title{clusterbyHMM}
 \usage{
 clusterbyHMM(input, selected, exclude.regions = NULL)
 }
@@ -24,7 +24,8 @@ A list containing:
 }
 }
 \description{
-This function computes the pairwise distance between cells based on their
+Based on AneuFinder::clusterHMMs, calcuate distance than hierrachical clustering;
+this function computes the pairwise distance between cells based on their
 copy number variations and performs hierarchical clustering.
 }
 \examples{

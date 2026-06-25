@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_06_OthersAndOutput.R
 \name{scDNA.clustering}
 \alias{scDNA.clustering}
-\title{Function for receiving DNA clustering output in superimpose range. Generate
-superimposition results between scDNA clustering and defined CNVs}
+\title{scDNA.clustering}
 \usage{
 scDNA.clustering(Template)
 }
@@ -31,7 +30,9 @@ contains the corresponding CNV.
 }
 }
 \description{
-This function calculates the overlap between single-cell DNA sequencing (scDNA-seq)
+Function for receiving DNA clustering output in superimpose range. Generate
+superimposition results between scDNA clustering and defined CNVs; this function
+calculates the overlap between single-cell DNA sequencing (scDNA-seq)
 clustering results and high-confidence defined copy number variations (CNVs),
 indicating whether each cluster contains the corresponding CNVs.
 }

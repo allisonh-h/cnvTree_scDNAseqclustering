@@ -2,7 +2,7 @@
 % Please edit documentation in R/scRNAclustering_11_TotalSteps.R
 \name{scRNA_output}
 \alias{scRNA_output}
-\title{Final output coordinator for the scRNA-seq CNV analysis pipeline}
+\title{scRNA_output}
 \usage{
 scRNA_output(
   Summary,
@@ -43,7 +43,8 @@ files to the \code{output.dir}:
 }
 }
 \description{
-It extracts the clustered cell groupings, formats the summarized RNA cluster
-data, and triggers the generation of the final CNV pattern heatmap. All results
+Final output coordinator for the scRNA-seq CNV analysis pipeline; this function
+extracts the clustered cell groupings, formats the summarized RNA cluster data,
+and triggers the generation of the final CNV pattern heatmap. All results
 are exported directly to a specified output directory.
 }

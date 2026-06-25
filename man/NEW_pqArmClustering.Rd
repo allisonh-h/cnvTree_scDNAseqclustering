@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_07_TotalSteps.R
 \name{NEW_pqArmClustering}
 \alias{NEW_pqArmClustering}
-\title{Perform pqArm clustering step in scDNA-seq data clustering Workflow}
+\title{NEW_pqArmClustering}
 \usage{
 NEW_pqArmClustering(input, pqArm_file, cluster, sexchromosome)
 }
@@ -28,17 +28,21 @@ A data frame recording the pqArm clustering results for each cell,
 tracking the clustering history at this stage.
 }
 \description{
-This function executes the pqArm clustering step in the single-cell DNA
-sequencing (scDNA-seq) data clustering workflow, grouping cells based on
-chromosomal arm-level copy number variations.
+Perform pqArm clustering step in scDNA-seq data clustering Workflow; this
+function executes the pqArm clustering step in the single-cell DNA sequencing
+(scDNA-seq) data clustering workflow, grouping cells based on chromosomal
+arm-level copy number variations.
 }
 \examples{
 \dontrun{
- file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
- config <- read_yaml(config_path)
- input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA, cores = 2)
- pqArm_result <- NEW_pqArmClustering(input = input_df, 
-                                     pqArm_file = config$pqArm_file) 
-}
+config_path <- "~/cnvTree_040/inst/cnvTree_config.yaml"
+config <- read_yaml(config_path)
+selected_groups <- run_cnvTree_Pipeline(output_dir = config$output_dir,
+                                       input_dir_RNA = config$input_dir_RNA,
+                                       RNAdataSource = config$RNAdataSource) 
+input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA)
+pqArm_result <- NEW_pqArmClustering(input = input_df, 
+                                    pqArm_file = config$pqArm_file)
+ }
 
 }

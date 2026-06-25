@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{Subclone_CNregion}
 \alias{Subclone_CNregion}
-\title{Output each region copy number in each subclone, as the basement of CNV template.
-Output copy number by unique segment template for each subclone}
+\title{Subclone_CNregion}
 \usage{
 Subclone_CNregion(
   sep_region,
@@ -43,7 +42,8 @@ The output includes the following columns:
 }
 }
 \description{
-This function generates copy number (CN) outputs for each subclone using a unique
-chromosome segment template. It filters clusters based on a minimum cell count
-and outputs CN values for each region.
+Output copy number by unique segment template for each subclone; this function
+generates copy number (CN) outputs for each subclone using a unique chromosome
+segment template. It filters clusters based on a minimum cell count and outputs
+CN values for each region.
 }

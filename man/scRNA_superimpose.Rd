@@ -2,7 +2,7 @@
 % Please edit documentation in R/scRNAclustering_11_TotalSteps.R
 \name{scRNA_superimpose}
 \alias{scRNA_superimpose}
-\title{Batch Superimpose scDNA-seq CNVs onto scRNA-seq Datasets}
+\title{scRNA_superimpose}
 \usage{
 scRNA_superimpose(RNA_output, DeterminedCNVs, cnv_ratio)
 }
@@ -22,9 +22,10 @@ A named list of data.frames. Each data.frame is a binary matrix where
 rows are cells and columns are CNV regions.
 }
 \description{
-This wrapper function processes multiple scRNA-seq output files, superimposing
-scDNA-seq CNV regions onto InferCNV observational data. It supports
-both flat list structures and nested list structures (split outputs).
+Batch Superimpose scDNA-seq CNVs onto scRNA-seq Datasets; this wrapper function
+processes multiple scRNA-seq output files, superimposing scDNA-seq CNV regions
+onto InferCNV observational data. It supports both flat list structures and
+nested list structures (split outputs).
 }
 \details{
 The function operates in two modes based on the global \code{splitOutput} flag:

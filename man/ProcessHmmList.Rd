@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_01_Input.R
 \name{ProcessHmmList}
 \alias{ProcessHmmList}
-\title{Load and Standardize AneuFinder HMM Objects}
+\title{ProcessHmmList}
 \usage{
 ProcessHmmList(input_dir_DNA)
 }
@@ -14,7 +14,8 @@ or \code{.rds} HMM files (typically the 'method-edivisive' output folder).}
 A named list of AneuFinder HMM objects with standardized names and IDs.
 }
 \description{
-This function imports AneuFinder Hidden Markov Model (HMM) files from a specified
-directory. It ensures that the list names and internal object IDs match the file
-basenames rather than absolute system paths.
+Load and Standardize AneuFinder HMM Objects; This function imports AneuFinder
+Hidden Markov Model (HMM) files from a specified directory. It ensures that
+the list names and internal object IDs match the file basenames rather than
+absolute system paths.
 }

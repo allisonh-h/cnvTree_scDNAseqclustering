@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_04_ReClustering.R
 \name{pqArm_return.Bins}
 \alias{pqArm_return.Bins}
-\title{Select different pqArm to output the region at bin-level. Extract bin-level
-copy number sequence in differentiated chromosome arms}
+\title{pqArm_return.Bins}
 \usage{
 pqArm_return.Bins(Pattern, which_Arm, Tem, CN_matrix)
 }
@@ -28,6 +27,8 @@ A numeric vector where each element represents the mode copy number value
 for a given bin within a cluster of cells.
 }
 \description{
-This function retrieves the bin-level copy number sequence for chromosome p/q arms
+Select different pqArm to output the region at bin-level. Extract bin-level
+copy number sequence in differentiated chromosome arms; this function retrieves
+the bin-level copy number sequence for chromosome p/q arms
 that show differences between two clusters.
 }

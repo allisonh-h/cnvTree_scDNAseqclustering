@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_03_pqArmClustering.R
 \name{NEW_pqArm_CN}
 \alias{NEW_pqArm_CN}
-\title{Transform CN matrix to Total Deletion/Loss/Neu/Amp and based on Arm level to
-smooth the CN}
+\title{NEW_pqArm_CN}
 \usage{
 NEW_pqArm_CN(
   input,
@@ -42,7 +41,8 @@ A matrix with smoothed copy number states (Total Deletion, Loss,
 Neutral, or Amplification) at the arm level across chromosomes.
 }
 \description{
-This function processes single-cell copy number data by smoothing
+Transform CN matrix to Total Deletion/Loss/Neu/Amp and based on Arm level to
+smooth the CN; this function processes single-cell copy number data by smoothing
 copy number variations (CNVs) at the arm level. It utilizes clustering results
 and cytoband information to assign copy number states (Total Deletion, Loss,
 Neutral, or Amplification) for each chromosomal arm.

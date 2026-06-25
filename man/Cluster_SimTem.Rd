@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_02_Clustering.R
 \name{Cluster_SimTem}
 \alias{Cluster_SimTem}
-\title{Computes pairwise similarity between cells}
+\title{Cluster_SimTem}
 \usage{
 Cluster_SimTem(binsMatrix)
 }
@@ -15,6 +15,7 @@ A square numeric matrix where each element \verb{[i, j]} represents the
 similarity score between \code{cell[i]} and \code{cell[j]}.
 }
 \description{
-This function calculates the similarity values between cells based on their
-copy number variations at the bin level.
+Computes pairwise similarity between cells; this function calculates the
+similarity values between cells based on their copy number variations at the
+bin level.
 }

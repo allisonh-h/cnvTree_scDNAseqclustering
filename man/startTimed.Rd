@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{startTimed}
 \alias{startTimed}
-\title{Record current time for function started timing}
+\title{startTimed}
 \usage{
 startTimed(...)
 }
@@ -15,7 +15,7 @@ A POSIXct object representing the current system time at the moment this
 function is called.
 }
 \description{
-This utility function records the current system time, typically used
-for timing the execution of other functions. It is useful for benchmarking
-or logging the duration of function calls.
+Record current time for function started timing; this utility function records
+the current system time, typically used for timing the execution of other functions.
+It is useful for benchmarking or logging the duration of function calls.
 }

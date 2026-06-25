@@ -8,5 +8,5 @@ min_cell: 10.0
 overlap_region: 1.0e+07
 consecutive_region: 1000000.0
 core: 1.0
-sexchromosome: yes
+sexchromosome: no
 smoothheatmap: yes

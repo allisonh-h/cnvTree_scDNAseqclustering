@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{collect_cluster_bp}
 \alias{collect_cluster_bp}
-\title{Collect breakpoints from a cluster of cells}
+\title{collect_cluster_bp}
 \usage{
 collect_cluster_bp(input, Clustering_output, Recluster_label)
 }
@@ -30,6 +30,6 @@ A data frame containing breakpoint sites with the following columns:
 }
 }
 \description{
-This function extracts all breakpoints from a specified cluster of cells
-based on the results of the re-clustering step.
+Collect breakpoints from a cluster of cells; this function extracts all breakpoints
+from a specified cluster of cells based on the results of the re-clustering step.
 }

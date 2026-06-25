@@ -2,7 +2,7 @@
 % Please edit documentation in R/scRNAclustering_10_RNAOutput.R
 \name{scRNA_output.format}
 \alias{scRNA_output.format}
-\title{Format single-cell RNA copy number variation (CNV) data}
+\title{scRNA_output.format}
 \usage{
 scRNA_output.format(inputFILE, cellcutoffRNA, filterZero, DeterminedCNVs)
 }
@@ -28,8 +28,9 @@ Values are adjusted by variant direction (positive for amplifications,
 negative for deletions).
 }
 \description{
-Processes, filters, and formats single-cell RNA-seq CNV data based on cell
-cutoffs and frequency filters. It clusters CNV patterns, renames genomic columns
-with readable cytoband notation, adjusts values based on amplification/deletion
+Format single-cell RNA copy number variation (CNV) data; this function processes,
+filters, and formats single-cell RNA-seq CNV data based on cell cutoffs and
+frequency filters. It clusters CNV patterns, renames genomic columns with
+readable cytoband notation, adjusts values based on amplification/deletion
 status, and optionally filters out columns containing only zeroes.
 }

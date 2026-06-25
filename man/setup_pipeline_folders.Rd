@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_01_Input.R
 \name{setup_pipeline_folders}
 \alias{setup_pipeline_folders}
-\title{Setup Directory Paths Based on RNA Data Source Type}
+\title{setup_pipeline_folders}
 \usage{
 setup_pipeline_folders(input_dir_RNA, output_dir, RNAdataSource)
 }
@@ -21,6 +21,7 @@ setup_pipeline_folders(input_dir_RNA, output_dir, RNAdataSource)
 Character. The absolute file path of the selected target folder.
 }
 \description{
-Scans the single-cell RNA input directory to dynamically identify and select
-the target data folder based on the structure of the specified data source.
+Setup Directory Paths Based on RNA Data Source Type; scans the single-cell RNA
+input directory to dynamically identify and select the target data folder based
+on the structure of the specified data source.
 }

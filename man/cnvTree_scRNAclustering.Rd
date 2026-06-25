@@ -2,7 +2,7 @@
 % Please edit documentation in R/scRNAclustering_11_TotalSteps.R
 \name{cnvTree_scRNAclustering}
 \alias{cnvTree_scRNAclustering}
-\title{Execute the Full cnvTree scRNA-seq Clustering Pipeline}
+\title{cnvTree_scRNAclustering}
 \usage{
 cnvTree_scRNAclustering(
   input_dir_RNA,
@@ -53,9 +53,10 @@ orchestrator, executing side effects that save three distinct files (grouping
 data, superimpose data, and a CNV heatmap) directly to the specified \code{output.dir}.
 }
 \description{
-This master wrapper function sequentially executes the entire scRNA-seq CNV
-analysis pipeline. It parses the InferCNV outputs, superimposes high-confidence
-CNV regions, performs consensus clustering across multiple iterations (if applicable),
-and generates the final tabular files and heatmap visualizations in the specified
+Execute the Full cnvTree scRNA-seq Clustering Pipeline; this master wrapper
+function sequentially executes the entire scRNA-seq CNV analysis pipeline.
+It parses the InferCNV outputs, superimposes high-confidence CNV regions,
+performs consensus clustering across multiple iterations (if applicable), and
+generates the final tabular files and heatmap visualizations in the specified
 directory.
 }

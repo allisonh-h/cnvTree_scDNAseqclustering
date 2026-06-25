@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_06_OthersAndOutput.R
 \name{Totalcluster_pdf}
 \alias{Totalcluster_pdf}
-\title{For creating pdf in total clusters by CN matrix. Generate copy number profiles
-for scDNA-seq cell clustering results in PDF file}
+\title{Totalcluster_pdf}
 \usage{
 Totalcluster_pdf(
   Input,
@@ -24,9 +23,9 @@ a single cell.}
 and subclone clustering step result for each cell. This table recorded the
 clustering history in each step.}
 
-\item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19}, \code{mm10}, \code{mm39}.
-Or a filepath of a table for cytoband information seen on Giemsa-stained chromosomes.
-It should include the following columns:
+\item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19},
+\code{mm10}, \code{mm39}. Or a filepath of a table for cytoband information seen on
+Giemsa-stained chromosomes. It should include the following columns:
 \itemize{
 \item \code{chrom}: Reference sequence chromosome or scaffold.
 \item \code{chromStart}: Start position in genoSeq.
@@ -54,6 +53,8 @@ copy number information for sex chromosomes. Defaults to \code{FALSE}.}
 A copy number profile visualization saved as a PDF file.
 }
 \description{
-This function outputs copy number profiles from single-cell DNA sequencing (scDNA-seq)
-clustering results, saving the visualization as a PDF file.
+For creating pdf in total clusters by CN matrix. Generate copy number profiles
+for scDNA-seq cell clustering results in PDF file; this function outputs copy
+number profiles from single-cell DNA sequencing (scDNA-seq) clustering results,
+saving the visualization as a PDF file.
 }

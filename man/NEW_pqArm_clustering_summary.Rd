@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_03_pqArmClustering.R
 \name{NEW_pqArm_clustering_summary}
 \alias{NEW_pqArm_clustering_summary}
-\title{Summarize pqArm clustering step results}
+\title{NEW_pqArm_clustering_summary}
 \usage{
 NEW_pqArm_clustering_summary(matrix, Label)
 }
@@ -25,7 +25,7 @@ pattern.
 }
 }
 \description{
-This function provides a summary of the pqArm clustering process,
-detailing the distribution of arm-level copy number variation (CNV) patterns
-across different clusters.
+Summarize pqArm clustering step results; this function provides a summary of
+the pqArm clustering process, detailing the distribution of arm-level copy
+number variation (CNV) patterns across different clusters.
 }

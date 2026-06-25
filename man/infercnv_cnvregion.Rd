@@ -2,7 +2,7 @@
 % Please edit documentation in R/scRNAclustering_08_Input.R
 \name{infercnv_cnvregion}
 \alias{infercnv_cnvregion}
-\title{Filter and Format InferCNV HMM Predictions}
+\title{infercnv_cnvregion}
 \usage{
 infercnv_cnvregion(input_dir_RNA, selected_groups, RNAdataSource)
 }
@@ -25,9 +25,10 @@ A \code{data.frame} (or \code{tibble}) containing filtered CNV regions with
 additional columns: \code{CNV_size} and \code{CN}.
 }
 \description{
-This function reads InferCNV HMM prediction files and extracts CNV regions
-for a specified set of cell groups. It filters out neutral states (state 3)
-and calculates the size and type (amplification or deletion) for each region.
+Filter and Format InferCNV HMM Predictions; this function reads InferCNV
+HMM prediction files and extracts CNV regions for a specified set of cell groups.
+It filters out neutral states (state 3) and calculates the size and type
+(amplification or deletion) for each region.
 }
 \details{
 The function performs the following transformations:

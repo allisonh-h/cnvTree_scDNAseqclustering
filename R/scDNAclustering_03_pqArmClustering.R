@@ -224,12 +224,15 @@ NEW_pqArm_DelNeuAmp <- function(matrix) ## function: 3.1.2 ##
   config_hid <- read_yaml(config_hid_path)
   new_matrix <- base::matrix(NA, nrow(matrix), ncol(matrix)) 
   
-  #new_matrix[matrix < 0.5] <- 0               # Total Deletion
-  #new_matrix[matrix >= 0.5 & matrix < 2] <- 1 # Loss
+  new_matrix[matrix <= 0 & matrix < 1] <- 0   # Deletion
+  new_matrix[matrix >= 1 & matrix < 2] <- 1    # Loss
+  new_matrix[matrix == 2] <- 2                 # Neutral
+  new_matrix[matrix > 2 & matrix <= 3]  <- 3   # Gain
+  new_matrix[matrix > 3] <- 4                  # Amplification
   
-  new_matrix[matrix < 2] <- 1                 # Total Deletion
-  new_matrix[matrix == 2] <- 2                # Neutral
-  new_matrix[matrix > 2]  <- 3                # Gain
+  #new_matrix[matrix < 2] <- 1                 # Total Deletion
+  #new_matrix[matrix == 2] <- 2                # Neutral
+  #new_matrix[matrix > 2]  <- 3                # Gain
   
   dimnames(new_matrix) <- dimnames(matrix)
   

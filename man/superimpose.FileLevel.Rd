@@ -2,7 +2,7 @@
 % Please edit documentation in R/scRNAclustering_09_clustering.R
 \name{superimpose.FileLevel}
 \alias{superimpose.FileLevel}
-\title{Expand Group-Level CNV Calls to Individual Cell Level}
+\title{superimpose.FileLevel}
 \usage{
 superimpose.FileLevel(inputFILE, DeterminedCNVs)
 }
@@ -18,9 +18,10 @@ A matrix where rows are \code{cellID}s and columns are \code{CNV_regions}.
 Values are binary (1 for presence, 0 for absence of CNV).
 }
 \description{
-This function transforms summarized group-level CNV results into a cell-by-CNV
-binary matrix. It maps the \code{final_cnv} status of each cell group back to
-every individual cell (\code{cellID}) belonging to that group.
+Expand Group-Level CNV Calls to Individual Cell Level; this function transforms
+summarized group-level CNV results into a cell-by-CNV binary matrix. It maps
+the \code{final_cnv} status of each cell group back to every individual cell
+(\code{cellID}) belonging to that group.
 }
 \details{
 The function performs the following steps:

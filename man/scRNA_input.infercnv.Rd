@@ -2,7 +2,7 @@
 % Please edit documentation in R/scRNAclustering_11_TotalSteps.R
 \name{scRNA_input.infercnv}
 \alias{scRNA_input.infercnv}
-\title{Import and Parse InferCNV Outputs}
+\title{scRNA_input.infercnv}
 \usage{
 scRNA_input.infercnv(input_dir_RNA, selected_groups, RNAdataSource)
 }
@@ -25,9 +25,9 @@ file/folder) consisting of:
 }
 }
 \description{
-This function parses InferCNV output directories to extract CNV regions and
-cell groupings. It is capable of handling both single, consolidated output
-folders and outputs that have been split across multiple directories. It also
-performs a quality control check to ensure there are no duplicated \code{cellID}s
-across the merged datasets.
+Import and Parse InferCNV Outputs; this function parses InferCNV output
+directories to extract CNV regions and cell groupings. It is capable of handling
+both single, consolidated output folders and outputs that have been split across
+multiple directories. It also performs a quality control check to ensure there
+are no duplicated \code{cellID}s across the merged datasets.
 }

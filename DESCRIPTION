@@ -5,16 +5,17 @@ Authors@R: c(
     person(given = "Ting-Wen",
            family = "Chen",
            email = "twc@nycu.edu.tw",
-           role = c("aut"),
+           role = "aut",
            comment = c(ORCID = "0000-0003-4028-2375")),
     person(given = "Yi-Tzu",
            family = "Lo",
            email = "it35101.bt11@nycu.edu.tw",
-           role = c("cre"),
+           role = "aut"),
     person(given = "Ling-Yi",
            family = "Huang",
            email = "lingyihuang@nycu.edu.tw",
-           role = c("cre")))
+           role = "cre")
+  )
 Description: Provides functionality for clustering and evolutionary history construction 
     based on copy number variation in single-cell data.
 License: GPL-3

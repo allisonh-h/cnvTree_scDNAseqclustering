@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_04_ReClustering.R
 \name{euclidean}
 \alias{euclidean}
-\title{Compute Euclidean distance between two vectors}
+\title{euclidean}
 \usage{
 euclidean(a, b)
 }
@@ -16,7 +16,8 @@ A numeric value representing the Euclidean distance between the two
 vectors.
 }
 \description{
-This function calculates the Euclidean distance (L₂ norm) between two numeric
-vectors. The Euclidean distance is computed as:
+Compute Euclidean distance between two vectors; this function calculates the
+Euclidean distance (L₂ norm) between two numeric vectors. The Euclidean distance
+is computed as:
 \deqn{\sqrt{\sum (a_i - b_i)^2}}
 }

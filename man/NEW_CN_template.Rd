@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_03_pqArmClustering.R
 \name{NEW_CN_template}
 \alias{NEW_CN_template}
-\title{Generate a copy number segment template based on chromosomal arms}
+\title{NEW_CN_template}
 \usage{
 NEW_CN_template(input, pqArm_file)
 }
@@ -26,6 +26,7 @@ A data frame containing the defined genomic ranges for p/q arms across
 all chromosomes.
 }
 \description{
-This function constructs a template for copy number segmentation using
-cytoband information from Giemsa-stained chromosomes.
+Generate a copy number segment template based on chromosomal arms; this function
+constructs a template for copy number segmentation using cytoband information
+from Giemsa-stained chromosomes.
 }

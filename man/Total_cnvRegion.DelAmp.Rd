@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{Total_cnvRegion.DelAmp}
 \alias{Total_cnvRegion.DelAmp}
-\title{Calculate the cnv happends in Deletion and Amplification in whole chromosome.
-Classify copy number variations as deletion or amplification}
+\title{Total_cnvRegion.DelAmp}
 \usage{
 Total_cnvRegion.DelAmp(Template, CN_tem, method = c("Del", "Amp"))
 }
@@ -40,7 +39,9 @@ following columns:
 }
 }
 \description{
-This function identifies and classifies copy number variations (CNVs) into two types:
-Deletion ("Del") or Amplification ("Amp"). It uses a fixed-bin size genome template
-and processes each CNV type separately to generate bin-level summaries.
+Calculate the cnv happends in Deletion and Amplification in whole chromosome.
+Classify copy number variations as deletion or amplification; this function
+identifies and classifies copy number variations (CNVs) into two types:
+Deletion ("Del") or Amplification ("Amp"). It uses a fixed-bin size genome
+template and processes each CNV type separately to generate bin-level summaries.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{endTimed}
 \alias{endTimed}
-\title{Calculate time elapsed since start time}
+\title{endTimed}
 \usage{
 endTimed(ptm)
 }
@@ -15,7 +15,8 @@ A message showing the time consumed between the start time and the moment
 this function is called.
 }
 \description{
-This utility function calculates the time elapsed since a recorded start time,
-typically used for measuring function execution duration. It provides a message
-displaying the time consumed between two lines of code.
+Calculate time elapsed since start time; this utility function calculates the
+time elapsed since a recorded start time, typically used for measuring function
+execution duration. It provides a message displaying the time consumed between
+two lines of code.
 }

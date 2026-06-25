@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_07_TotalSteps.R
 \name{SubClustering}
 \alias{SubClustering}
-\title{Perform subclustering in scDNA-seq data clustering workflow}
+\title{SubClustering}
 \usage{
 SubClustering(input, Consolidating_output, min_cell, overlap_region, dif_ratio)
 }
@@ -40,22 +40,26 @@ and its copy number. It includes the following columns:
 }
 }
 \description{
-This function executes the subclustering step in the single-cell DNA sequencing
-(scDNA-seq) data clustering workflow, refining clusters based on copy number
-variations (CNVs) within subpopulations of cells.
+Perform subclustering in scDNA-seq data clustering workflow; this function
+executes the subclustering step in the single-cell DNA sequencing (scDNA-seq)
+data clustering workflow, refining clusters based on copy number variations
+(CNVs) within subpopulations of cells.
 }
 \examples{
 \dontrun{
- file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
- config <- read_yaml(config_path)
- input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA, cores = 2)
- pqArm_result <- NEW_pqArmClustering(input = input_df, 
-                                    pqArm_file = config$pqArm_file) 
- Consolidation_result <- clusterConsolidation(input = input_df, 
-                                              pqArm_output = pqArm_result, 
-                                              pqArm_file = config$pqArm_file)
- Subclone_output <- SubClustering(input = input_df,
-                                  Consolidating_output = Consolidation_result)
-}
+config_path <- "~/cnvTree_040/inst/cnvTree_config.yaml"
+config <- read_yaml(config_path)
+selected_groups <- run_cnvTree_Pipeline(output_dir = config$output_dir,
+                                       input_dir_RNA = config$input_dir_RNA,
+                                       RNAdataSource = config$RNAdataSource) 
+input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA)
+pqArm_result <- NEW_pqArmClustering(input = input_df, 
+                                    pqArm_file = config$pqArm_file)
+Consolidation_result <- clusterConsolidation(input = input_df, 
+                                             pqArm_output = pqArm_result, 
+                                             pqArm_file = config$pqArm_file)
+Subclone_output <- SubClustering(input = input_df,
+                                 Consolidating_output = Consolidation_result)
+ }
 
 }

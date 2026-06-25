@@ -2,7 +2,7 @@
 % Please edit documentation in R/scRNAclustering_08_Input.R
 \name{infercnv_groups_summary}
 \alias{infercnv_groups_summary}
-\title{Summarize InferCNV Observation Groupings}
+\title{infercnv_groups_summary}
 \usage{
 infercnv_groups_summary(input_dir_RNA, selected_groups)
 }
@@ -21,8 +21,8 @@ A data frame containing two columns:
 }
 }
 \description{
-This function reads the \code{infercnv.observation_groupings.txt} file from a
-specified InferCNV output directory. It calculates the total number of cells
-assigned to each dendrogram group and filters the final summary to include
-only the specified groups.
+Summarize InferCNV Observation Groupings; this function reads the
+\code{infercnv.observation_groupings.txt} file from a  specified InferCNV output
+directory. It calculates the total number of cells assigned to each dendrogram
+group and filters the final summary to include only the specified groups.
 }

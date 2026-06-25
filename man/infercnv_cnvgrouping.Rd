@@ -2,7 +2,7 @@
 % Please edit documentation in R/scRNAclustering_08_Input.R
 \name{infercnv_cnvgrouping}
 \alias{infercnv_cnvgrouping}
-\title{Maps individual cells to Selected CNV Groups}
+\title{infercnv_cnvgrouping}
 \usage{
 infercnv_cnvgrouping(input_dir_RNA, selected_groups, RNAdataSource)
 }
@@ -29,9 +29,10 @@ A \code{tibble} or \code{data.frame} with columns:
 }
 }
 \description{
-This function parses the \code{infercnv.observation_groupings.txt} file
-to create a mapping between individual cell IDs and their assigned CNV groups.
-It can return 'all observations' or 'filter for specific user-selected groups'.
+Maps individual cells to Selected CNV Groups; this function parses the
+\code{infercnv.observation_groupings.txt} file to create a mapping between
+individual cell IDs and their assigned CNV groups. It can return 'all
+observations' or 'filter for specific user-selected groups'.
 }
 \details{
 The function operates in two modes:

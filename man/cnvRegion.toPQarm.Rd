@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{cnvRegion.toPQarm}
 \alias{cnvRegion.toPQarm}
-\title{Input cnvRegions in defined format then add p, q arm information automatically.
-Map copy number variation regions to cytoband sites}
+\title{cnvRegion.toPQarm}
 \usage{
 cnvRegion.toPQarm(FILE, pqArm_file)
 }
@@ -36,7 +35,9 @@ A data frame mapping CNV regions to cytoband sites, containing the following col
 }
 }
 \description{
-This function maps copy number variation (CNV) regions to cytoband sites,
-based on Giemsa-stained chromosome information. It annotates CNV regions
-with the corresponding cytoband labels for the first and last affected bands.
+Input cnvRegions in defined format then add p, q arm information automatically.
+Map copy number variation regions to cytoband sites; his function maps copy number
+variation (CNV) regions to cytoband sites, based on Giemsa-stained chromosome
+information. It annotates CNV regions with the corresponding cytoband labels
+for the first and last affected bands.
 }

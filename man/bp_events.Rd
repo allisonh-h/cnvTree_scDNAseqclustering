@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{bp_events}
 \alias{bp_events}
-\title{Use the distribution of breakpoints to define the events. Define copy number
-variation hotspots based on significant breakpoints}
+\title{bp_events}
 \usage{
 bp_events(input, Template, binsize)
 }
@@ -32,6 +31,8 @@ A data frame listing CNV events for each chromosome, identifying
 regions where copy number variations frequently occur.
 }
 \description{
-This function identifies genomic regions where copy number variations (CNVs)
-frequently occur, based on a list of significant breakpoints.
+Use the distribution of breakpoints to define the events. Define copy number
+variation hotspots based on significant breakpoints; this function identifies
+genomic regions where copy number variations (CNVs) frequently occur, based
+on a list of significant breakpoints.
 }

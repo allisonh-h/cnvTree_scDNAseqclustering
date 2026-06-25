@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_07_TotalSteps.R
 \name{clusterConsolidation}
 \alias{clusterConsolidation}
-\title{Reclustering method. Perform Cluster Consolidation in scDNA-seq data clustering
-workflow}
+\title{clusterConsolidation}
 \usage{
 clusterConsolidation(input, pqArm_output, pqArm_file, difratio_chr)
 }
@@ -33,20 +32,24 @@ A data frame recording both pqArm clustering and consolidating results
 for each cell, maintaining the clustering history across steps.
 }
 \description{
-This function executes the Cluster Consolidation step in the single-cell DNA
-sequencing (scDNA-seq) data clustering workflow, consolidating clusters based
+Reclustering method. Perform Cluster Consolidation in scDNA-seq data clustering
+workflow; this function executes the Cluster Consolidation step in the single-cell
+DNA sequencing (scDNA-seq) data clustering workflow, consolidating clusters based
 on differences in chromosomal arm-level copy number variations.
 }
 \examples{
 \dontrun{
- file_path <- system.file("extdata", "example_data.rds", package = "cnvTree")
- config <- read_yaml(config_path)
- input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA, cores = 2)
- pqArm_result <- NEW_pqArmClustering(input = input_df, 
-                                    pqArm_file = config$pqArm_file) 
- Consolidation_result <- clusterConsolidation(input = input_df, 
-                                              pqArm_output = pqArm_result, 
-                                              pqArm_file = config$pqArm_file)
-}
+config_path <- "~/cnvTree_040/inst/cnvTree_config.yaml"
+config <- read_yaml(config_path)
+selected_groups <- run_cnvTree_Pipeline(output_dir = config$output_dir,
+                                       input_dir_RNA = config$input_dir_RNA,
+                                       RNAdataSource = config$RNAdataSource) 
+input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA)
+pqArm_result <- NEW_pqArmClustering(input = input_df, 
+                                    pqArm_file = config$pqArm_file)
+Consolidation_result <- clusterConsolidation(input = input_df, 
+                                             pqArm_output = pqArm_result, 
+                                             pqArm_file = config$pqArm_file)
+ }
 
 }

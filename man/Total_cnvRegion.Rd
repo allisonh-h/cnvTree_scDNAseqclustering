@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{Total_cnvRegion}
 \alias{Total_cnvRegion}
-\title{Output total cnv regions across subclones.}
+\title{Total_cnvRegion}
 \usage{
 Total_cnvRegion(input, Template, pqArm_file, consecutive_region)
 }
@@ -50,8 +50,8 @@ following columns:
 }
 }
 \description{
-This function identifies and outputs copy number variation (CNV) regions across
-subclones, using a predefined segment template and cytoband information.
-The CNV regions are classified into two types: amplifications ("amp") and
-deletions ("del").
+Output total cnv regions across subclones; this function identifies and outputs
+copy number variation (CNV) regions across subclones, using a predefined segment
+template and cytoband information. The CNV regions are classified into two types:
+amplifications ("amp") and deletions ("del").
 }

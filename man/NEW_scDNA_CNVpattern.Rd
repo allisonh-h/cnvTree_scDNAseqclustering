@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_06_OthersAndOutput.R
 \name{NEW_scDNA_CNVpattern}
 \alias{NEW_scDNA_CNVpattern}
-\title{Cluster w/ or w/o CNV pattern plot. Generate a heatmap of high-confidence
-CNV patterns with Dendrogram}
+\title{NEW_scDNA_CNVpattern}
 \usage{
 NEW_scDNA_CNVpattern(
   input,
@@ -61,7 +60,8 @@ a single cell.}
 A PNG file containing a heatmap of defined CNVs across clusters.
 }
 \description{
-This function creates a heatmap displaying high-confidence copy number variation
-(CNV) patterns across clusters, with hierarchical clustering represented by a
-dendrogram.
+Cluster w/ or w/o CNV pattern plot. Generate a heatmap of high-confidence
+CNV patterns with Dendrogram; this function creates a heatmap displaying
+high-confidence copy number variation (CNV) patterns across clusters, with
+hierarchical clustering represented by a dendrogram.
 }

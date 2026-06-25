@@ -2,8 +2,7 @@
 % Please edit documentation in R/scDNAclustering_04_ReClustering.R
 \name{pqArm_reclusterBy_ratio_target}
 \alias{pqArm_reclusterBy_ratio_target}
-\title{Filter ratio and merge the clusters if criteria meets. Validate pqArm clusters
-based on difference ratio criteria}
+\title{pqArm_reclusterBy_ratio_target}
 \usage{
 pqArm_reclusterBy_ratio_target(
   pqArm_cluster,
@@ -31,6 +30,7 @@ A list containing character vectors representing clusters that should
 be grouped together.
 }
 \description{
-This function evaluates whether pqArm clusters meet a predefined difference
-ratio criterion across different chromosomes.
+Filter ratio and merge the clusters if criteria meets. Validate pqArm clusters
+based on difference ratio criteria; this function evaluates whether pqArm clusters
+meet a predefined difference ratio criterion across different chromosomes.
 }

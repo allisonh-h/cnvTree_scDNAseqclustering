@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{DebugMsg}
 \alias{DebugMsg}
-\title{Print Debugging Messages}
+\title{DebugMsg}
 \usage{
 DebugMsg(fucStep, status, msg)
 }
@@ -15,6 +15,7 @@ function being executed.}
 \item{msg}{A logical value; if \code{TRUE}, the debug message will be printed.}
 }
 \description{
-A helper function to print standardized status messages to the console
-during package execution when the config_hid.yaml \code{msg} variable is set to TRUE.
+Print Debugging Messages; a helper function to print standardized status messages
+to the console during package execution when the config_hid.yaml \code{msg} variable
+is set to TRUE.
 }

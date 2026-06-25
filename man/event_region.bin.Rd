@@ -2,7 +2,7 @@
 % Please edit documentation in R/scDNAclustering_05_SubcloneClustering.R
 \name{event_region.bin}
 \alias{event_region.bin}
-\title{Convert event region data to continuous bin-level sites}
+\title{event_region.bin}
 \usage{
 event_region.bin(input, Template)
 }
@@ -22,6 +22,7 @@ These columns enable further bin-level calculations.
 }
 }
 \description{
-This function transforms event region data from discrete chromosome sites
-into continuous bin-level sites for further analysis.
+Convert event region data to continuous bin-level sites; this function transforms
+event region data from discrete chromosome sites into continuous bin-level
+sites for further analysis.
 }

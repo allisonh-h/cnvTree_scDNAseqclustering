@@ -25,14 +25,17 @@
 #'
 clusterbyHMM <- function(input, selected, exclude.regions = NULL)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 2.0_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
-  message("Checking column 'copy.number'  ...")
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 2.0_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
+  #--------------------- start below ---------------------
+  
+  message("Checking column 'copy.number'  ...")
   hmms <- input[selected]
   hmms2use <- numeric()
+  
   for (i1 in 1:length(hmms)) {
     hmm <- hmms[[i1]]
     if (!is.null(hmm$bins$copy.number)) {
@@ -44,7 +47,6 @@ clusterbyHMM <- function(input, selected, exclude.regions = NULL)
   }
   hmms <- hmms[hmms2use]
   hc <- NULL
-
   message("Making consensus template ...")
   
   if (!is.null(hmms[[1]]$bins$copy.number)) {
@@ -54,28 +56,26 @@ clusterbyHMM <- function(input, selected, exclude.regions = NULL)
   }
   constates[is.na(constates)] <- 0
   vars <- apply(constates, 1, stats::var, na.rm = TRUE)
-
   message("Clustering ...")
+  
   if (!is.null(exclude.regions)) {
     ind <- GenomicRanges::findOverlaps(hmms[[1]]$bins, exclude.regions)@from
     constates <- constates[-ind, ]
   }
-
   message("Distance calculating...")
   Dist <- Rfast::Dist(t(constates), method = "euclidean")
-
   # dist <- parallelDist::parDist(t(constates),
   #                               method = "euclidean",
   #                               threads = 5) # threads
-
+  
   Dist_as_dist <- stats::as.dist(Dist)
   message("hierarchical clustering...")
   hc <- stats::hclust(Dist_as_dist)
-
   # message("Reordering ...")
   hmms2use <- hmms2use[hc$order]
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
+  
   return(list(IDorder = hmms2use, hclust = hc))
 }
 
@@ -97,22 +97,23 @@ clusterbyHMM <- function(input, selected, exclude.regions = NULL)
 #'
 CutTree_final <- function(input, selected)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 2.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" CutTree_final_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
+  
   # 分群的原始檔，後面要用他作為基底
   message("Clustering and Data processing ...")
-
   clust <- clusterbyHMM(input = input, selected = selected)
   Clust_cuttree <- data.frame(cluster = stats::cutree(clust[["hclust"]], k = 2),
                               cell = names(clust$IDorder))
-
   Clust_cuttree <- Clust_cuttree %>%
                    dplyr::mutate(cluster = as.numeric(.data$cluster)) %>%
                    dplyr::arrange(dplyr::desc(.data$cluster))
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(Clust_cuttree)
 }
@@ -141,39 +142,34 @@ CutTree_final <- function(input, selected)
 #'
 CutTree <- function(input, Template, Cluster_label)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 2.2_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" CutTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   # selected.files建立
   # Cluster_label: Clust_cuttree$cluster中的分群數字
   selected.files <- NULL
   selected.files <- subset(Template, .data$cluster %in% c(Cluster_label))$cell
-
   message("Divided the cluster in k=2 ")
-  clust <- clusterbyHMM(input = input, selected = selected.files, exclude.regions = NULL)
+  clust <- clusterbyHMM(input = input, selected = selected.files, 
+                        exclude.regions = NULL)
   Clust_2 <- data.frame(NewCluster = stats::cutree(clust[["hclust"]], k = 2),
                         cell = names(clust$IDorder))
-
-
   Template <- merge(Template, Clust_2, by = "cell", all = TRUE)
-  Template$NewCluster <- ifelse(is.na(Template$NewCluster) == T, 
-                                0, Template$NewCluster)
-
+  Template$NewCluster <- ifelse(is.na(Template$NewCluster) == T, 0, 
+                                Template$NewCluster)
   Clust_2 <- which(is.na(Template$NewCluster) == F)
-
   count = max(Template$cluster, na.rm = TRUE)
 
-  Template$cluster <- dplyr::case_when(
-    Template$NewCluster == 1 ~ count + 1,
-    Template$NewCluster == 2 ~ count + 2,
-    TRUE ~ Template$cluster
-  )
-
+  Template$cluster <- dplyr::case_when(Template$NewCluster == 1 ~ count + 1,
+                                       Template$NewCluster == 2 ~ count + 2,
+                                       TRUE ~ Template$cluster)
   Template <- Template[, !colnames(Template) %in% "NewCluster"]
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(Template)
 }
@@ -192,18 +188,20 @@ CutTree <- function(input, Template, Cluster_label)
 #'
 #' @return An integer representing the number of cells in the specified cluster.
 #'
-Cluster_num <- function(Template, Cluster_label)
+Cluster_sim <- function(Template, Cluster_label)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 2.3_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" Cluster_sim_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
+  
   # cat("Calculating numbers of cell in Cluster", Cluster_label, "...\n")
-
   num <- data.frame(table(Template$cluster))
   num <- num[which(num$Var1 == Cluster_label), 2]
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(num)
 }
@@ -228,22 +226,23 @@ Cluster_num <- function(Template, Cluster_label)
 #'
 Cluster_sim <- function(Template, SimCells, Cluster_label)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 2.4_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" Cluster_sim_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
+  
   # cat("Calculating cell similarity in Cluster ",  Cluster_label, " ...\n")
-
   selected <- Template %>% 
               dplyr::filter(.data$cluster %in% Cluster_label) %>% 
               dplyr::pull(.data$cell)
   selected <- which(SimCells$IDorder %in% selected)
-
   Similarity <- SimCells$similarity[selected, selected]
   Similarity[is.na(Similarity)] <- 0
   Similarity <- mean(Similarity)
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(Similarity)
 }
@@ -263,10 +262,13 @@ Cluster_sim <- function(Template, SimCells, Cluster_label)
 #'
 Cluster_SimTem <- function(binsMatrix) 
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" Cluster_SimTem()_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" Cluster_SimTem()_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
+  
   message("Making similarity template ... ")
 
   totalcells <- ncol(binsMatrix)
@@ -276,17 +278,15 @@ Cluster_SimTem <- function(binsMatrix)
       sum(binsMatrix[, i] == binsMatrix[, j]) / num_bins
     })
   })
-
   similarity <- matrix(0, nrow = totalcells, ncol = totalcells)
   for (i in 1:totalcells) {
     similarity[i, i:totalcells] <- result[[i]]
     similarity[i:totalcells, i] <- result[[i]]
   }
-
   SIM <- list(IDorder = colnames(binsMatrix),
               similarity = as.matrix(similarity))
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(SIM)
 }

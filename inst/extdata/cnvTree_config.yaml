@@ -1,11 +1,10 @@
-'': X
 pqArm_file: hg38
 input_dir_DNA: ~/NCI_N87/scDNA/NCIN87_bins_copynumber.rds
 input_dir_RNA: ~/NCI_N87/scRNA/241107_NCIN87_Infercnv/NCIN87_Allcell_refNA_R00005_W151_pval005
-output_dir: ~/Result_0625
+output_dir: ~/Result_0703_lastComparev010_sexchr_FALSE
 RNAdataSource: '2'
 cellcutoff: 10.0
 cellcutoffRNA: 10.0
 cnv_ratio: 0.9
-filterZero: no
+filterZero: yes
 cnv_ratio_dna: 0.5

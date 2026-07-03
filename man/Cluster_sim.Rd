@@ -2,8 +2,10 @@
 % Please edit documentation in R/scDNAclustering_02_Clustering.R
 \name{Cluster_sim}
 \alias{Cluster_sim}
-\title{Cluster_sim}
+\title{Cluster_num}
 \usage{
+Cluster_sim(Template, SimCells, Cluster_label)
+
 Cluster_sim(Template, SimCells, Cluster_label)
 }
 \arguments{
@@ -20,10 +22,15 @@ similarity score between \code{cellID[i]} and \code{cellID[j]}.}
 belong to the specified cluster.}
 }
 \value{
+An integer representing the number of cells in the specified cluster.
+
 A numeric value representing the overall similarity of the cells within
 the specified cluster.
 }
 \description{
+Count the number of cells in a specific cluster; this function calculates the
+total number of cells that belong to a specified cluster.
+
 Compute the similarity of cells within a cluster; this function calculates
 the overall similarity of cells within a specified cluster using a pre-computed
 cell-to-cell similarity matrix.

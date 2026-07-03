@@ -16,13 +16,9 @@
 #'   - `chromEnd`: End position in genoSeq.
 #'   - `name`: Name of cytogenetic band.
 #'   - `gieStain`: Giemsa stain results.
-#'   
-#' @param cluster The assigned cluster label (k = 2)
 #'
 #' @return A data frame recording the pqArm clustering results for each cell, 
 #'  tracking the clustering history at this stage.
-#'
-#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -34,40 +30,43 @@
 #' input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA)
 #' pqArm_result <- NEW_pqArmClustering(input = input_df, 
 #'                                     pqArm_file = config$pqArm_file)
-#'  }
+#' }
 #'
-NEW_pqArmClustering <- function(input, pqArm_file, cluster, sexchromosome)
+#' @export
+#'
+NEW_pqArmClustering <- function(input, pqArm_file)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 7.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 7.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
   # Locked variable
-  cluster = config_hid$cluster
-  sexchromosome = config_hid$sexchromosome
+  cluster <- getOption("cluster")
+  sexchromosome <- getOption("sexchromosome")
+  
+  #--------------------- start below ---------------------
   
   message("=== Step 02: pqArm Clustering ===")
 
   Clustering_output <- data.frame(cluster = cluster, cell = names(input))
-
   pqArm_result <- NULL
-  for(Label in unique(Clustering_output$cluster)) {
+  
+  for (Label in unique(Clustering_output$cluster)) {
     ptm <- startTimed("pqArm Clustering ...")
     Smooth_pqCN <- NEW_pqArm_CN(input = input, 
                                 Cluster_label = Label, 
                                 Clustering_output = Clustering_output, 
-                                pqArm_file = pqArm_file,
-                                sexchromosome = sexchromosome)
+                                pqArm_file = pqArm_file)
     pqArm_cluster <- pqArm_clustering(matrix = Smooth_pqCN, Label = Label)
     pqArm_cluster_summary <- NEW_pqArm_clustering_summary(matrix = pqArm_cluster, 
                                                           Label = Label)
     #LH_02102025: changed to NEW_pqArm_clustering_summary()
     pqArm_cluster <- merge(pqArm_cluster, pqArm_cluster_summary)
     pqArm_result <- rbind(pqArm_result, pqArm_cluster)
-    endTimed(ptm)
   }
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(pqArm_result)
 }
@@ -93,14 +92,9 @@ NEW_pqArmClustering <- function(input, pqArm_file, cluster, sexchromosome)
 #'   - `chromEnd`: End position in genoSeq.
 #'   - `name`: Name of cytogenetic band.
 #'   - `gieStain`: Giemsa stain results.
-#'   
-#' @param difratio_chr A numeric value defining the threshold for acceptable 
-#'  difference ratios across different chromosomes.
 #'
 #' @return A data frame recording both pqArm clustering and consolidating results 
 #'  for each cell, maintaining the clustering history across steps.
-#'
-#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -115,17 +109,21 @@ NEW_pqArmClustering <- function(input, pqArm_file, cluster, sexchromosome)
 #' Consolidation_result <- clusterConsolidation(input = input_df, 
 #'                                              pqArm_output = pqArm_result, 
 #'                                              pqArm_file = config$pqArm_file)
-#'  }
+#' }
+#'  
+#' @export
 #'
-clusterConsolidation <- function(input, pqArm_output, pqArm_file, difratio_chr)
+clusterConsolidation <- function(input, pqArm_output, pqArm_file)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 7.2_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 7.2_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
   # Locked variable
-  difratio_chr <- config_hid$difratio_chr
+  difratio_chr <- getOption("difratio_chr")
+  
+  #--------------------- start below ---------------------
   
   message("=== Step 03: Cluster consolidation ===")
   
@@ -136,8 +134,8 @@ clusterConsolidation <- function(input, pqArm_output, pqArm_file, difratio_chr)
     New_pqArm_clustering <- pqArm_recluster(pqArm_cluster = pqArm_output, 
                                             Cluster = Label)
 
-    # potential merge target must more than one (with less10 clusters( >=2 & <10), 
-    # or more than one more10 clusters(>2))
+    # potential merge target must have more than one (with less10 clusters
+    # (>= 2 & < 10), or more than one more10 clusters(> 2))
     if (length(New_pqArm_clustering) > 1) {
       pqArm_dif <- pqArm_reclustering_dif(
                       input = input, 
@@ -160,16 +158,15 @@ clusterConsolidation <- function(input, pqArm_output, pqArm_file, difratio_chr)
       Recluster_Output <- rbind(Recluster_Output, Recluster_CellID)
     } else {
       Recluster_CellID <- pqArm_output %>%
-        dplyr::filter(.data$cluster %in% Label) %>%
-        dplyr::mutate(Recluster_pattern = .data$pqArm_pattern,
-                      Recluster_cellnum = .data$pqArm_cellnum,
-                      Recluster_cluster = .data$pqArm_cluster)
+                          dplyr::filter(.data$cluster %in% Label) %>%
+                          dplyr::mutate(Recluster_pattern = .data$pqArm_pattern,
+                                        Recluster_cellnum = .data$pqArm_cellnum,
+                                        Recluster_cluster = .data$pqArm_cluster)
       Recluster_Output <- rbind(Recluster_Output, Recluster_CellID)
     }
-    endTimed(ptm)
   }
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(Recluster_Output)
 }
@@ -186,26 +183,18 @@ clusterConsolidation <- function(input, pqArm_output, pqArm_file, difratio_chr)
 #'  a single cell.
 #' @param Consolidating_output A data frame recording pqArm clustering and consolidating 
 #'  results for each cell. This table tracks the clustering history up to this stage.
-#' @param min_cell An integer specifying the minimum number of cells required for 
-#'  a cluster to be retained.
-#' @param overlap_region An integer representing the genomic region where copy 
-#'  number frequently changes.
-#' @param dif_ratio A numeric value defining the tolerance threshold for copy 
-#'  number differences between cells within a cluster.
 #'
 #' @return A list containing two data frames:
 #'   - `final_cluster_output`: Records the clustering history from the pqArm, 
 #'  consolidating, and subclustering steps.
 #'   - `Subclone_CN`: Records each subclone's unique chromosome segment template 
-#'   and its copy number. It includes the following columns:
-#'     - `chr`: Chromosome name (chr1, chr2, ...).
-#'     - `start`: Start position of the segment.
-#'     - `end`: End position of the segment.
-#'     - `region`: The defined region index
-#'     - `Subclone`: Subclone identifier.
-#'     - `CN`: Copy number value of the segment.
-#'
-#' @export
+#'  and its copy number. It includes the following columns:
+#'   - `chr`: Chromosome name (chr1, chr2, ...).
+#'   - `start`: Start position of the segment.
+#'   - `end`: End position of the segment.
+#'   - `region`: The defined region index
+#'   - `Subclone`: Subclone identifier.
+#'   - `CN`: Copy number value of the segment.
 #'
 #' @examples
 #' \dontrun{
@@ -222,20 +211,26 @@ clusterConsolidation <- function(input, pqArm_output, pqArm_file, difratio_chr)
 #'                                              pqArm_file = config$pqArm_file)
 #' Subclone_output <- SubClustering(input = input_df,
 #'                                  Consolidating_output = Consolidation_result)
-#'  }
+#' }
+#'  
+#' @export
 #'
-SubClustering <- function(input, Consolidating_output, min_cell, overlap_region, 
-                          dif_ratio)
+SubClustering <- function(input, Consolidating_output)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 7.3_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 7.3_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
   # Locked variable
-  min_cell = config_hid$min_cell
-  overlap_region = config_hid$overlap_region
-  dif_ratio = config_hid$dif_ratio
+  min_cell <- getOption("min_cell")
+  overlap_region <- getOption("overlap_region")
+  dif_ratio <- getOption("dif_ratio")
+  #min_cell <- 5
+  #overlap_region <- 10**7
+  #dif_ratio <- 0.2
+  
+  #--------------------- start below ---------------------
   
   message("=== Step 04: Subclustering ===")
   
@@ -252,7 +247,7 @@ SubClustering <- function(input, Consolidating_output, min_cell, overlap_region,
   R <- Consolidating_output %>% dplyr::filter(.data$Recluster_cellnum >= min_cell)
   
   for (Recluster_label in unique(R$Recluster_cluster)) {
-    ptm <- startTimed("Subclustering for Recluster ", Recluster_label, " ... \n")
+    message("Subclustering for Recluster ", Recluster_label, " ... \n")
     breakpoints <- collect_cluster_bp(input = input, 
                                       Clustering_output = R, 
                                       Recluster_label = Recluster_label)
@@ -262,11 +257,12 @@ SubClustering <- function(input, Consolidating_output, min_cell, overlap_region,
     bp <- output_bp_covers(Template = breakpoints, 
                            binsize = binsize, 
                            overlap = overlap_bp, 
-                           overlap_times = Cell_num[1] * 0.5)#overlap_times = 0.5*cell
-    if (is.null(bp)) { #LH: added 12282025
-      next  #LH: added 12282025
-    }  #LH: added 12282025
-    
+                           # overlap_times = 0.5*cell
+                           overlap_times = Cell_num[1] * 0.5)
+    #if (is.null(bp)) { # LH added 122025
+    #  print(paste0("bp is NULL on cluser: ", R$Recluster_label))
+    #  next # LH added 122025
+    #}  #LH added 122025
     event_region <- bp_events(input = input, Template = bp, binsize = binsize)
     consensus_bp_template <- bp_region(event = event_region, binsize = binsize)
     cell_CNregion <- Region_CN(input = input, 
@@ -281,13 +277,11 @@ SubClustering <- function(input, Consolidating_output, min_cell, overlap_region,
                                              Subclone_num = 0)
     } else {
       Subclone_num = max(Subclone_cluster$Subclone)
-      cell_clustering <- Subclone_clustering(CN_incells_input= cell_CNregion, 
-                                             event_region= consensus_bp_template,
+      cell_clustering <- Subclone_clustering(CN_incells_input = cell_CNregion, 
+                                             event_region = consensus_bp_template,
                                              dif_ratio = dif_ratio, 
                                              Subclone_num = Subclone_num)
     }
-    #endTimed(ptm)
-
     Subclone_cluster <- rbind(Subclone_cluster, cell_clustering)
 
     # Output: 1. Copy number in each region in each subclone
@@ -296,16 +290,16 @@ SubClustering <- function(input, Consolidating_output, min_cell, overlap_region,
                               each_subclone = cell_clustering,
                               min_cell = min_cell, 
                               output = "SubcloneRegionCN")
+
     Subclone_CNr <- rbind(Subclone_CNr, s_CN)
   }
-
   colnames(Subclone_cluster) <- c("Subclone_cluster", "cellID", "Subclone_cellnum")
   Final_output <- list(final_cluster_output = dplyr::left_join(Consolidating_output, 
                                                                Subclone_cluster, 
                                                                by = "cellID"),
                                                                Subclone_CN = Subclone_CNr)
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(Final_output)
 }
@@ -345,14 +339,8 @@ SubClustering <- function(input, Consolidating_output, min_cell, overlap_region,
 #'   
 #' @param output_dir A character string specifying the directory where the output 
 #'  files will be saved.
-#' @param consecutive_region A numeric value defining the minimum length threshold 
-#'  for filtering copy number variation (CNV) regions.
 #' @param cellcutoff A numeric value specifying the minimum number of cells required 
 #'  for a cluster to be retained.
-#' @param sexchromosome A logical value. If `TRUE`, the output includes plots 
-#'  with sex chromosome copy number information.
-#' @param smoothheatmap A logical value. If `TRUE`, the output applies smoothing 
-#'  over a 10⁶ bp range in chromosome copy number visualizations.
 #'
 #' @return The function generates final clustering results and visualizations, 
 #'  saving them to the specified output directory.
@@ -381,18 +369,19 @@ SubClustering <- function(input, Consolidating_output, min_cell, overlap_region,
 #'                                 cellcutoff = config$cellcutoff)
 #'  }
 #'
-scDNA_Output <- function(input, Summary, pqArm_file, output_dir, 
-                         consecutive_region, cellcutoff,
-                         sexchromosome, smoothheatmap)
+scDNA_Output <- function(input, Summary, pqArm_file, output_dir, cellcutoff)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 7.4_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 7.4_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
   # Locked variable
-  consecutive_region = config_hid$consecutive_region 
-  sexchromosome = config_hid$sexchromosome
+  consecutive_region <- getOption("consecutive_region")
+  sexchromosome <- getOption("sexchromosome")
+  smoothheatmap <- getOption("smoothheatmap")
+  
+  #--------------------- start below ---------------------
   
   message("=== Step 05: Output cnvTree results ===")
   timestamp <- format(Sys.time(), "%m%d_%H")
@@ -413,8 +402,7 @@ scDNA_Output <- function(input, Summary, pqArm_file, output_dir,
   # 3. All CNV region in the sample
   CNV_Data <- Total_cnvRegion(input = input, 
                               Template = Summary$Subclone_CN, 
-                              pqArm_file = pqArm_file, 
-                              consecutive_region = consecutive_region)
+                              pqArm_file = pqArm_file)
   
   if (nrow(CNV_Data) != 0){
     CNV_Data <- cnvRegion.toPQarm(FILE = CNV_Data, pqArm_file = pqArm_file)
@@ -453,29 +441,26 @@ scDNA_Output <- function(input, Summary, pqArm_file, output_dir,
                    Template = Summary$final_cluster_output,
                    pqArm_file = pqArm_file, 
                    cellcutoff = cellcutoff, 
-                   step = "Subclone", 
-                   sexchromosome = sexchromosome,
+                   step = "Subclone",
                    FILEpath = output_dir, 
                    FILEname = FILEname)
   message("Output /cnvTree.scDNAseq_Grouping_fig.pdf is done.")
 
   # 6. cluster heatmap with dendrogram
   FILEname = paste0("/", timestamp, "_", "cnvTree.scDNAseq_heatmap.png")
-  NEW_scDNA_CNVpattern(input = input, 
-                       final_cluster = Summary$final_cluster_output, 
-                       cellcutoff = cellcutoff,
-                       sexchromosome = sexchromosome, 
-                       smoothheatmap = smoothheatmap,
-                       pqArm_file = pqArm_file, 
-                       FILEpath = output_dir, 
-                       FILEname = FILEname)
+  scDNA_CNVpattern(input = input, 
+                   final_cluster = Summary$final_cluster_output, 
+                   cellcutoff = cellcutoff,
+                   pqArm_file = pqArm_file, 
+                   FILEpath = output_dir, 
+                   FILEname = FILEname)
   message("Output /cnvTree.scDNAseq_heatmap.png is done.")
 
   print(paste("LH: Result saved to", output_dir))
   
   return(DNA_superimpose)
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 }
 
 
@@ -498,24 +483,10 @@ scDNA_Output <- function(input, Summary, pqArm_file, output_dir,
 #'   - `name`: Name of cytogenetic band.
 #'   - `gieStain`: Giemsa stain results.
 #'   
-#' @param difratio_chr A numeric value defining the threshold for acceptable 
-#'  difference ratios across different chromosomes.
 #' @param output_dir A character string specifying the directory where output 
 #'  files will be saved.
 #' @param cellcutoff A numeric value specifying the minimum number of cells required 
-#'  for a cluster to be retained in the final output.   
-#' @param smoothheatmap A logical value. If `TRUE`, the final output applies 
-#'  smoothing over a 10⁶ bp range in chromosome copy number visualizations.
-#' @param min_cell An integer specifying the minimum cell count required for a 
-#'  cluster to be included in the output.
-#' @param overlap_region An integer representing genomic regions where copy number 
-#'  frequently changes in the subclone clustering step.
-#' @param dif_ratio A numeric value defining the tolerance threshold for copy 
-#'     number differences between cells within a cluster.
-#' @param consecutive_region A numeric value defining the minimum CNV region length 
-#'.   threshold for filtering CNV events in the final output.
-#' @param sexchromosome A logical value. If `TRUE`, the final output includes 
-#'    plots with sex chromosome copy number information.
+#'  for a cluster to be retained in the final output.
 #'
 #' @return The function performs complete clustering and CNV analysis, saving final 
 #'  results and visualizations in the specified output directory.
@@ -538,56 +509,48 @@ scDNA_Output <- function(input, Summary, pqArm_file, output_dir,
 cnvTree_scDNAclustering <- function(input_dir_DNA, 
                                     pqArm_file, 
                                     output_dir,
-                                    cellcutoff,
-                                    smoothheatmap,
-                                    difratio_chr,
-                                    min_cell, 
-                                    overlap_region, 
-                                    dif_ratio,
-                                    consecutive_region, 
-                                    sexchromosome) 
+                                    cellcutoff) 
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 7.5_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
   # Locked variable
-  difratio_chr = config_hid$difratio_chr
-  min_cell = config_hid$min_cell 
-  overlap_region = config_hid$overlap_region
-  dif_ratio = config_hid$dif_ratio
-  consecutive_region = config_hid$consecutive_region
-  smoothheatmap = config_hid$smoothheatmap
-  sexchromosome = config_hid$sexchromosome
+  #difratio_chr <- getOption("difratio_chr")
+  #min_cell <- getOption("min_cell")
+  #overlap_region <- getOption("overlap_region")
+  #dif_ratio <- getOption("dif_ratio")
+  #smoothheatmap <- getOption("smoothheatmap")
+  #sexchromosome <- getOption("sexchromosome")
+  #consecutive_region <- getOption("consecutive_region")
+  
+  #--------------------- start below ---------------------
   
   # step 00: 
-  input <- ProcessHmmList(input_dir_DNA = input_dir_DNA)
-  
   ptm <- startTimed("Start cnvTree_scDNAclustering...")
-  
+  input <- ProcessHmmList(input_dir_DNA = input_dir_DNA)
+
   # step 01: pqArm clustering
   pqArm_result <- NEW_pqArmClustering(input = input, pqArm_file = pqArm_file)
   
   # step 02: Re-clustering
   Consolidation_result <- clusterConsolidation(input = input, 
                                                pqArm_output = pqArm_result, 
-                                               pqArm_file = pqArm_file, 
-                                               difratio_chr = difratio_chr)
+                                               pqArm_file = pqArm_file)
   # step 03: Subclone clustering
   Subclone_output <- SubClustering(input = input,
-                                   Consolidating_output = Consolidation_result,
-                                   min_cell = min_cell, 
-                                   overlap_region = overlap_region, 
-                                   dif_ratio = dif_ratio)
+                                   Consolidating_output = Consolidation_result)
   # step 04: Output
   scDNA_Output(input = input,
                Summary = Subclone_output,
                output_dir = output_dir,
                pqArm_file = pqArm_file,
-               consecutive_region = consecutive_region,
-               cellcutoff = cellcutoff, ## LH: inconsistent
-               sexchromosome = sexchromosome,
-               smoothheatmap = smoothheatmap)
+               cellcutoff = cellcutoff) ## LH changed name
   
   endTimed(ptm)
+  
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 }
 
 
@@ -610,24 +573,10 @@ cnvTree_scDNAclustering <- function(input_dir_DNA,
 #'   - `name`: Name of cytogenetic band.
 #'   - `gieStain`: Giemsa stain results.
 #'   
-#' @param difratio_chr A numeric value defining the threshold for acceptable 
-#'   difference ratios across different chromosomes.
-#' @param min_cell An integer specifying the minimum cell count required for a 
-#'   cluster to be included in the output.
-#' @param overlap_region An integer representing genomic regions where copy number 
-#'   frequently changes in the subclone clustering step.
-#' @param dif_ratio A numeric value defining the tolerance threshold for copy 
-#'   number differences between cells within a cluster.
 #' @param output_dir A character string specifying the directory where output 
 #'   files will be saved.
-#' @param consecutive_region A numeric value defining the minimum CNV region length 
-#'.  threshold for filtering CNV events in the final output.
 #' @param cellcutoff A numeric value specifying the minimum number of cells required 
 #'   for a cluster to be retained in the final output.
-#' @param sexchromosome A logical value. If `TRUE`, the final output includes 
-#'   plots with sex chromosome copy number information.
-#' @param smoothheatmap A logical value. If `TRUE`, the final output applies 
-#'   smoothing over a 10⁶ bp range in chromosome copy number visualizations.
 #'
 #' @return The function performs complete clustering and CNV analysis, saving final 
 #'   results and visualizations in the specified output directory.
@@ -650,52 +599,50 @@ cnvTree_scDNAclustering <- function(input_dir_DNA,
 cnvTree_scDNAclustering_df <- function(input_dir_DNA, 
                                        pqArm_file, 
                                        output_dir,
-                                       cellcutoff,
-                                       smoothheatmap) 
+                                       cellcutoff) 
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 7.6_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
   # Locked variable
-  difratio_chr = config_hid$difratio_chr
-  min_cell = config_hid$min_cell 
-  overlap_region = config_hid$overlap_region
-  dif_ratio = config_hid$dif_ratio
-  consecutive_region = config_hid$consecutive_region 
-  sexchromosome = config_hid$sexchromosome
-  cores = config_hid$cores
-  smoothheatmap = config_hid$smoothheatmap
+  #difratio_chr <- getOption("difratio_chr")
+  #min_cell <- getOption("min_cell")
+  #overlap_region <- getOption("overlap_region")
+  #dif_ratio <- getOption("dif_ratio")
+  #smoothheatmap <- getOption("smoothheatmap")
+  #sexchromosome <- getOption("sexchromosome")
+  #consecutive_region <- getOption("consecutive_region")
+  #cores <- getOption("cores")
+  
+  #--------------------- start below ---------------------
   
   message("Start data transform...")
+  ptm <- startTimed("Start cnvTree_scDNAclustering...")
   # step 00: data transform
   input_df <- changeFormat(input_dir_DNA = input_dir_DNA)
 
-  ptm <- startTimed("Start cnvTree_scDNAclustering...")
-  
   # step 01: pqArm clustering
   pqArm_result <- NEW_pqArmClustering(input = input_df, pqArm_file = pqArm_file)
   
   # step 02: Re-clustering
   Consolidation_result <- clusterConsolidation(input = input_df, 
                                                pqArm_output = pqArm_result, 
-                                               pqArm_file = pqArm_file, 
-                                               difratio_chr = difratio_chr)
+                                               pqArm_file = pqArm_file)
   
   # step 03: Subclone clustering
   Subclone_output <- SubClustering(input = input_df,
-                                   Consolidating_output = Consolidation_result,
-                                   min_cell = min_cell, 
-                                   overlap_region = overlap_region, 
-                                   dif_ratio = dif_ratio)
+                                   Consolidating_output = Consolidation_result)
   
   # step 04: Output
   scDNA_Output(input = input_df,
                Summary = Subclone_output,
                output_dir = output_dir,
                pqArm_file = pqArm_file,
-               consecutive_region = consecutive_region,
-               cellcutoff = cellcutoff,
-               sexchromosome = sexchromosome,
-               smoothheatmap = smoothheatmap)
+               cellcutoff = cellcutoff)
   
   endTimed(ptm)
+  
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 }

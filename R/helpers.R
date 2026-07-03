@@ -1,3 +1,32 @@
+#' Initialize Package Options on Load
+#'
+#' Loads internal configuration from the cnvTree_config_hid.yanl and sets global 
+#' options.
+#'
+#' @param libname Library name (passed automatically by R)
+#' @param pkgname Package name (passed automatically by R)
+#'
+#' @noRd
+#' 
+.onLoad <- function(libname, pkgname) 
+{
+  config_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = pkgname)
+  cnvTree_config_hid <- yaml::read_yaml(config_path)
+  
+  # store the raw values from the cnvTree_config_hid.yaml file
+  options(cnvTree_v_num      = cnvTree_config_hid$cnvTree_v_num)
+  options(cnvTree_msg        = cnvTree_config_hid$cnvTree_msg)
+  options(sexchromosome      = cnvTree_config_hid$sexchromosome)
+  options(cluster            = cnvTree_config_hid$cluster)
+  options(smoothheatmap      = cnvTree_config_hid$smoothheatmap)
+  options(min_cell           = cnvTree_config_hid$min_cell)
+  options(overlap_region     = cnvTree_config_hid$overlap_region)
+  options(dif_ratio          = cnvTree_config_hid$dif_ratio)
+  options(consecutive_region = cnvTree_config_hid$consecutive_region)
+  options(difratio_chr       = cnvTree_config_hid$difratio_chr)
+}
+
+
 #' DebugMsg
 #'
 #' Print Debugging Messages; a helper function to print standardized status messages 
@@ -7,11 +36,13 @@
 #' @param fucStep A character string indicating the current step or name of the 
 #'  function being executed.
 #' @param status A character string representing the status (e.g., "start", "end").
-#' @param msg A logical value; if \code{TRUE}, the debug message will be printed.
+#' @param cnvTree_msg A logical value; if \code{TRUE}, the debug message will be printed.
 #' 
-DebugMsg <- function(fucStep, status, msg)
+#' @noRd
+#' 
+DebugMsg <- function(fucStep, status, cnvTree_msg)
 {
-  if (isTRUE(msg)) {
+  if (isTRUE(cnvTree_msg)) {
     msg_str <- paste0("LH: ", status, " function", fucStep)
     print(msg_str)
   }
@@ -30,19 +61,22 @@ DebugMsg <- function(fucStep, status, msg)
 #' @return A POSIXct object representing the current system time at the moment this 
 #'  function is called.
 #'
+#' @noRd
+#' 
 startTimed <- function(...)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" startTimed_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
-  fucStep <- paste0(" startTimed_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  #--------------------- start below ---------------------
   
   x <- paste0(..., collapse = "")
   message(x, appendLF = FALSE)
   ptm <- proc.time()
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(ptm)
 }
@@ -60,19 +94,22 @@ startTimed <- function(...)
 #'
 #' @return A message showing the time consumed between the start time and the moment 
 #'  this function is called.
-#'
+#'  
+#' @noRd
+#' 
 endTimed <- function(ptm)
 {
-  config_path_hid <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" endTimed_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
-  fucStep <- paste0(" endTimed_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  #--------------------- start below ---------------------
   
   time <- proc.time() - ptm
   message(" ", round(time[3], 2), "s")
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 }
 
 
@@ -83,20 +120,22 @@ endTimed <- function(ptm)
 #'
 #' @param data A data frame or matrix to be exported as a `.txt` file.
 #' @param filename A character string specifying the name of the output `.txt` file.
-#' @param path A character string specifying the directory where the file will be saved.
+#' @param path A character string specifying the directory where the file will be 
+#'  saved.
 #'
 #' @return No return value, called for side effects (writing a file to disk).
 #'
 writeOutput <- function(data, filename, path)
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" writeOutput_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
-  fucStep <- paste0(" writeOutput_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  #--------------------- start below ---------------------
   
   FILEpath <- paste0(path, filename, ".txt")
   utils::write.table(data, file = FILEpath, row.names = FALSE, col.names = TRUE)
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 }

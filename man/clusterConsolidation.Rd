@@ -4,7 +4,7 @@
 \alias{clusterConsolidation}
 \title{clusterConsolidation}
 \usage{
-clusterConsolidation(input, pqArm_output, pqArm_file, difratio_chr)
+clusterConsolidation(input, pqArm_output, pqArm_file)
 }
 \arguments{
 \item{input}{A named list where each element is a \code{GRanges} object representing
@@ -23,9 +23,6 @@ Giemsa-stained chromosomes. It should include the following columns:
 \item \code{name}: Name of cytogenetic band.
 \item \code{gieStain}: Giemsa stain results.
 }}
-
-\item{difratio_chr}{A numeric value defining the threshold for acceptable
-difference ratios across different chromosomes.}
 }
 \value{
 A data frame recording both pqArm clustering and consolidating results
@@ -50,6 +47,6 @@ pqArm_result <- NEW_pqArmClustering(input = input_df,
 Consolidation_result <- clusterConsolidation(input = input_df, 
                                              pqArm_output = pqArm_result, 
                                              pqArm_file = config$pqArm_file)
- }
-
+}
+ 
 }

@@ -21,27 +21,25 @@
 #'   - `chromEnd`: End position in genoSeq.
 #'   - `name`: Name of cytogenetic band.
 #'   - `gieStain`: Giemsa stain results.
-#'   
-#' @param cluster The assigned cluster label (k = 2)
 #'
 #' @return A matrix with smoothed copy number states (Total Deletion, Loss, 
 #'  Neutral, or Amplification) at the arm level across chromosomes.
 #'  
-NEW_pqArm_CN <- function(input, Cluster_label, Clustering_output, pqArm_file, 
-                         cluster, sexchromosome)
+NEW_pqArm_CN <- function(input, Cluster_label, Clustering_output, pqArm_file)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 3.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 3.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
   # Locked variable
-  cluster = config_hid$cluster
+  cluster <- getOption("cluster")
+
+  #--------------------- start below ---------------------
   
   Clustering_output <- data.frame(cluster = cluster, cell = names(input))
   selected_files <- subset(Clustering_output, 
                            Clustering_output$cluster %in% c(Cluster_label))
-  
   CN_matrix_temp <- NEW_CN_template(input = input, pqArm_file = pqArm_file)
   CN_matrix <- NEW_CN_seq(input = input, Template = selected_files$cell)
   CN_matrix <- NEW_pqArm_DelNeuAmp(matrix = CN_matrix)
@@ -65,20 +63,18 @@ NEW_pqArm_CN <- function(input, Cluster_label, Clustering_output, pqArm_file,
     
     if (length(counts) > 1) {
       sorted_counts <- sort(counts, decreasing = TRUE)
-      if ((sorted_counts[1] == sorted_counts[2]) && config_hid$msg == TRUE) {
+      if ((sorted_counts[1] == sorted_counts[2]) && cnvTree_msg == TRUE) {
         warning(sprintf("Tie found in Chr Region %d, Cell#›› %d!", bin_idx, col_idx))
       }
     }
     return(ux[which.max(counts)])
   }
-  
   result_list <- lapply(1:nrow(CN_binsLevel), function(i) {
                         pq_CNmatrix <- CN_matrix[CN_binsLevel$start[i]:CN_binsLevel$end[i],
                                                  , drop = FALSE]
                         row_modes <- sapply(1:ncol(pq_CNmatrix), function(j) {
                                             get_mode(pq_CNmatrix[, j], i, j) })
                         return(row_modes) })
-
   Smooth_pqCN <- do.call(rbind, result_list)
   ### rename Smooth_pqCN
   n_chrs <- length(levels(CN_matrix_temp$chr))
@@ -88,7 +84,7 @@ NEW_pqArm_CN <- function(input, Cluster_label, Clustering_output, pqArm_file,
                  `rownames<-`(paste0(rep(levels(CN_matrix_temp$chr), each = 2), 
                                      rep(c("p", "q"), times = n_chrs)))
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(Smooth_pqCN)
 }
@@ -117,14 +113,16 @@ NEW_pqArm_CN <- function(input, Cluster_label, Clustering_output, pqArm_file,
 #'    
 NEW_CN_template <- function(input, pqArm_file)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 3.1.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 3.1.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   CN_tem <- input[[1]]$bins %>% 
             as.data.frame() %>% 
-            dplyr::select(chr = seqnames, start, end, width) ## NO chr X,Y
+            dplyr::select(chr = seqnames, start, end, width) # NO chr X,Y
 
   #============= original pqArm_file.remake() + pqArm_file.pq()=================
   # Add p/q arm information on the template
@@ -137,7 +135,6 @@ NEW_CN_template <- function(input, pqArm_file)
   } else {
     pqArm_range_temp <- readRDS(file_path_Template)
   } # chr X,Y
-
   pqArm_range <- pqArm_range_temp %>% dplyr::filter(.data$arm == "p") # chr X,Y
   #=============================================================================
   
@@ -145,19 +142,18 @@ NEW_CN_template <- function(input, pqArm_file)
 
   for (i in 1:nrow(pqArm_range)) {
     CN_temp[[i]] <- CN_tem %>% 
-      dplyr::filter(.data$chr == pqArm_range$chr[i],
-                    .data$start >= pqArm_range$start[i],
-                    .data$end <= pqArm_range$end[i]) %>%
+                    dplyr::filter(.data$chr == pqArm_range$chr[i],
+                                  .data$start >= pqArm_range$start[i],
+                                  .data$end <= pqArm_range$end[i]) %>%
       dplyr::mutate(arm = pqArm_range$arm[i])
   }
-
   CN_tem_pq <- CN_tem %>% # No chr X,Y
                dplyr::left_join(dplyr::bind_rows(CN_temp), 
                                 by = c("chr", "start", "end", "width")) %>%
                tidyr::replace_na(list(arm = "q")) %>%
                dplyr::arrange(.data$chr, .data$start)
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(CN_tem_pq)
 }
@@ -179,10 +175,12 @@ NEW_CN_template <- function(input, pqArm_file)
 #'
 NEW_pqArm_file.pq <- function(Template) 
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 3.1.1.1_cnvTree_", config_hid$v_num) #3.1.1.2_cnvTree_
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 3.1.1.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   x <- Template %>%
        dplyr::rename(ChromStart = start, ChromEnd = end) %>%
@@ -194,7 +192,7 @@ NEW_pqArm_file.pq <- function(Template)
                      chr = stringr::str_sub(.data$arm_category, end = -2)) %>%
        dplyr::select(c("chr", "start", "end", "arm"))
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(x)
 }
@@ -220,19 +218,19 @@ NEW_pqArm_file.pq <- function(Template)
 #'
 NEW_pqArm_DelNeuAmp <- function(matrix) ## function: 3.1.2 ##
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
   new_matrix <- base::matrix(NA, nrow(matrix), ncol(matrix)) 
   
-  new_matrix[matrix <= 0 & matrix < 1] <- 0   # Deletion
-  new_matrix[matrix >= 1 & matrix < 2] <- 1    # Loss
-  new_matrix[matrix == 2] <- 2                 # Neutral
-  new_matrix[matrix > 2 & matrix <= 3]  <- 3   # Gain
-  new_matrix[matrix > 3] <- 4                  # Amplification
+  # strategy 1
+  #new_matrix[matrix <= 0 & matrix < 1] <- 0    # Deletion
+  #new_matrix[matrix >= 1 & matrix < 2] <- 1    # Loss
+  #new_matrix[matrix == 2] <- 2                 # Neutral
+  #new_matrix[matrix > 2 & matrix <= 3]  <- 3   # Gain
+  #new_matrix[matrix > 3] <- 4                  # Amplification
   
-  #new_matrix[matrix < 2] <- 1                 # Total Deletion
-  #new_matrix[matrix == 2] <- 2                # Neutral
-  #new_matrix[matrix > 2]  <- 3                # Gain
+  # strategy 2
+  new_matrix[matrix < 2] <- 1                 # Total Deletion
+  new_matrix[matrix == 2] <- 2                # Neutral
+  new_matrix[matrix > 2]  <- 3                # Gain
   
   dimnames(new_matrix) <- dimnames(matrix)
   
@@ -258,26 +256,29 @@ NEW_pqArm_DelNeuAmp <- function(matrix) ## function: 3.1.2 ##
 #'
 pqArm_file.cen <- function(FILE)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 3.1.3_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 3.1.3_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
+  # Locked variable
+  sexchromosome <- getOption("sexchromosome")
+  
+  #--------------------- start below ---------------------
+
   if (FILE == "hg38" | FILE == "hg19" | FILE == "mm10" | FILE == "mm39") {
     filename <- paste0(FILE, "_cytoBand.txt.gz")
     FILE <- system.file("extdata", filename, package = "cnvTree")
   }
-  
   x <- utils::read.table(gzfile(FILE), sep = "\t", 
-                         col.names = c("chr", "ChromStart", "ChromEnd", "name", "gieStain"))
+                         col.names = c("chr", "ChromStart", "ChromEnd", "name", 
+                                       "gieStain"))
   x <- x %>% dplyr::filter(!grepl("_", .data$chr))
-  
   # set chr levels
   vec <- unique(x$chr)
   nums <- as.numeric(gsub("chr", "", vec)[grepl("\\d", vec)])
   nums <- paste0("chr", nums[order(nums)])
   Levels <- c(nums, vec[!grepl("\\d", vec)])
-  
   x <- x %>%
        dplyr::mutate(cen_category = paste0(.data$chr, .data$gieStain)) %>%
        dplyr::group_by(.data$cen_category) %>%
@@ -294,7 +295,12 @@ pqArm_file.cen <- function(FILE)
     dplyr::arrange(chr = factor(.data$chr, levels = Levels), .data$MaskStart) %>%
     dplyr::select(c("chr", "MaskStart", "MaskEnd"))
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  if (sexchromosome == FALSE) {
+    rows_to_remove <- grepl("chrX|chrY|chrM", x$chr)
+    x <- x[!rows_to_remove, ]
+  }
+
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(x)
 }
@@ -317,20 +323,24 @@ pqArm_file.cen <- function(FILE)
 #'  
 pqArm_clustering <- function(matrix, Label)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 3.2_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 3.2_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  # Locked variable
+  sexchromosome <- getOption("sexchromosome")
+  
+  #--------------------- start below ---------------------
   
   cluster <- sapply(1:ncol(matrix), function(x) {
     paste(matrix[, x], collapse = "_")
   })
-  
   cluster <- tibble::tibble(pqArm_pattern = cluster,
                             cellID = colnames(matrix),
                             cluster = Label)
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(cluster)
 }
@@ -357,21 +367,22 @@ pqArm_clustering <- function(matrix, Label)
 #'
 NEW_pqArm_clustering_summary <- function(matrix, Label)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 3.3_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 3.3_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   cluster_table <- table(matrix$pqArm_pattern) %>%
                    as.data.frame() %>%
                    dplyr::arrange(dplyr::desc(.data$Freq))
   cluster_table$cluster <- Label
   cluster_table$pqArm_cluster <- seq_len(nrow(cluster_table))
-  
   cluster_table <- cluster_table %>% dplyr::rename(pqArm_pattern = Var1, 
                                                    pqArm_cellnum = Freq)
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(cluster_table)
 }
@@ -390,12 +401,14 @@ NEW_pqArm_clustering_summary <- function(matrix, Label)
 #'   regions. It includes cytobands of type `acen` and `gvar`, along with the 
 #'   ranges of the preceding and following cytobands.
 #'
-NEW_pqArm_file.remake <- function(FILE)
+NEW_pqArm_file.remake <- function(FILE) # function 3.4
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 3.4_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" NEW_pqArm_file.remake_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   supported_genomes <- c("hg38", "hg19", "mm10", "mm39")
   
@@ -403,7 +416,6 @@ NEW_pqArm_file.remake <- function(FILE)
     filename <- paste0(FILE, "_cytoBand.txt.gz")
     FILE <- system.file("extdata", filename, package = "cnvTree")
   }
-  
   x <- read.table(FILE, 
                   sep="\t", 
                   col.names = c("chr", "start", "end", "name","gieStain"))
@@ -411,16 +423,13 @@ NEW_pqArm_file.remake <- function(FILE)
   chrom_levels <- c(paste0("chr", 1:22), "chrX", "chrY", "chrM")
   x$chr <- factor(x$chr, levels = chrom_levels)
   x <- x[order(x$chr, x$start), ]
-  
   x <- x %>% mutate(start = .data$start + 1,
                     arm = substring(.data$name, 1, 1),
                     arm_category = paste0(.data$chr, .data$arm))
-  
   Sum_x <- x %>% 
            dplyr::group_by(.data$arm_category) %>%
            dplyr::slice_head(n = 1) %>%
            as.data.frame()
-  
   Sum_x <- x %>% 
            dplyr::group_by(.data$arm_category) %>%
            dplyr::slice_tail(n = 1) %>%
@@ -429,7 +438,7 @@ NEW_pqArm_file.remake <- function(FILE)
            dplyr::mutate(chr = factor(.data$chr, levels = chrom_levels)) %>% 
            dplyr::arrange(.data$chr, .data$start)
   
-  DebugMsg(fucStep, "end", msg = config$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 
   return(Sum_x)
 }

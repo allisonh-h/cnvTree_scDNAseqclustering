@@ -37,20 +37,29 @@
 #'
 scDNA.superimpose <- function(Template, DefinedCNVs)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 6.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 6.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   Groups <- unique(Template$Subclone_CN$Subclone)
   Template$Subclone_CN$CNV_state <- Template$Subclone_CN$CN
   # CN only seperate in 3 types: del/neu/amp
   Template$Subclone_CN$CN = dplyr::case_when(
-    Template$Subclone_CN$CN <  2 ~ "del",
-    Template$Subclone_CN$CN == 2 ~ "neu",
-    Template$Subclone_CN$CN >  2 ~ "amp")
-  
+  Template$Subclone_CN$CN <  2 ~ "del",
+  Template$Subclone_CN$CN == 2 ~ "neu",
+  Template$Subclone_CN$CN >  2 ~ "amp"
+    
+  #Template$Subclone_CN$CN < 1  ~ "del",
+  #Template$Subclone_CN$CN < 2  ~ "los",
+  #Template$Subclone_CN$CN == 2 ~ "neu",
+  #Template$Subclone_CN$CN <= 3 ~ "gan",
+  #Template$Subclone_CN$CN > 3  ~ "amp"
+  )
   superimpose <- NULL
+  
   for (groups in 1:length(Groups)) {
     intersection <- NULL
     # check defined CNVs in each group
@@ -87,7 +96,7 @@ scDNA.superimpose <- function(Template, DefinedCNVs)
       dplyr::group_by(.data$CNV_region) %>%
       dplyr::summarise(cnv_range = sum(.data$cnv_range)) %>%
       as.data.frame()
-    
+
     superimpose <- dplyr::left_join(DefinedCNVs, intersection, by = "CNV_region") %>%
                    dplyr::mutate(Subclone = Groups[groups],
                                  CNV_range = .data$CNV_end - .data$CNV_start + 1,
@@ -99,7 +108,7 @@ scDNA.superimpose <- function(Template, DefinedCNVs)
   }
   Template$superimpose <- superimpose
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(Template)
 }
@@ -133,10 +142,12 @@ scDNA.superimpose <- function(Template, DefinedCNVs)
 #'
 scDNA.clustering <- function(Template)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 6.2_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("v_num")
+  cnvTree_msg   <- getOption("msg")
+  fucStep <- paste0(" 6.2_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   cnv_region <- unique(Template$superimpose$CNV_region)
   cnv_region <- paste0("CNV", cnv_region)
@@ -153,13 +164,12 @@ scDNA.clustering <- function(Template)
             dplyr::pull()
     
     cnv_matrix[subclone, ] <-c(CNVs, Subclone_ss[subclone], Cell_num[1])
-    
   }
   colnames(cnv_matrix) <- c(cnv_region, "DNA_cluster", "DNA_Cellnum")
   rownames(cnv_matrix) <- seq_len(nrow(cnv_matrix))
   Template$DNA_cluster <- cnv_matrix
-  
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(Template)
 }
@@ -195,22 +205,24 @@ scDNA.clustering <- function(Template)
 #' @param FILEname A character string specifying the name of the output PDF file.
 #' @param FILEpath A character string specifying the file path where the output 
 #'  PDF will be saved.
-#' @param sexchromosome A logical value. If `TRUE`, the output plot includes 
-#'  copy number information for sex chromosomes. Defaults to `FALSE`.
 #'
 #' @return A copy number profile visualization saved as a PDF file.
 #'
-Totalcluster_pdf <- function(Input, Template, pqArm_file, cellcutoff, step = "Subclone", 
-                             FILEname, FILEpath, sexchromosome)
+Totalcluster_pdf <- function(Input, Template, pqArm_file, cellcutoff, 
+                             step = "Subclone", FILEname, FILEpath)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 6.3_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 6.3_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  # Locked variable
+  sexchromosome <- getOption("sexchromosome")
+  
+  #--------------------- start below ---------------------
   
   cluster_name = paste0(step, "_cluster")
   cellnum_name = paste0(step, "_cellnum")
-  
   Cluster_No <- Totalcluster_Cluster_No(Template = Template, 
                                         cellnum_name = cellnum_name, 
                                         cellcutoff = cellcutoff, 
@@ -263,7 +275,7 @@ Totalcluster_pdf <- function(Input, Template, pqArm_file, cellcutoff, step = "Su
                   units = "px",
                   limitsize = FALSE)
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 }
 
 
@@ -288,17 +300,19 @@ Totalcluster_pdf <- function(Input, Template, pqArm_file, cellcutoff, step = "Su
 #'
 Totalcluster_Cluster_No <- function(Template, cellnum_name, cellcutoff, cluster_name)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 6.3.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 6.3.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   Cluster_No <- Template %>%
                 dplyr::filter(.data[[cellnum_name]] >= cellcutoff) %>%
                 dplyr::pull(.data[[cluster_name]])
   Cluster_No <- sort(unique(Cluster_No))
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(Cluster_No)
 }
@@ -322,16 +336,18 @@ Totalcluster_Cluster_No <- function(Template, cellnum_name, cellcutoff, cluster_
 #'
 Totalcluster_SS <- function(Template, cluster_name, k)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 6.3.2_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 6.3.2_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   SS <- Template %>%
         dplyr::filter(.data[[cluster_name]] == k) %>%
         dplyr::pull(.data$cellID)
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(SS)
 }
@@ -362,10 +378,12 @@ Totalcluster_SS <- function(Template, cluster_name, k)
 #'
 GenomeHeatmap <- function(Input, cellID, pqArm_file, sexchromosome)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 6.3.3_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 6.3.3_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
 
   # import CN template and total cell copy number matrix
   CN_bins_template <- NEW_CN_template(input = Input, pqArm_file = pqArm_file)
@@ -386,8 +404,8 @@ GenomeHeatmap <- function(Input, cellID, pqArm_file, sexchromosome)
     Input <- Input[cellOrder$cellID]
   }
 
-  if (config_hid$msg == TRUE) {
-    print(paste0("LH: start looping...6.3.3.1_cnvTree_", config_hid$v_num)) # LH: added on 02232026
+  if (cnvTree_msg == TRUE) {
+    print(paste0("LH: start looping...6.3.3.1_cnvTree_", cnvTree_v_num))
   }
 
   # Import copy number data
@@ -462,7 +480,7 @@ GenomeHeatmap <- function(Input, cellID, pqArm_file, sexchromosome)
                    panel.background = ggplot2::element_rect(fill = "white")) +
     ggplot2::theme_void()
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(PlotCN_heatmap)
 }
@@ -511,250 +529,6 @@ segment_transform <- function(data, index, CN_chr_template) # Function 6.3.3.1 #
 }
 
 
-#' scDNA_CNVpattern
-#' 
-#' Cluster w/ or w/o CNV pattern plot. Generate a heatmap of high-confidence 
-#' CNV patterns with Dendrogram; this function creates a heatmap displaying 
-#' high-confidence copy number variation (CNV) patterns across clusters, with 
-#' hierarchical clustering represented by a dendrogram.
-#'
-#' @param Input A named list where each element is a `GRanges` object representing 
-#'  a single cell.
-#' @param final_cluster A data frame containing high-confidence CNV regions, with 
-#'  the following columns:
-#'  
-#'   - `chr`: Chromosome name (chr1, chr2, ...).
-#'   - `CNV_region`: The index of CNV regions.
-#'   - `CN`: Copy number state, categorized as either "amp" (Amplification) or 
-#'   "del" (Deletion).
-#'   - `CNV_start`: Start position of the CNV region.
-#'   - `CNV_end`: End position of the CNV region.
-#'   - `first_band`: Cytoband label of the first affected band.
-#'   - `last_band`: Cytoband label of the last affected band.
-#'   
-#' @param cellcutoff A numeric value defining the minimum number of cells required 
-#'  for a cluster to be included.
-#' @param pqArm_file In-build cytoband template for selection: `hg38`, `hg19`, 
-#'  `mm10`, `mm39`. Or a filepath of a table for cytoband information seen on 
-#'  Giemsa-stained chromosomes. It should include the following columns:
-#'  
-#'   - `chrom`: Reference sequence chromosome or scaffold.
-#'   - `chromStart`: Start position in genoSeq.
-#'   - `chromEnd`: End position in genoSeq.
-#'   - `name`: Name of cytogenetic band.
-#'   - `gieStain`: Giemsa stain results.
-#'   
-#' @param FILEpath A character string specifying the directory where the output 
-#'  file will be saved.
-#' @param FILEname A character string specifying the name of the output `.png` file.
-#' @param sexchromosome A logical value. If `TRUE`, the heatmap includes copy number 
-#'  information for sex chromosomes.
-#' @param smoothheatmap A logical value. If `TRUE`, the heatmap applies smoothing over 
-#'  a 10⁶ bp range in chromosome copy number data.
-#'
-#' @return A PNG file containing a heatmap of defined CNVs across clusters.
-#'
-scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file, 
-                             FILEpath, FILEname, sexchromosome, smoothheatmap)
-{
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 6.4_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
-  smoothheatmap <- config_hid$smoothheatmap
-  
-  if (smoothheatmap == TRUE) {
-    # bins template
-    bins_window = input[[1]]$bins
-    bins_window$copy.number <- NULL
-    
-    # chromosome seperated in fixed-bin size 
-    chr_df = circlize::read.chromInfo(species = pqArm_file)$df 
-    
-    if (sexchromosome == FALSE) {
-      chr_df <- chr_df[!grepl("chrX|chrY", chr_df$chr), ]
-    } else {
-      chr_df = chr_df[chr_df$chr %in% c(paste0("chr", 1:22), "chrX", "chrY"), ]
-    }
-    chr_gr = GenomicRanges::GRanges(seqnames = chr_df[, 1], 
-                                    ranges = IRanges::IRanges(chr_df[, 2] + 1, 
-                                                              chr_df[, 3] + 1))
-    chr_window = EnrichedHeatmap::makeWindows(chr_gr, w = 1e6, short.keep = T)
-    mtch = as.data.frame(IRanges::findOverlaps(chr_window, bins_window, type = "any"))
-    
-    # 先平均出每個bin 的copy number ，得到average sequence
-    final_cluster <- final_cluster %>% dplyr::filter(.data$Subclone_cellnum >= cellcutoff)
-    final_cluster <- final_cluster %>%
-                     tidyr::unite("Subclone_no", Subclone_cluster, Subclone_cellnum, 
-                                  sep = " (n = ", remove = FALSE) %>%
-                     mutate(Subclone_no = paste0(Subclone_no, ")"))
-    subclone_no <- unique(final_cluster$Subclone_cluster)
-    
-    num_mat <- NULL
-    for (i in 1:length(subclone_no)) {
-      cellID <- final_cluster %>% 
-                dplyr::filter(.data$Subclone_cluster %in% subclone_no[i]) %>% 
-                dplyr::pull(.data$cellID)
-      Subclone_CN <- NEW_CN_seq(input = input, Template = cellID) #LH_02102025: modified
-      averageCN <- round(apply(Subclone_CN, 1, mean), digits = 0)  # mean() for cluster of cells
-      smooth_CN = rep(2, length(chr_window))
-      recalculateCN = mtch %>%
-                      dplyr::mutate(copy_number = averageCN[.data$subjectHits]) %>%
-                      dplyr::group_by(.data$queryHits) %>%
-                      dplyr::summarise(mean_copy_number = round(mean(.data$copy_number, 
-                                                                     na.rm = TRUE), 
-                                                                digits = 0))
-      smooth_CN[as.numeric(recalculateCN$queryHits)] <- recalculateCN$mean_copy_number
-      
-      if(is.null(num_mat)) {
-        num_mat <- smooth_CN
-        num_mat <- as.matrix(num_mat) ## LH added 122325
-      } else {
-        num_mat <- cbind(num_mat, smooth_CN)
-        num_mat <- as.matrix(num_mat) ## LH added 122325
-      }
-    }
-    colname_num_mat <- final_cluster %>% ## LH added 051226
-                       filter(Subclone_cluster %in% subclone_no) %>%
-                       select(Subclone_cluster, Subclone_no) %>%
-                       distinct() %>% 
-                       arrange(as.numeric(Subclone_cluster))
-    colnames(num_mat) <- colname_num_mat$Subclone_no
-    Subclone_no <- colnames(num_mat) # LH added 051326
-    
-    chr_sort <- as.data.frame(chr_window) %>% 
-                dplyr::select(.data$seqnames, .data$start)
-    
-    if (sexchromosome == TRUE) {
-      # heatmap annotation labels
-      chr <- as.character(sort(GenomicRanges::seqnames(chr_window)))
-      chr <- factor(chr, levels = levels(GenomicRanges::seqnames(chr_window)))
-    } else if(sexchromosome == FALSE) {
-      num_mat <- cbind(chr_sort, num_mat) %>%
-                 dplyr::filter(!.data$seqnames %in% c("chrX", "chrY", "chrM")) %>%
-                 as.matrix()
-     
-      num_mat <- num_mat[, -c(1, 2)]
-      num_mat <- as.matrix(num_mat) ## LH added 122325
-      num_mat <- apply(num_mat, c(1, 2), as.numeric)
-      
-      chr <- as.character(sort(GenomicRanges::seqnames(chr_window)))
-      chr <- chr[!(chr %in% c("chrX", "chrY"))]
-      chr <- factor(chr, 
-                    levels = dplyr::setdiff(levels(GenomicRanges::seqnames(chr_window)), 
-                                            c("chrX", "chrY", "chrM")))
-    }
-  } else {
-    ### without smoothing step ###
-    # 先平均出每個bin 的copy number ，得到average sequence
-    final_cluster <- final_cluster %>% dplyr::filter(.data$Subclone_cellnum >= cellcutoff)
-
-    final_cluster <- final_cluster %>%
-                     tidyr::unite("Subclone_no", Subclone_cluster, 
-                                  Subclone_cellnum, sep = " (", remove = FALSE) %>%
-                     mutate(Subclone_no = paste0(Subclone_no, ")"))
-    subclone_no <- unique(final_cluster$Subclone_cluster)
-
-    num_mat <- NULL
-    for(i in 1:length(subclone_no)) {
-      cellID <- final_cluster %>% 
-                dplyr::filter(.data$Subclone_cluster %in% subclone_no[i]) %>% 
-                dplyr::pull(.data$cellID)
-      Subclone_CN <- NEW_CN_seq(input = Input, Template = cellID)
-      num_mat <- cbind(num_mat, round(apply(Subclone_CN, 1, mean), digits = 0))
-    }
-    
-    chr_window = Input[[1]]$bins
-    chr_window$copy.number <- NULL
-    
-    colname_num_mat <- final_cluster %>% ## LH added 051226
-                       filter(Subclone_cluster %in% subclone_no) %>%
-                       select(Subclone_cluster, Subclone_no) %>%
-                       distinct() %>% 
-                       arrange(as.numeric(Subclone_cluster))
-    colnames(num_mat) <- colname_num_mat$Subclone_no
-    Subclone_no <- colnames(num_mat) # LH added 051326
-    
-    chr_sort <- chr_window %>%
-                as.data.frame() %>%
-                dplyr::select(.data$seqnames, .data$start) %>%
-                dplyr::arrange(.data$seqnames, .data$start)
-    
-    if (sexchromosome == TRUE) {
-      num_mat <- cbind(chr_sort, num_mat) %>%
-                 dplyr::arrange(.data$seqnames, .data$start) %>%
-                 as.matrix()
-      # heatmap annotation labels
-      chr <- as.character(sort(GenomicRanges::seqnames(chr_window)))
-      chr <- factor(chr, levels = levels(GenomicRanges::seqnames(chr_window)))
-    } else if (sexchromosome == FALSE) {
-      num_mat <- cbind(chr_sort, num_mat) %>%
-                 dplyr::arrange(.data$seqnames, .data$start) %>%
-                 dplyr::filter(!.data$seqnames %in% c("chrX", "chrY", "chrM")) %>%
-                 as.matrix()
-      
-      # heatmap annotation labels
-      chr <- as.character(sort(GenomicRanges::seqnames(chr_window)))
-      chr <- chr[!(chr %in% c("chrX", "chrY", "chrM"))]
-      chr <- factor(chr, 
-                    levels = dplyr::setdiff(levels(GenomicRanges::seqnames(chr_window)), 
-                                            c("chrX", "chrY", "chrM")))
-    }
-    num_mat <- num_mat[, -c(1, 2)]
-    num_mat <- apply(num_mat, c(1, 2), as.numeric)
-  }
-  # heatmap annotation labels
-  chr_level <- unique(sub("^chr", "", chr))
-  dynamic_colors <- generate_dynamic_colormap(data_matrix = num_mat)
-  
-  grDevices::png(filename = paste0(FILEpath, FILEname),
-                 width = 2800,
-                 height = (length(subclone_no)) * 150)
-  
-  legend_nrow <- min(length(dynamic_colors), 20)
-  heatmap_legend <- ComplexHeatmap::Legend(
-                      labels = names(dynamic_colors),  # 根據您的顏色名稱替換
-                      legend_gp = grid::gpar(fill = dynamic_colors),
-                      title = "Copy number",
-                      nrow = legend_nrow)  # 每排顯示10個
-  
-  Oncoscan <- ComplexHeatmap::Heatmap(t(num_mat), 
-                                      name = "Copy number", 
-                                      col = dynamic_colors,
-                                      column_split = chr,
-                                      cluster_columns = FALSE,
-                                      cluster_rows = TRUE,
-                                      show_row_dend = TRUE,
-                                      show_row_names = FALSE,
-                                      use_raster = TRUE,
-                                      show_heatmap_legend = FALSE,
-                                      row_split = subclone_no,
-                                      cluster_row_slices = TRUE,
-                                      row_dend_width = ggplot2::unit(5, "cm"),
-                                      row_dend_gp = grid::gpar(lwd = 2, col = "black"),
-                                      row_title = "scDNA clusters",
-                                      row_title_gp = grid::gpar(fontsize = 40, fontface = "bold"),
-                                      left_annotation = ComplexHeatmap::rowAnnotation(
-                                        subgroup = ComplexHeatmap::anno_text(
-                                          Subclone_no, rot = 0, gp = grid::gpar(fontsize = 30))), # LH changed 051326
-                                      column_title = chr_level,
-                                      column_title_side = "bottom",
-                                      column_title_gp = grid::gpar(fontsize = 25),
-                                      border = TRUE,
-                                      column_gap = ggplot2::unit(0, "points")
-                                      # row_gap = unit(0, "points")
-  )
-  ComplexHeatmap::draw(Oncoscan,
-                       annotation_legend_side = "right",
-                       annotation_legend_list = list(heatmap_legend),
-                       padding = ggplot2::unit(c(5, 2, 2, 2), "cm"))
-  
-  grDevices::dev.off()
-  
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
-}
-
-
 #' generate_dynamic_colormap
 #' 
 #' Color template for heatmaps (Customize color + RColorBrewer template). Assign 
@@ -770,13 +544,15 @@ scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file,
 #'
 generate_dynamic_colormap <- function(data_matrix)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 6.4.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 6.4.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   unique_values <- sort(unique(as.vector(data_matrix)))
-
+  
   # 固定的顏色對應表，對應數值 0~4 #orange: "#ED7D31"
   predefined_colors <- c("#D0CECE", "#8165A3", "#9BBB59", "#FFC000", "#C0504D") 
   names(predefined_colors) <- 0:4  # 為 0~4 數值建立顏色對應表
@@ -798,13 +574,13 @@ generate_dynamic_colormap <- function(data_matrix)
   all_colors <- c(below_6_colors, above_5_colors)
   color_mapping <- stats::setNames(all_colors, c(values_below_6, values_above_5))
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(color_mapping)
 }
 
 
-#' NEW_scDNA_CNVpattern
+#' scDNA_CNVpattern
 #' 
 #' Cluster w/ or w/o CNV pattern plot. Generate a heatmap of high-confidence 
 #' CNV patterns with Dendrogram; this function creates a heatmap displaying 
@@ -837,27 +613,27 @@ generate_dynamic_colormap <- function(data_matrix)
 #' @param FILEpath A character string specifying the directory where the output 
 #'  file will be saved.
 #' @param FILEname A character string specifying the name of the output `.png` file.
-#' @param sexchromosome A logical value. If `TRUE`, the heatmap includes copy number 
-#'  information for sex chromosomes.
-#' @param smoothheatmap A logical value. If `TRUE`, the heatmap applies smoothing over 
-#'  a 10⁶ bp range in chromosome copy number data.
 #'
 #' @return A PNG file containing a heatmap of defined CNVs across clusters.
 #'
-NEW_scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file, 
-                             FILEpath, FILEname, sexchromosome, smoothheatmap)
+scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file, 
+                             FILEpath, FILEname)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 6.4_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
-  smoothheatmap <- config_hid$smoothheatmap
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 6.4_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  # Locked variable
+  smoothheatmap <- getOption("smoothheatmap")
+  sexchromosome <- getOption("sexchromosome")
+  
+  #--------------------- start below ---------------------
   
   if (smoothheatmap == TRUE) {
     # bins template
     bins_window = input[[1]]$bins
     bins_window$copy.number <- NULL
-    
     # chromosome separated in fixed-bin size 
     chr_df = circlize::read.chromInfo(species = pqArm_file)$df 
     
@@ -867,38 +643,36 @@ NEW_scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file,
     } else {
       chr_df = chr_df[chr_df$chr %in% c(paste0("chr", 1:22), "chrX", "chrY"), ]
     }
-    
     chr_gr = GenomicRanges::GRanges(seqnames = chr_df[, 1], 
                                     ranges = IRanges::IRanges(chr_df[, 2] + 1, 
                                                               chr_df[, 3] + 1))
     chr_window = EnrichedHeatmap::makeWindows(chr_gr, w = 1e6, short.keep = T)
     mtch = as.data.frame(IRanges::findOverlaps(chr_window, bins_window, type = "any"))
-    
     # 先平均出每個bin 的copy number ，得到average sequence
     final_cluster <- final_cluster %>% dplyr::filter(.data$Subclone_cellnum >= cellcutoff)
     final_cluster <- final_cluster %>%
-      tidyr::unite("Subclone_no", Subclone_cluster, Subclone_cellnum, 
-                   sep = " (n = ", remove = FALSE) %>%
-      mutate(Subclone_no = paste0(Subclone_no, ")"))
+                     tidyr::unite("Subclone_no", Subclone_cluster, Subclone_cellnum, 
+                                  sep = " (n = ", remove = FALSE) %>%
+                     mutate(Subclone_no = paste0(Subclone_no, ")"))
     subclone_no <- unique(final_cluster$Subclone_cluster)
-    
     num_mat <- NULL
+    
     for (i in 1:length(subclone_no)) {
       cellID <- final_cluster %>% 
-        dplyr::filter(.data$Subclone_cluster %in% subclone_no[i]) %>% 
-        dplyr::pull(.data$cellID)
+                dplyr::filter(.data$Subclone_cluster %in% subclone_no[i]) %>% 
+                dplyr::pull(.data$cellID)
       Subclone_CN <- NEW_CN_seq(input = input, Template = cellID) 
       averageCN <- round(apply(Subclone_CN, 1, mean), digits = 0)  
       smooth_CN = rep(2, length(chr_window))
       recalculateCN = mtch %>%
-        dplyr::mutate(copy_number = averageCN[.data$subjectHits]) %>%
-        dplyr::group_by(.data$queryHits) %>%
-        dplyr::summarise(mean_copy_number = round(mean(.data$copy_number, 
-                                                       na.rm = TRUE), 
-                                                  digits = 0))
+                      dplyr::mutate(copy_number = averageCN[.data$subjectHits]) %>%
+                      dplyr::group_by(.data$queryHits) %>%
+                      dplyr::summarise(mean_copy_number = round(mean(.data$copy_number, 
+                                                                     na.rm = TRUE), 
+                                                                     digits = 0))
       smooth_CN[as.numeric(recalculateCN$queryHits)] <- recalculateCN$mean_copy_number
       
-      if(is.null(num_mat)) {
+      if (is.null(num_mat)) {
         num_mat <- smooth_CN
         num_mat <- as.matrix(num_mat) 
       } else {
@@ -907,83 +681,73 @@ NEW_scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file,
       }
     }
     colname_num_mat <- final_cluster %>% 
-      filter(Subclone_cluster %in% subclone_no) %>%
-      select(Subclone_cluster, Subclone_no) %>%
-      distinct() %>% 
-      arrange(as.numeric(Subclone_cluster))
+                       filter(Subclone_cluster %in% subclone_no) %>%
+                       select(Subclone_cluster, Subclone_no) %>%
+                       distinct() %>% 
+                       arrange(as.numeric(Subclone_cluster))
     colnames(num_mat) <- colname_num_mat$Subclone_no
     Subclone_no <- colnames(num_mat) 
-    
-    chr_sort <- as.data.frame(chr_window) %>% 
-      dplyr::select(.data$seqnames, .data$start)
-    
+    chr_sort <- as.data.frame(chr_window) %>% dplyr::select(.data$seqnames, .data$start)
     # Setup heatmap annotations based on user parameters and data structure safety thresholds
     chr <- as.character(sort(GenomicRanges::seqnames(chr_window)))
+    
     if (sexchromosome == FALSE) {
       num_mat <- cbind(chr_sort, num_mat) %>%
-        dplyr::filter(!.data$seqnames %in% c("chrX", "chrY", "chrM")) %>%
-        as.matrix()
-      
+                 dplyr::filter(!.data$seqnames %in% c("chrX", "chrY", "chrM")) %>%
+                 as.matrix()
       num_mat <- num_mat[, -c(1, 2), drop = FALSE]
       num_mat <- apply(num_mat, c(1, 2), as.numeric)
-      
       chr <- chr[!(chr %in% c("chrX", "chrY", "chrM"))]
       chr <- factor(chr, levels = dplyr::setdiff(levels(GenomicRanges::seqnames(chr_window)), 
                                                  c("chrX", "chrY", "chrM")))
     } else {
       chr <- factor(chr, levels = levels(GenomicRanges::seqnames(chr_window)))
     }
-    
   } else {
-    ### without smoothing step ###
+    # without smoothing step
     final_cluster <- final_cluster %>% dplyr::filter(.data$Subclone_cellnum >= cellcutoff)
     final_cluster <- final_cluster %>%
-      tidyr::unite("Subclone_no", Subclone_cluster, 
-                   Subclone_cellnum, sep = " (", remove = FALSE) %>%
-      mutate(Subclone_no = paste0(Subclone_no, ")"))
+                     tidyr::unite("Subclone_no", Subclone_cluster, 
+                                  Subclone_cellnum, sep = " (n =", remove = FALSE) %>%
+                     mutate(Subclone_no = paste0(Subclone_no, ")"))
     subclone_no <- unique(final_cluster$Subclone_cluster)
-    
     num_mat <- NULL
-    for(i in 1:length(subclone_no)) {
+    
+    for (i in 1:length(subclone_no)) {
       cellID <- final_cluster %>% 
-        dplyr::filter(.data$Subclone_cluster %in% subclone_no[i]) %>% 
-        dplyr::pull(.data$cellID)
-      Subclone_CN <- NEW_CN_seq(input = input, Template = cellID) # Fixed standard variable name capitalization
+                dplyr::filter(.data$Subclone_cluster %in% subclone_no[i]) %>% 
+                dplyr::pull(.data$cellID)
+      # Fixed standard variable name capitalization
+      Subclone_CN <- NEW_CN_seq(input = input, Template = cellID) 
       num_mat <- cbind(num_mat, round(apply(Subclone_CN, 1, mean), digits = 0))
     }
-    
     chr_window = input[[1]]$bins
     chr_window$copy.number <- NULL
-    
     colname_num_mat <- final_cluster %>% 
-      filter(Subclone_cluster %in% subclone_no) %>%
-      select(Subclone_cluster, Subclone_no) %>%
-      distinct() %>% 
-      arrange(as.numeric(Subclone_cluster))
+                       filter(Subclone_cluster %in% subclone_no) %>%
+                       select(Subclone_cluster, Subclone_no) %>%
+                       distinct() %>% 
+                       arrange(as.numeric(Subclone_cluster))
     colnames(num_mat) <- colname_num_mat$Subclone_no
     Subclone_no <- colnames(num_mat) 
-    
     chr_sort <- chr_window %>%
-      as.data.frame() %>%
-      dplyr::select(.data$seqnames, .data$start) %>%
-      dplyr::arrange(.data$seqnames, .data$start)
-    
+                as.data.frame() %>%
+                dplyr::select(.data$seqnames, .data$start) %>%
+                dplyr::arrange(.data$seqnames, .data$start)
     # Superimpose chromosomal definitions conditionally based on incoming structures
     num_mat <- cbind(chr_sort, num_mat) %>%
-      dplyr::arrange(.data$seqnames, .data$start)
-    
+               dplyr::arrange(.data$seqnames, .data$start)
     chr <- as.character(num_mat$seqnames)
     
     if (sexchromosome == FALSE) {
       num_mat <- num_mat %>% 
-        dplyr::filter(!.data$seqnames %in% c("chrX", "chrY", "chrM"))
+                 dplyr::filter(!.data$seqnames %in% c("chrX", "chrY", "chrM"))
       chr <- as.character(num_mat$seqnames)
       chr <- factor(chr, levels = dplyr::setdiff(levels(GenomicRanges::seqnames(chr_window)), 
                                                  c("chrX", "chrY", "chrM")))
     } else {
       chr <- factor(chr, levels = levels(GenomicRanges::seqnames(chr_window)))
     }
-    
     num_mat <- as.matrix(num_mat)
     num_mat <- num_mat[, -c(1, 2), drop = FALSE]
     num_mat <- apply(num_mat, c(1, 2), as.numeric)
@@ -991,18 +755,14 @@ NEW_scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file,
   # heatmap annotation labels
   chr_level <- unique(sub("^chr", "", chr))
   dynamic_colors <- generate_dynamic_colormap(data_matrix = num_mat)
-  
   grDevices::png(filename = paste0(FILEpath, FILEname),
                  width = 2800,
                  height = (length(subclone_no)) * 150)
-  
   legend_nrow <- min(length(dynamic_colors), 20)
-  heatmap_legend <- ComplexHeatmap::Legend(
-    labels = names(dynamic_colors),  
-    legend_gp = grid::gpar(fill = dynamic_colors),
-    title = "Copy number",
-    nrow = legend_nrow)  
-  
+  heatmap_legend <- ComplexHeatmap::Legend(labels = names(dynamic_colors),  
+                                           legend_gp = grid::gpar(fill = dynamic_colors),
+                                           title = "Copy number",
+                                           nrow = legend_nrow)
   Oncoscan <- ComplexHeatmap::Heatmap(t(num_mat), 
                                       name = "Copy number", 
                                       col = dynamic_colors,
@@ -1018,10 +778,11 @@ NEW_scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file,
                                       row_dend_width = ggplot2::unit(5, "cm"),
                                       row_dend_gp = grid::gpar(lwd = 2, col = "black"),
                                       row_title = "scDNA clusters",
-                                      row_title_gp = grid::gpar(fontsize = 40, fontface = "bold"),
+                                      row_title_gp = grid::gpar(fontsize = 40, 
+                                                                fontface = "bold"),
                                       left_annotation = ComplexHeatmap::rowAnnotation(
                                         subgroup = ComplexHeatmap::anno_text(
-                                          Subclone_no, rot = 0, gp = grid::gpar(fontsize = 30))), 
+                                           Subclone_no, rot = 0, gp = grid::gpar(fontsize = 30))), 
                                       column_title = chr_level,
                                       column_title_side = "bottom",
                                       column_title_gp = grid::gpar(fontsize = 25),
@@ -1035,5 +796,5 @@ NEW_scDNA_CNVpattern <- function(input, final_cluster, cellcutoff, pqArm_file,
   
   grDevices::dev.off()
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 }

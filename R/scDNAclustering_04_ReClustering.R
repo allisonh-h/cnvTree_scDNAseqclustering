@@ -16,20 +16,21 @@
 #'
 pqArm_recluster <- function(pqArm_cluster, Cluster)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 4.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 4.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   # pqArm_cluster <- read.xlsx(xlsxFile = FILEpath) ##這裡需要檢查資料的function
   pqArm_cluster <- pqArm_cluster %>% dplyr::filter(.data$cluster %in% Cluster)
-
   # unique pattern output
   Pattern_more10 <- pqArm_cluster %>%
                     dplyr::filter(.data$pqArm_cellnum >= 2) %>%
                     dplyr::pull(.data$pqArm_pattern) %>%
                     unique()
-
+  
   # check any Pattern_more10 or Pattern_less10 is NULL
   if (length(Pattern_more10) == 0) {
     return(0)
@@ -41,8 +42,8 @@ pqArm_recluster <- function(pqArm_cluster, Cluster)
   New_cluster <- NULL
   N_cluster <- NULL
   
-  if (config_hid$msg == TRUE) {
-    print(paste0("LH: start looping...4.1.1_cnvTree_", config_hid$v_num)) # LH: added 022326
+  if (cnvTree_msg == TRUE) {
+    print(paste0(fucStep, "start looping...4.1.2_cnvTree_", cnvTree_v_num)) 
   }
   
   for (i in 1:ncol(Pattern_more10)) {
@@ -57,7 +58,7 @@ pqArm_recluster <- function(pqArm_cluster, Cluster)
                  `row.names<-`(colnames(Pattern_more10)) %>%
                  `colnames<-`(colnames(Pattern_more10))
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(New_cluster)
 }
@@ -78,7 +79,6 @@ pqArm_recluster <- function(pqArm_cluster, Cluster)
 pqArm_cluster.pattern <- function (pattern) # function 4.1.1
 {
   P_list <- base::strsplit(pattern, split = "_")
-  
   P <- P_list %>% 
        base::data.frame() %>%
        stats::setNames(as.character(pattern)) %>% # Explicitly cast to character
@@ -145,22 +145,24 @@ euclidean <- function(a, b) # function 4.1.2
 pqArm_reclustering_dif <- function(input, pqArm_recluster_sim, pqArm_cluster, 
                                    Cluster, pqArm_file)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 4.2_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 4.2_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
-  pqArm_sim <- apply(pqArm_recluster_sim, 2, function(x) min(x[x!=0]) )   
+  #--------------------- start below ---------------------
+  
+  pqArm_sim <- apply(pqArm_recluster_sim, 2, function(x) min(x[x!=0]))   
   # 2: column is the more10 cluster pattern
   pqArm_sim <- as.data.frame(pqArm_sim)
-  
-  CN_bins_template <- NEW_CN_template(input = input, pqArm_file = pqArm_file) #LH_02112025: modified
-  n_chr <- length(levels(CN_bins_template$chr)) #LH_02112025: Added
-  
+  # LH modified 022025
+  CN_bins_template <- NEW_CN_template(input = input, pqArm_file = pqArm_file) 
+  n_chr <- length(levels(CN_bins_template$chr)) # LH added 022025
   chr_pq <- paste0(rep(levels(CN_bins_template$chr), each = 2), 
-                   rep(c("p", "q"), times = n_chr)) #LH_02112025: modified
+                   rep(c("p", "q"), times = n_chr)) # LH modified 022025
 
-  #將細胞數<10的cluster與細胞數>2的cluster相比，找到相似度最高的>2Cluster考慮合併
+  # 將細胞數 <10 的cluster與細胞數 >2 的cluster相比，找到相似度最高的 >2 Cluster
+  # 考慮合併
   new_pqArm_cluster <- NULL
   for (i in 1:nrow(pqArm_sim)) {
     p <- rownames(pqArm_sim)[i]
@@ -172,17 +174,17 @@ pqArm_reclustering_dif <- function(input, pqArm_recluster_sim, pqArm_cluster,
   new_pqArm_cluster <- new_pqArm_cluster %>%
                        as.data.frame() %>%
                        stats::setNames(c("less10", "more10"))
-
   # 得到 information about which pqArm is different
   new_pqArm_PQreturn <- NULL
   
-  if (config_hid$msg == TRUE) {
-    DebugMsg(fucStep, "start for-loop 4.2.1 <-> 4.1.1 in:", msg = config_hid$msg) # LH: added on 02242026
+  if (cnvTree_msg == TRUE) {
+    DebugMsg(fucStep, "start for-loop 4.2.1 <-> 4.1.1 in:", cnvTree_msg = cnvTree_msg)
   }
   
   for (i in 1:nrow(new_pqArm_cluster)) {
     p <- c(new_pqArm_cluster$less10[i], new_pqArm_cluster$more10[i])
-    PQreturn <- pqArm_return.PQ(pattern = p, PQarm = chr_pq)# names(new_pqArm_PQreturn): Subclone name, Inside: CellNum>10 cluster pattern
+    # names(new_pqArm_PQreturn): Subclone name, Inside: CellNum >10 cluster pattern
+    PQreturn <- pqArm_return.PQ(pattern = p, PQarm = chr_pq)
     Times <- length(PQreturn)
     lessmore <- cbind(less10 = rep(new_pqArm_cluster$less10[i], times = Times), 
                       more10 = rep(new_pqArm_cluster$more10[i], times = Times))
@@ -190,18 +192,16 @@ pqArm_reclustering_dif <- function(input, pqArm_recluster_sim, pqArm_cluster,
                           rbind(new_pqArm_PQreturn) %>%
                           as.data.frame()
   }
-
   # which pqArm is different than change into bins-level than check how many bins are different
   # pqArm_cluster <- read.xlsx(xlsxFile = FILEpath)
   pqArm_cluster <- pqArm_cluster %>% dplyr::filter(.data$cluster == Cluster)
-  CN_matrix <- NEW_CN_seq(input = input, Template = pqArm_cluster$cellID) #LH_02102025: modified
+  CN_matrix <- NEW_CN_seq(input = input, Template = pqArm_cluster$cellID) #LH 022025 modified
   CN_matrix$Chr_arm <- paste0(CN_bins_template$chr, CN_bins_template$arm)
-
   dif_num <- NULL
   dif_ratio <- NULL
   
-  if (config_hid$msg == TRUE) {
-    DebugMsg(fucStep, "start for-loop 4.2.2 <-> 3.1.2 in:", msg = config_hid$msg) # LH: added on 02242026
+  if (cnvTree_msg == TRUE) {
+    DebugMsg(fucStep, "start for-loop 4.2.2 <-> 3.1.2 in:", cnvTree_msg = cnvTree_msg)
   }
   
   for (i in 1:nrow(new_pqArm_PQreturn)) {
@@ -214,14 +214,15 @@ pqArm_reclustering_dif <- function(input, pqArm_recluster_sim, pqArm_cluster,
                                    which_Arm = Arm, 
                                    Tem = pqArm_cluster, 
                                    CN_matrix = CN_matrix)
-
-    dif_num <- c(dif_num, length(which(more10_CN != less10_CN))) # Number of bins are different
-    dif_ratio <- c(dif_ratio, length(which(more10_CN != less10_CN))/length(more10_CN)) # Ratio in chr are different
+    # Number of bins are different
+    dif_num <- c(dif_num, length(which(more10_CN != less10_CN))) 
+    # Ratio in chr are different
+    dif_ratio <- c(dif_ratio, length(which(more10_CN != less10_CN))/length(more10_CN)) 
   }
   new_pqArm_PQreturn$dif_num <- dif_num
   new_pqArm_PQreturn$dif_ratio <- dif_ratio
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(new_pqArm_PQreturn)
 }
@@ -241,7 +242,7 @@ pqArm_reclustering_dif <- function(input, pqArm_recluster_sim, pqArm_cluster,
 #' @return A character vector indicating the chromosome arms (`p` or `q`)
 #'   that show differences between the two clusters.
 #'
-pqArm_return.PQ <- function(pattern, PQarm)
+pqArm_return.PQ <- function(pattern, PQarm) # function 4.2.1
 {
   pqArm_list <- PQarm
   Pattern_unlist <- pqArm_cluster.pattern(pattern = pattern) %>%
@@ -272,7 +273,7 @@ pqArm_return.PQ <- function(pattern, PQarm)
 #' @return A numeric vector where each element represents the mode copy number value
 #'   for a given bin within a cluster of cells.
 #'
-pqArm_return.Bins <- function(Pattern, which_Arm, Tem, CN_matrix)
+pqArm_return.Bins <- function(Pattern, which_Arm, Tem, CN_matrix) # function 4.2.2
 {
   ID <- Tem %>%
         dplyr::filter(.data$pqArm_pattern %in% c(Pattern)) %>%
@@ -281,20 +282,18 @@ pqArm_return.Bins <- function(Pattern, which_Arm, Tem, CN_matrix)
   if (length(ID) == 0) {
     stop("No matching cellID found in copy number matrix.")
   }
-
   CNmatrix <- CN_matrix %>%
               dplyr::filter(.data$Chr_arm %in% which_Arm) %>%
               dplyr::select(dplyr::all_of(ID))  # 確保 ID 為存在的列名
-
-  CNmatrix <- NEW_pqArm_DelNeuAmp(matrix = CNmatrix)  # 只看 Del/Neu/Amp; LH_02102025: modified
-
+  CNmatrix <- NEW_pqArm_DelNeuAmp(matrix = CNmatrix)  
+  
   CN_bins <- apply(CNmatrix, 1, function(x) {
     freq <- table(as.integer(x))
     sorted_freq <- sort(freq, decreasing = TRUE)
     first_element <- as.integer(names(sorted_freq)[1])
     return(first_element)
   })
-
+  
   return(CN_bins)
 }
 
@@ -321,14 +320,15 @@ pqArm_return.Bins <- function(Pattern, which_Arm, Tem, CN_matrix)
 pqArm_reclusterBy_ratio_target <- function(pqArm_cluster, Cluster, 
                                            pqReclsut_sim, difratio_chr)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 4.3_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 4.3_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   # pqArm_cluster <- read.xlsx(xlsxFile = FILEpath)
   pqArm_cluster <- pqArm_cluster %>% dplyr::filter(.data$cluster %in% Cluster)
-
   Chioce <- pqReclsut_sim %>%
             dplyr::group_by(.data$less10) %>%
             dplyr::mutate(less10_times = dplyr::n(),
@@ -345,14 +345,12 @@ pqArm_reclusterBy_ratio_target <- function(pqArm_cluster, Cluster,
     Selected <- Chioce %>%
                 dplyr::filter(.data$merge_pattern %in% c(pattern),
                               .data$dif_ratio > difratio_chr)
-
     if (nrow(Selected) > 0) {
       Chioce <- Chioce %>% dplyr::filter(!.data$merge_pattern %in% c(pattern))
     } else {
       Chioce <- Chioce
     }
   }
-
   # 一種less10 最終只能配對到一個more10
   Chioce_Result <- NULL
   #pattern = unique(Chioce$less10)[3]
@@ -369,7 +367,6 @@ pqArm_reclusterBy_ratio_target <- function(pqArm_cluster, Cluster,
       Chioce_Result <- Chioce_Result %>% rbind(Selected)
     }
   }
-
   if (is.null(Chioce_Result) == TRUE) {
     return(NULL)
   } else {
@@ -377,18 +374,18 @@ pqArm_reclusterBy_ratio_target <- function(pqArm_cluster, Cluster,
     count = 0
     while (nrow(Chioce_Result)>0) {
       count = count + 1
-      pattern <- c(Chioce_Result$less10[1], Chioce_Result$more10[1]) # select start merge cluster
+      #  select start merge cluster
+      pattern <- c(Chioce_Result$less10[1], Chioce_Result$more10[1]) 
       ss <- Chioce_Result %>%
             dplyr::filter(.data$less10 %in% pattern | .data$more10 %in% pattern)
       pattern_group <- c(unique(ss$less10, ss$more10))
       new_Chioce[[count]] <- pattern_group
-
-      Chioce_Result <- Chioce_Result %>%
-        dplyr::filter(!.data$less10 %in% pattern_group & !.data$more10 %in% pattern_group)
+      Chioce_Result <- Chioce_Result %>% dplyr::filter(!.data$less10 %in% pattern_group &
+                                                       !.data$more10 %in% pattern_group)
     }
   }
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(new_Chioce)
 }
@@ -413,27 +410,30 @@ pqArm_reclusterBy_ratio_target <- function(pqArm_cluster, Cluster,
 #'
 pqArm_recluster_result <- function(pqArm_cluster, pqReclsut_target)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 4.4_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 4.4_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   pqArm_cluster$Recluster_pattern <- pqArm_cluster$pqArm_pattern
 
   for (i in 1:length(pqReclsut_target)) {
-    pqArm_cluster$Recluster_pattern <- ifelse(pqArm_cluster$Recluster_pattern %in% pqReclsut_target[[i]], 
+    pqArm_cluster$Recluster_pattern <- 
+      ifelse(pqArm_cluster$Recluster_pattern %in% pqReclsut_target[[i]], 
                                               i, pqArm_cluster$Recluster_pattern)
   }
-
   Recluster_summary <- pqArm_reclustering_summary(Data = pqArm_cluster$Recluster_pattern)
-  pqArm_cluster <- dplyr::left_join(pqArm_cluster, Recluster_summary, by = "Recluster_pattern") %>%
+  pqArm_cluster <- dplyr::left_join(pqArm_cluster, Recluster_summary, 
+                                    by = "Recluster_pattern") %>%
                    dplyr::arrange(dplyr::desc(.data$Recluster_cellnum)) %>%
                    dplyr::select(.data$cellID, .data$cluster, .data$pqArm_pattern, 
                                  .data$pqArm_cellnum, .data$pqArm_cluster,
                                  .data$Recluster_pattern, .data$Recluster_cellnum, 
                                  .data$Recluster_cluster)
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(pqArm_cluster)
 }
@@ -457,10 +457,12 @@ pqArm_recluster_result <- function(pqArm_cluster, pqReclsut_target)
 #'
 pqArm_reclustering_summary <- function(Data)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 4.4.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 4.4.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   cluster_table <- table(Data) %>%
                    as.data.frame() %>%
@@ -468,7 +470,7 @@ pqArm_reclustering_summary <- function(Data)
   cluster_table$Recluster_cluster <- seq_len(nrow(cluster_table))
   colnames(cluster_table) <- c("Recluster_pattern", "Recluster_cellnum", "Recluster_cluster")
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(cluster_table)
 }

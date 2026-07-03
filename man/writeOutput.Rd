@@ -11,7 +11,8 @@ writeOutput(data, filename, path)
 
 \item{filename}{A character string specifying the name of the output \code{.txt} file.}
 
-\item{path}{A character string specifying the directory where the file will be saved.}
+\item{path}{A character string specifying the directory where the file will be
+saved.}
 }
 \value{
 No return value, called for side effects (writing a file to disk).

@@ -33,10 +33,12 @@
 #'
 superimpose.data <- function(inputFILE, DeterminedCNVs, cnv_ratio)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 9.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 9.1_cnvTree_", cnvTree_v_num) 
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   Groups <- unique(inputFILE$cnv_grouping$cell_group_name)
   superimpose <- NULL
@@ -48,7 +50,6 @@ superimpose.data <- function(inputFILE, DeterminedCNVs, cnv_ratio)
             filter(cell_group_name %in% c(Groups[groups]),
                    chr %in% c(unique(DeterminedCNVs$chr)),
                    CN %in% c(unique(DeterminedCNVs$CN)))
-
     intersection <- merge(DeterminedCNVs, CNVs, by = c("chr", "CN"))
     intersection <- intersection %>%
                     mutate(F_start = case_when(start < CNV_start ~ 0,
@@ -69,7 +70,6 @@ superimpose.data <- function(inputFILE, DeterminedCNVs, cnv_ratio)
                     group_by(CNV_region) %>%
                     summarise(cnv_range = sum(cnv_range)) %>%
                     as.data.frame(.)
-    
     superimpose <- left_join(DeterminedCNVs, intersection, by = "CNV_region") %>%
                    mutate(cell_group_name = Groups[groups],
                           CNV_range = CNV_end - CNV_start + 1,
@@ -80,7 +80,7 @@ superimpose.data <- function(inputFILE, DeterminedCNVs, cnv_ratio)
   }
   inputFILE$superimpose <- superimpose
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(inputFILE)
 }
@@ -113,14 +113,16 @@ superimpose.data <- function(inputFILE, DeterminedCNVs, cnv_ratio)
 #'
 superimpose.FileLevel <- function(inputFILE, DeterminedCNVs) 
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 9.2_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 9.2_cnvTree_", cnvTree_v_num) 
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   Groups <- unique(inputFILE$superimpose$cell_group_name)
-  
   output <- NULL
+  
   for (groups in 1:length(Groups)) {
     cellID_list <- inputFILE$cnv_grouping %>% 
                    filter(cell_group_name %in% c(Groups[groups])) %>%
@@ -131,16 +133,13 @@ superimpose.FileLevel <- function(inputFILE, DeterminedCNVs)
                    pull(final_cnv)
     result_table <- data.frame(matrix(ncol = length(cnv_pattern), 
                                       nrow = length(cellID_list)))
-    
     result_table <- t(sapply(1:length(cellID_list), function(i) cnv_pattern))
     rownames(result_table) <- cellID_list
-    
     output <- rbind(output, result_table)
   }
-  
   colnames(output) <- paste0("CNV", DeterminedCNVs$CNV_region)
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(output)
 }

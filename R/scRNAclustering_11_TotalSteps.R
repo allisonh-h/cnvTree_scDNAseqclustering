@@ -22,13 +22,14 @@
 #'
 scRNA_input.infercnv <- function(input_dir_RNA, selected_groups, RNAdataSource) 
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 11.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 11.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   cnv_Output <- NULL
-  
   cnv_region <- infercnv_cnvregion(input_dir_RNA = input_dir_RNA, 
                                    selected_groups = selected_groups,
                                    RNAdataSource = RNAdataSource)
@@ -39,28 +40,24 @@ scRNA_input.infercnv <- function(input_dir_RNA, selected_groups, RNAdataSource)
                       cnv_grouping = cnv_grouping)
   cnv_Output$Round_1 <- result_list 
   
-  
-  merged_cnv_groupings <- lapply(cnv_Output, function(Round) 
-  {
+  merged_cnv_groupings <- lapply(cnv_Output, function(Round) {
     round_data <- lapply(Round, function(File) File$cnv_grouping)
     do.call(rbind, round_data)
   })
   
   for(i in 1: length(merged_cnv_groupings)) {
     # Check for duplicated cellID in the i-th data frame of merged_cnv_groupings
-    dup <- duplicated(merged_cnv_groupings[[i]]$cellID) ## LH
-    
+    dup <- duplicated(merged_cnv_groupings[[i]]$cellID)
     if (any(dup)) {
       print(paste("LH: duplicated cellID found in index", i)) 
     }
-    
-    if(any(duplicated(merged_cnv_groupings[[i]]$cellID))) {
+    if (any(duplicated(merged_cnv_groupings[[i]]$cellID))) {
       duplicated_value <- merged_cnv_groupings[[i]]$cellID[duplicated(merged_cnv_groupings[[i]]$cellID)]
       stop(paste("Duplicated cellID in Round", i, ":", duplicated_value))
     }
   }
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(cnv_Output)
 }
@@ -97,12 +94,14 @@ scRNA_input.infercnv <- function(input_dir_RNA, selected_groups, RNAdataSource)
 #'
 scRNA_superimpose <- function(RNA_output, DeterminedCNVs, cnv_ratio) 
 {
-  config_path_hid <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_path_hid)
-  fucStep <- paste0(" 11.2_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 11.2_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
-  if(length(RNA_output) == 0) {
+  #--------------------- start below ---------------------
+  
+  if (length(RNA_output) == 0) {
     message("Please input RNA_output.")
   } else {
     superimpose_output <- list()
@@ -120,7 +119,7 @@ scRNA_superimpose <- function(RNA_output, DeterminedCNVs, cnv_ratio)
     superimpose_output[[Folder_name]] = S_output
   }
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 
   return(superimpose_output)
 }
@@ -143,26 +142,31 @@ scRNA_superimpose <- function(RNA_output, DeterminedCNVs, cnv_ratio)
 #' @param cellcutoff A numeric value specifying the minimum number of cells required 
 #'  for a cluster to be retained.
 #' @param cellcutoffRNA A numeric threshold specifying the minimum number of cells 
-#'   required to retain an RNA cluster during the formatting step.
+#'  required to retain an RNA cluster during the formatting step.
 #' @param filterZero A logical value (\code{TRUE} or \code{FALSE}). If \code{TRUE},  
-#'   removes columns where the sum of all cell clusters is zero.
+#'  removes columns where the sum of all cell clusters is zero.
 #'   
 #' @return 
 #' This function does not return an R object. Instead, it generates and saves three  
 #' files to the `output.dir`:
 #' \itemize{
-#'   \item \code{cnvTree.scRNAseq_grouping}: A tabular file of cell IDs and their CNV patterns.
-#'   \item \code{cnvTree.scRNAseq_RNAcluster}: A tabular file of the formatted superimpose output.
-#'   \item \code{cnvTree.scRNAseq_Fig_CNVpattern.png}: A heatmap visualization of the CNV patterns.
+#'   \item \code{cnvTree.scRNAseq_grouping}: A tabular file of cell IDs and their 
+#'    CNV patterns.
+#'   \item \code{cnvTree.scRNAseq_RNAcluster}: A tabular file of the formatted 
+#'    superimpose output.
+#'   \item \code{cnvTree.scRNAseq_Fig_CNVpattern.png}: A heatmap visualization 
+#'    of the CNV patterns.
 #' }
 #'
 scRNA_output <- function(Summary, output_dir, DeterminedCNVs, cellcutoff, 
                          cellcutoffRNA, filterZero) 
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 11.3_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 11.3_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   message("=== Step 05: Output cnvTree scRNA results ===")
   timestamp <- format(Sys.time(), "%m%d_%H")
@@ -198,9 +202,8 @@ scRNA_output <- function(Summary, output_dir, DeterminedCNVs, cellcutoff,
              FILEpath = output_dir,
              patternType = "scDNA")
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 }
-
 
 
 #' cnvTree_scRNAclustering
@@ -246,10 +249,12 @@ cnvTree_scRNAclustering <- function(input_dir_RNA, selected_groups, output_dir,
                                     cellcutoff, cellcutoffRNA, RNAdataSource, 
                                     cnv_ratio, filterZero) 
 { 
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 11.4_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 11.4_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
 
   ptm <- startTimed("Start cnvTree_scRNAclustering...")
   
@@ -282,10 +287,10 @@ cnvTree_scRNAclustering <- function(input_dir_RNA, selected_groups, output_dir,
                cellcutoffRNA = cellcutoffRNA,
                DeterminedCNVs = Determine_CNVs,
                filterZero = filterZero)
-  
   endTimed(ptm)
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
   print(paste("Output directory is set at: ", config$output_dir))
   
-  return(Superimpose_output) #LH: changed 042926
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
+  
+  return(Superimpose_output) #LH changed 042026
 }

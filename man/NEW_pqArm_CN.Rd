@@ -4,14 +4,7 @@
 \alias{NEW_pqArm_CN}
 \title{NEW_pqArm_CN}
 \usage{
-NEW_pqArm_CN(
-  input,
-  Cluster_label,
-  Clustering_output,
-  pqArm_file,
-  cluster,
-  sexchromosome
-)
+NEW_pqArm_CN(input, Cluster_label, Clustering_output, pqArm_file)
 }
 \arguments{
 \item{input}{A named list where each element is a \code{GRanges} object representing
@@ -33,8 +26,6 @@ Giemsa-stained chromosomes. It should include the following columns:
 \item \code{name}: Name of cytogenetic band.
 \item \code{gieStain}: Giemsa stain results.
 }}
-
-\item{cluster}{The assigned cluster label (k = 2)}
 }
 \value{
 A matrix with smoothed copy number states (Total Deletion, Loss,

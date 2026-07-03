@@ -4,16 +4,7 @@
 \alias{scDNA_Output}
 \title{scDNA_Output}
 \usage{
-scDNA_Output(
-  input,
-  Summary,
-  pqArm_file,
-  output_dir,
-  consecutive_region,
-  cellcutoff,
-  sexchromosome,
-  smoothheatmap
-)
+scDNA_Output(input, Summary, pqArm_file, output_dir, cellcutoff)
 }
 \arguments{
 \item{input}{A named list where each element is a \code{GRanges} object representing
@@ -49,17 +40,8 @@ Giemsa-stained chromosomes. It should include the following columns:
 \item{output_dir}{A character string specifying the directory where the output
 files will be saved.}
 
-\item{consecutive_region}{A numeric value defining the minimum length threshold
-for filtering copy number variation (CNV) regions.}
-
 \item{cellcutoff}{A numeric value specifying the minimum number of cells required
 for a cluster to be retained.}
-
-\item{sexchromosome}{A logical value. If \code{TRUE}, the output includes plots
-with sex chromosome copy number information.}
-
-\item{smoothheatmap}{A logical value. If \code{TRUE}, the output applies smoothing
-over a 10⁶ bp range in chromosome copy number visualizations.}
 }
 \value{
 The function generates final clustering results and visualizations,

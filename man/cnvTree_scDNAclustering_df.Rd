@@ -4,13 +4,7 @@
 \alias{cnvTree_scDNAclustering_df}
 \title{cnvTree_scDNAclustering_df}
 \usage{
-cnvTree_scDNAclustering_df(
-  input_dir_DNA,
-  pqArm_file,
-  output_dir,
-  cellcutoff,
-  smoothheatmap
-)
+cnvTree_scDNAclustering_df(input_dir_DNA, pqArm_file, output_dir, cellcutoff)
 }
 \arguments{
 \item{input_dir_DNA}{A named list where each element is a \code{GRanges} object
@@ -32,27 +26,6 @@ files will be saved.}
 
 \item{cellcutoff}{A numeric value specifying the minimum number of cells required
 for a cluster to be retained in the final output.}
-
-\item{smoothheatmap}{A logical value. If \code{TRUE}, the final output applies
-smoothing over a 10⁶ bp range in chromosome copy number visualizations.}
-
-\item{difratio_chr}{A numeric value defining the threshold for acceptable
-difference ratios across different chromosomes.}
-
-\item{min_cell}{An integer specifying the minimum cell count required for a
-cluster to be included in the output.}
-
-\item{overlap_region}{An integer representing genomic regions where copy number
-frequently changes in the subclone clustering step.}
-
-\item{dif_ratio}{A numeric value defining the tolerance threshold for copy
-number differences between cells within a cluster.}
-
-\item{consecutive_region}{A numeric value defining the minimum CNV region length
-.  threshold for filtering CNV events in the final output.}
-
-\item{sexchromosome}{A logical value. If \code{TRUE}, the final output includes
-plots with sex chromosome copy number information.}
 }
 \value{
 The function performs complete clustering and CNV analysis, saving final

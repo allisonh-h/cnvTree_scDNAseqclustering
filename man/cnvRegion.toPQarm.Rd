@@ -23,7 +23,8 @@ Giemsa-stained chromosomes. It should include the following columns:
 }}
 }
 \value{
-A data frame mapping CNV regions to cytoband sites, containing the following columns:
+A data frame mapping CNV regions to cytoband sites, containing the
+following columns:
 \itemize{
 \item \code{chr}: Chromosome name (chr1, chr2, ...).
 \item \code{CNV_region}: The index of CNV regions.

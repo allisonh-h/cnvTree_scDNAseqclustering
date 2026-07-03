@@ -37,9 +37,12 @@ files will be saved.}
 This function does not return an R object. Instead, it generates and saves three
 files to the \code{output.dir}:
 \itemize{
-\item \code{cnvTree.scRNAseq_grouping}: A tabular file of cell IDs and their CNV patterns.
-\item \code{cnvTree.scRNAseq_RNAcluster}: A tabular file of the formatted superimpose output.
-\item \code{cnvTree.scRNAseq_Fig_CNVpattern.png}: A heatmap visualization of the CNV patterns.
+\item \code{cnvTree.scRNAseq_grouping}: A tabular file of cell IDs and their
+CNV patterns.
+\item \code{cnvTree.scRNAseq_RNAcluster}: A tabular file of the formatted
+superimpose output.
+\item \code{cnvTree.scRNAseq_Fig_CNVpattern.png}: A heatmap visualization
+of the CNV patterns.
 }
 }
 \description{

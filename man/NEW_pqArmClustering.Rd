@@ -4,7 +4,7 @@
 \alias{NEW_pqArmClustering}
 \title{NEW_pqArmClustering}
 \usage{
-NEW_pqArmClustering(input, pqArm_file, cluster, sexchromosome)
+NEW_pqArmClustering(input, pqArm_file)
 }
 \arguments{
 \item{input}{A named list where each element is a \code{GRanges} object representing
@@ -20,8 +20,6 @@ Giemsa-stained chromosomes. It should include the following columns:
 \item \code{name}: Name of cytogenetic band.
 \item \code{gieStain}: Giemsa stain results.
 }}
-
-\item{cluster}{The assigned cluster label (k = 2)}
 }
 \value{
 A data frame recording the pqArm clustering results for each cell,
@@ -43,6 +41,6 @@ selected_groups <- run_cnvTree_Pipeline(output_dir = config$output_dir,
 input_df <- changeFormat(input_dir_DNA = config$input_dir_DNA)
 pqArm_result <- NEW_pqArmClustering(input = input_df, 
                                     pqArm_file = config$pqArm_file)
- }
+}
 
 }

@@ -4,7 +4,7 @@
 \alias{changeFormat}
 \title{changeFormat}
 \usage{
-changeFormat(input_dir_DNA, cores, sexchromosome)
+changeFormat(input_dir_DNA)
 }
 \arguments{
 \item{input_dir_DNA}{A \code{.rds} file or \code{.txt} file containing a data frame with
@@ -16,9 +16,6 @@ the following required columns:
 \item \code{end}: End position of the segment.
 \item \code{copy.number}: Copy number value for the segment.
 }}
-
-\item{cores}{An integer specifying the number of CPU cores to use for parallel
-processing, default = 1.}
 }
 \value{
 A named list where each element represents a cell, containing its

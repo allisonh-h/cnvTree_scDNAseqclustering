@@ -12,26 +12,26 @@
 #'    - `start`: Start position of the segment.
 #'    - `end`: End position of the segment.
 #'    - `copy.number`: Copy number value for the segment.
-#'    
-#' @param cores An integer specifying the number of CPU cores to use for parallel 
-#'  processing, default = 1.
+#'   
 #' @return A named list where each element represents a cell, containing its 
 #'  corresponding genomic segments as a `GRanges` object.
 #'
 #' @export
 #'
-changeFormat <- function(input_dir_DNA, cores, sexchromosome) 
+changeFormat <- function(input_dir_DNA) 
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 1.0_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 1.0_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
   # Locked variable
-  cores = config_hid$cores
-  sexchromosome = config_hid$sexchromosome
+  sexchromosome <- getOption("sexchromosome")
+  cores <- getOption("cores")
   
-  if(endsWith(input_dir_DNA, ".rds") == TRUE) {
+  #--------------------- start below ---------------------
+  
+  if (endsWith(input_dir_DNA, ".rds") == TRUE) {
     Bin_CN <- readRDS(input_dir_DNA)
   } else if(endsWith(input_dir_DNA, ".txt") == TRUE) {
     Bin_CN <- utils::read.delim2(input_dir_DNA, sep = " ")
@@ -44,25 +44,21 @@ changeFormat <- function(input_dir_DNA, cores, sexchromosome)
     rows_to_remove <- grepl("chrX|chrY|chrM", Bin_CN$seqnames)
     Bin_CN <- Bin_CN[!rows_to_remove, ]
   }
-  
+  browser()
   data.table::setDT(Bin_CN)
-  
   clean_chroms <- unique(str_remove(Bin_CN$seqnames, "(?i)chr"))
   is_numeric <- !is.na(suppressWarnings(as.numeric(clean_chroms)))
   sorted_nums <- sort(as.numeric(clean_chroms[is_numeric]))
   sorted_sex  <- sort(clean_chroms[!is_numeric])
-  
   correct_level_order <- c(as.character(sorted_nums), sorted_sex)
-  
   Bin_CN <- Bin_CN %>%
             mutate(seqnames_sort = factor(str_remove(seqnames, "(?i)chr"), 
                    levels = correct_level_order)) %>%
             arrange(seqnames_sort)
-  # ----------------------------------------------------------------------------
   
   # Set up parallel environment
   future::plan(future::multisession, workers = cores)
-
+  
   # Split data by "cellID"
   Bin_CN_list <- split(Bin_CN, by = "cellID", keep.by = FALSE)
   template_data <- Bin_CN_list[[1]][,setdiff(names(Bin_CN_list[[1]]), 
@@ -71,23 +67,21 @@ changeFormat <- function(input_dir_DNA, cores, sexchromosome)
   template_gr <- GenomicRanges::makeGRangesFromDataFrame(template_data, 
                                                          keep.extra.columns = FALSE)
   NewFormat <- list()
+
   NewFormat <- lapply(seq_along(Bin_CN_list), function(i) {
-  #NewFormat <- future.apply::future_lapply(seq_along(Bin_CN_list), function(i) {##LH
+  
+    # NewFormat <- future.apply::future_lapply(seq_along(Bin_CN_list), function(i) { # LH
     # Extract current Bin_CN_list element
     cell_data <- Bin_CN_list[[i]]
-
     # Copy the template GRanges object and add "copy.number"
     Bins <- template_gr
     S4Vectors::mcols(Bins)$copy.number <- cell_data$copy.number
-
     # Compute breakpoints
-    shifted_cn <- c(NA, cell_data$copy.number[-nrow(cell_data)])  # 向前平移
+    shifted_cn <- c(NA, cell_data$copy.number[-nrow(cell_data)]) # 向前平移
     breakpoint_rows <- cell_data$copy.number != shifted_cn & !is.na(shifted_cn)
-
     breakpoints <- cell_data[breakpoint_rows, 
                              c("seqnames", "start", "end", "copy.number"), 
                              with = FALSE]
-
     # Convert breakpoints to GRanges if not empty
     Breakpoints <- if (nrow(breakpoints) == 0) {
       NULL
@@ -98,15 +92,12 @@ changeFormat <- function(input_dir_DNA, cores, sexchromosome)
                              copy.number = breakpoints$copy.number)
     }
     # Return a list with the new format
-    list(ID = names(Bin_CN_list)[i], 
-         bins = Bins, 
-         breakpoints = Breakpoints)
+    list(ID = names(Bin_CN_list)[i], bins = Bins, breakpoints = Breakpoints)
   })
-
   names(NewFormat) <- names(Bin_CN_list)
-
   on.exit(future::plan(future::sequential), add = TRUE)
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(NewFormat)
 }
@@ -130,10 +121,12 @@ changeFormat <- function(input_dir_DNA, cores, sexchromosome)
 #'
 NEW_CN_seq <- function(input, Template)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 1.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 1.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   c <- lapply(Template, function(i) {
     obj <- input[[i]]
@@ -145,11 +138,10 @@ NEW_CN_seq <- function(input, Template)
       NA_real_  # Use real if copy numbers are decimals
     }
   })
-  
   c <- as.data.frame(c, stringsAsFactors = FALSE) #避免字符串變為因子
   names(c) <- Template
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(c)
 }
@@ -177,74 +169,24 @@ NEW_CN_seq <- function(input, Template)
 #' 
 run_cnvTree_Pipeline <- function(output_dir, input_dir_RNA, RNAdataSource) 
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 1.2_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 1.2_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
-  #Ensure the output directory exists
+  #--------------------- start below ---------------------
+  
+  # Ensure the output directory exists
   if (!dir.exists(output_dir)) {
     dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
     message("Created output folder: ", output_dir)
   }
   selected_groups <- select_groups(input_dir_RNA = input_dir_RNA, 
                                    RNAdataSource = RNAdataSource)
-
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(selected_groups)
-}
-
-
-#' setup_pipeline_folders
-#'
-#' Setup Directory Paths Based on RNA Data Source Type; scans the single-cell RNA 
-#' input directory to dynamically identify and select the target data folder based 
-#' on the structure of the specified data source.
-#'
-#' @param input_dir_RNA Character. The root input directory path to recursively scan.
-#' @param output_dir Character. Path to the output folder.
-#' @param RNAdataSource Integer or Character. The type of RNA data source being used:
-#'   \itemize{
-#'     \item \code{1}: Tabular data file / matrix structure.
-#'     \item \code{2}: InferCNV output folder structure.
-#'   }
-#'
-#' @return Character. The absolute file path of the selected target folder.
-#' 
-setup_pipeline_folders <- function(input_dir_RNA, output_dir, RNAdataSource)
-{
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 1.2.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
-
-  all_dirs <- list.dirs(path = input_dir_RNA, 
-                        recursive = TRUE, 
-                        full.names = TRUE)
-  
-  dir_depths <- lengths(gregexpr("/", all_dirs))
-
-  #Ensure the folder actually contains sub-directories to prevent errors
-  if (length(dir_depths) == 0) {
-    stop("Error: No directories found in the specified input_dir_RNA.")
-  }
-  max_depth <- max(dir_depths)
-
-  #Identify folders at specific depths
-  if (RNAdataSource == 1) {
-    folders_2nd <- all_dirs[dir_depths == (max_depth)][1]
-  } else if (RNAdataSource == 2) {
-    folders_2nd <- all_dirs[dir_depths == (max_depth - 1)][1]
-  } else {
-    stop("Please define RNAdataSource for:
-          '1' Tabular data file
-          '2' InferCNV output folder")
-  }
-
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
-  
-  return(target_folder)
 }
 
 
@@ -277,10 +219,12 @@ setup_pipeline_folders <- function(input_dir_RNA, output_dir, RNAdataSource)
 #' 
 select_groups <- function(input_dir_RNA, RNAdataSource)
 {
-  config_hid_path <- system.file("cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 1.2.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 1.2.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
 
   if (RNAdataSource == "1") {
     print("datatype: dataframe")
@@ -292,7 +236,6 @@ select_groups <- function(input_dir_RNA, RNAdataSource)
     } else {
       stop("Unsupported format. Please provide a .rds, .txt, or .tsv file.")
     }
-    
   } else if (RNAdataSource == "2") { # InferCNV data
     print("datatype: InferCNV files")
     all_dirs <- list.dirs(path = input_dir_RNA, recursive = TRUE, full.names = TRUE)
@@ -304,7 +247,6 @@ select_groups <- function(input_dir_RNA, RNAdataSource)
                    grepl("HMM_CNV_predictions", File)]
     cnv_regions <- read.table(File, sep = "\t", quote = "", comment.char = "", 
                               fill = TRUE, header = TRUE)
-    
   } else {
     stop("Please set `config$RNAdataSource = 1 or 2`")
   }
@@ -320,31 +262,25 @@ select_groups <- function(input_dir_RNA, RNAdataSource)
   )
   
   menu_choices <- c(extracted_cell_group_names)
-  exit_index <- length(menu_choices) # This is the index number R assigns to our exit string
-  
-  choice_index_0 <- menu(
-    choices = menu_choices, 
-    title = "Select a group index:"
-  )
+  # This is the index number R assigns to exit string
+  exit_index <- length(menu_choices) 
+  choice_index_0 <- menu(choices = menu_choices, 
+                         title = "Select a group index:")
   
   if (choice_index_0 == 0) {
     stop("No group selected, stopping.") 
   } else {
     print(paste0("First Group Selected: ", extracted_cell_group_names[choice_index_0])) 
   }
-  
   repeat {
     n <- length(extracted_cell_group_names)
     choice_index <- menu(
       choices = menu_choices, 
-      title = "cnvTree: Choose more groups or enter 0 to finish."
-    )
-    
+      title = "cnvTree: Choose more groups or enter 0 to finish.")
     # Exit condition triggered by native 0 or selecting our appended "88" option
     if (choice_index == 0) {
-      DebugMsg(fucStep, "end", msg = config_hid$msg)
+      DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
       break 
-      
     } else if (choice_index %in% choice_index_0) {
       # CRITICAL FIX: Wrapped unique() in sort() because identical(c(2,1), c(1,2)) is FALSE.
       # Sorting ensures it successfully catches when all groups are selected.
@@ -353,20 +289,17 @@ select_groups <- function(input_dir_RNA, RNAdataSource)
       } else {
         print("cnvTree: All groups selected. Select 0 to finish.") 
       }
-      
     } else {
       choice_index_0 <- c(choice_index_0, choice_index)
       print(paste0("Group selected: ", extracted_cell_group_names[choice_index])) 
     }
   }
-  
   # Return unique selected groups
   selected_groups <- unique(extracted_cell_group_names[choice_index_0])
   message("Final selected groups: ")
   message(paste0(selected_groups, collapse = ", "))
-
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(selected_groups)
 }
@@ -386,22 +319,24 @@ select_groups <- function(input_dir_RNA, RNAdataSource)
 #'
 ProcessHmmList <- function(input_dir_DNA) 
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 1.3_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 1.3_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   files <- list.files(input_dir_DNA, full.names = TRUE)
   if (length(files) == 0) stop ("No hmm files found at: ", input_dir_DNA)
-  
   hmms <- loadFromFiles(files)
   names(hmms) <- basename(names(hmms)) # Strip Path from Names
+  
   # Sync Internal IDs
   for (i in seq_along(hmms)) {
     hmms[[i]]$ID <- names(hmms)[i]
   }
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(hmms)
 }

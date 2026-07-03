@@ -11,8 +11,7 @@ Totalcluster_pdf(
   cellcutoff,
   step = "Subclone",
   FILEname,
-  FILEpath,
-  sexchromosome
+  FILEpath
 )
 }
 \arguments{
@@ -45,9 +44,6 @@ Please ensure the name matches one of these options (default: "Subclone").}
 
 \item{FILEpath}{A character string specifying the file path where the output
 PDF will be saved.}
-
-\item{sexchromosome}{A logical value. If \code{TRUE}, the output plot includes
-copy number information for sex chromosomes. Defaults to \code{FALSE}.}
 }
 \value{
 A copy number profile visualization saved as a PDF file.

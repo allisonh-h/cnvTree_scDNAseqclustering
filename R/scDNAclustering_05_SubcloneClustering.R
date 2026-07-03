@@ -12,6 +12,7 @@
 #'  step for which breakpoints should be extracted.
 #'
 #' @return A data frame containing breakpoint sites with the following columns:
+#' 
 #'   - `seqnames`: Chromosome name (chr1, chr2, ...).
 #'   - `start`: Start position of the breakpoint.
 #'   - `end`: End position of the breakpoint.
@@ -22,25 +23,26 @@
 #'
 collect_cluster_bp <- function(input, Clustering_output, Recluster_label)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 5.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 5.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   selected_files <- Clustering_output %>%
                     dplyr::filter(.data$Recluster_cluster %in% Recluster_label) %>%
                     dplyr::pull(.data$cellID)
-
+  
   # Use lapply to gather breakpoints for all selected files at once
   breakpoints_list <- lapply(selected_files, function(i) {
     input[[i]]$breakpoints %>% as.data.frame() %>% dplyr::mutate(cellID = i)
   })
-
   # Combine all the results using bind_rows, which is more efficient than rbind 
   # in a loop
   breakpoints <- dplyr::bind_rows(breakpoints_list)
-
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(breakpoints)
 }
@@ -73,6 +75,7 @@ collect_cluster_bp <- function(input, Clustering_output, Recluster_label)
 #'
 #' @return A data frame recording significant breakpoints with the following 
 #'   columns:
+#'   
 #'   - `chr`: Chromosome name (chr1, chr2, ...).
 #'   - `site`: Breakpoint position.
 #'   - `times`: The frequency of breakpoint occurrence.
@@ -83,17 +86,17 @@ collect_cluster_bp <- function(input, Clustering_output, Recluster_label)
 #'
 output_bp_covers <- function(Template, binsize, overlap, overlap_times)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 5.2_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 5.2_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   chr <- unique(Template$seqnames) %>%
          factor(levels = levels(factor(Template$seqnames))) %>%
          sort()
-  
   # binsize <- input$width[1]
-  
   # 將10個bp轉換為實際數字
   bp <- NULL
   bp_list <- vector("list", length(chr))
@@ -106,7 +109,6 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
                   dplyr::group_by(.data$site) %>%
                   dplyr::summarise(times = dplyr::n(), .groups = 'drop') %>%
                   dplyr::mutate(site = as.numeric(as.character(.data$site)))
-    
     # 將其中點的數值做延伸並合併
     site_vec <- chr_unique$site
     cover_matrix <- sapply(site_vec, function(x) 
@@ -130,7 +132,6 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
       # 初始化bp_group
       bp_group <- data.frame()
       count <- 1
-      
       while (length(bp_order) > 0) {
         select_label <- which(bp_order %in% ((bp_order[1] - overlap):(bp_order[1] + overlap)))
         bp_group_1 <- data.frame(breakpoints = bp_order[select_label], events = count)
@@ -146,8 +147,15 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
     }
   })
   
+  #=============== OLD =================#
+  #bp <- dplyr::bind_rows(bp_list) %>%
+  #  dplyr::select(.data$chr, .data$site, .data$times, .data$events, .data$cover_nums, .data$cover_times) %>%
+  #  dplyr::mutate(binsize = binsize)
+  #=============== OLD =================#
+  
+  #=============== NEW =================#
   bp2 <- dplyr::bind_rows(bp_list)  ## LH: line added 12292025
-  #print(!(all(dim(bp2) == c(0, 0))))  # LH: added 12292025; FALSE if bp2 = 0x0
+  print(!(all(dim(bp2) == c(0, 0))))  # LH: added 122025; FALSE if bp2 = 0x0
   
   if (!(all(dim(bp2) == c(0, 0))) == TRUE) { ## LH: line added 12292025
     bp <- dplyr::bind_rows(bp_list) %>%
@@ -161,9 +169,11 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
   } else {
     bp <- NULL  ## LH: line added 12292025
   }
+  #=============== NEW =================#
+  
   cat("All the breakpoints in same Recluster group of cells ... \n")
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(bp)
 }
@@ -197,24 +207,24 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
 #'
 bp_events <- function(input, Template, binsize)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 5.3_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 5.3_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   # set chr levels
   vec <- unique(Template$chr)
   nums <- as.numeric(gsub("chr", "", vec)[grepl("\\d", vec)])
   nums <- paste0("chr", nums[order(nums)])
   # Levels <- c(nums, vec[!grepl("\\d", vec)])
-  Template$chr <- factor(Template$chr, levels = nums)  # 更加安全的做法是直接轉換因子
-
+  Template$chr <- factor(Template$chr, levels = nums) # 更加安全的做法是直接轉換因子
   # binsize <- Template$binsize[1]
   event_region <- NULL
 
-  event_region_list <- lapply(nums, function(k) {
+    event_region_list <- lapply(nums, function(k) {
     event <- unique(Template$events[which(Template$chr == k)])
-
     # 使用 lapply 來處理每個 event
     event_region_1 <- lapply(event, function(i) {
       Template %>% dplyr::filter(.data$chr == k, .data$events == i) %>%
@@ -230,18 +240,16 @@ bp_events <- function(input, Template, binsize)
   # 合併所有的 chr 結果
   event_region <- dplyr::bind_rows(event_region_list) %>%
                   dplyr::arrange(.data$chr, .data$min_site) %>%
-                  dplyr::mutate(event = dplyr::row_number()) #使用row_number()確保event重新編號
-
+                  # 使用row_number()確保event重新編號
+                  dplyr::mutate(event = dplyr::row_number()) 
   desired_order <- c("chr", "event", "cross_bp", "min_site", "max_site")
-  
   event_region <- event_region[ ,desired_order] %>%
                   dplyr::mutate(chr = factor(.data$chr, levels = nums)) %>%
                   dplyr::arrange(.data$chr)
-
   event_region <- event_region.bin(input = input, Template = event_region)
   event_region$binsize <- binsize
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(event_region)
 }
@@ -265,16 +273,17 @@ bp_events <- function(input, Template, binsize)
 #'
 event_region.bin <- function(input, Template)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 5.3.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 5.3.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   bins_num <- input[[1]]$bins@seqnames %>%
               table() %>%
               data.frame() %>%
               stats::setNames(c("chr", "Freq"))
-
   bins_num$CDF_start <- sapply(1:nrow(bins_num), function(x) {
     sum(bins_num$Freq[1:x-1])
   })
@@ -289,7 +298,7 @@ event_region.bin <- function(input, Template)
                             bins_level_max = (.data$max_site + .data$CDF_start - 1),
                             event = ifelse(is.na(.data$event), 0, .data$event))
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(Template)
 }
@@ -311,10 +320,12 @@ event_region.bin <- function(input, Template)
 #'
 bp_region <- function(event, binsize)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 5.4_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 5.4_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   # binsize = event$binsize[1]
   region <- data.frame()
@@ -331,7 +342,8 @@ bp_region <- function(event, binsize)
     end <- NULL
     event_binstart <- NULL
     event_binend <- NULL
-    if (event_R$region[1] == 0) {  # some chrmosome with no breakpoint
+    
+    if (event_R$region[1] == 0) { # some chromosome with no breakpoints
       event_R <- event_R %>%
                  dplyr::mutate(bp_start = 1,
                                bp_end = event_R$Freq[1]*binsize,
@@ -343,7 +355,7 @@ bp_region <- function(event, binsize)
                                    "region_ratio", "event_binstart", "event_binend"))
     } else {
       for (j in 1:(nrow(event_R) + 1)) {
-        if(j == 1) {
+        if (j == 1) {
           start <- c(0)
           end <- c(event_R$bp_start[j])
           event_binstart <- c(event_binstart, event_R$CDF_start[j])
@@ -381,14 +393,13 @@ bp_region <- function(event, binsize)
     }
     region <- event_R %>% rbind(region)
   }
-
   region <- region %>%
             dplyr::mutate(chr = factor(.data$chr, levels = levels(event$chr)),
                           region_size = round(.data$region_size, 0)) %>%
             dplyr::arrange(.data$chr)
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
-  
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
+
   return(region)
 }
 
@@ -414,24 +425,23 @@ bp_region <- function(event, binsize)
 #'
 Region_CN <- function(input, Reclustering_output, Recluster_label, events)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 5.5_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 5.5_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   selected_files <- Reclustering_output %>%
                     dplyr::filter(.data$Recluster_cluster %in% Recluster_label) %>%
                     dplyr::pull(.data$cellID)
 
-  CN_matrix <- NEW_CN_seq(input = input, Template = selected_files) #LH_02102025: modified
-
+  CN_matrix <- NEW_CN_seq(input = input, Template = selected_files) #LH 022025 modified
   Smooth_CN <- data.frame()
   for (i in 1:nrow(events)) {
     # cat("Dealing with chr", events$chr[i], " Region", events$region[i], "copy number......\n")
     R_binsCN <- CN_matrix[events$event_binstart[i]:events$event_binend[i],selected_files]
-    
-    R_CN <- sapply(1:ncol(R_binsCN), function(a) 
-    {
+    R_CN <- sapply(1:ncol(R_binsCN), function(a) {
       freq <- table(R_binsCN[ ,a]) %>%
               as.data.frame() %>%
               dplyr::arrange(dplyr::desc(.data$Freq)) %>%
@@ -444,8 +454,8 @@ Region_CN <- function(input, Reclustering_output, Recluster_label, events)
   }
   Smooth_CN <- Smooth_CN %>% stats::setNames(selected_files)
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
-  
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
+
   return(Smooth_CN)
 }
 
@@ -475,18 +485,18 @@ Region_CN <- function(input, Reclustering_output, Recluster_label, events)
 Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio, 
                                 Subclone_num)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 5.6_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 5.6_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   cell_code <- c(colnames(CN_incells_input))
-
   difChr_num <- NULL
   message("Calculating cell to cell different ratio ......")
   # Convert 'event_region' to data.table
   event_region_dt <- data.table::as.data.table(event_region)
-
   # Preallocate matrix for results
   difChr_num <- matrix(0, nrow = length(cell_code), ncol = length(cell_code))
 
@@ -494,10 +504,8 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
     for (j in (i + 1):length(cell_code)) {
       # Find the differing regions
       dif_region <- which(CN_incells_input[, i] != CN_incells_input[, j])
-
       # Aggregate differences using data.table for speed
       dif_event_region <- event_region_dt[dif_region, ]
-      
       dif_chr_ratio <- dif_event_region %>%
                        dplyr::group_by(.data$chr) %>%
                        dplyr::summarise(total_region_ratio = sum(.data$region_ratio), 
@@ -505,7 +513,6 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
                        dplyr::filter(.data$total_region_ratio > dif_ratio) %>%
                        dplyr::summarise(count = dplyr::n()) %>%
                        dplyr::pull(count)
-
       if (length(dif_chr_ratio) == 0) {
         dif_chr_ratio <- 0
       }
@@ -516,12 +523,10 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
   }
   difChr_num <- as.data.frame(difChr_num) %>% stats::setNames(cell_code)
   rownames(difChr_num) <- cell_code
-
   # cell to cell : Matrix about number of chromosomes
   Check_num <- sapply(1:ncol(difChr_num), function(x) {
     str <- length(which(difChr_num[ , x] == 0))
   })
-
   # a <- difChr_num
   Subclone <- NULL
   count = Subclone_num
@@ -531,7 +536,6 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
               stats::setNames(c("Subclone_cellnum", "cellID", "Subclone")) %>%
               dplyr::arrange(dplyr::desc(.data$Subclone_cellnum)) %>%
               dplyr::select(c("cellID", "Subclone"))
-
   while (any(is.na(Subclone$Subclone))) {
     count = count + 1
     ss <- min(which(is.na(Subclone$Subclone) == TRUE))
@@ -539,16 +543,13 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
     selected <- which(difChr_num[ , ss] == 0)
     selected <- rownames(difChr_num)[selected]
     difChr_num <- difChr_num[!rownames(difChr_num) %in% selected, ]
-
     Subclone$Subclone[which(Subclone$cellID %in% selected)] <- count
   }
-
   Cellnum <- as.data.frame(table(Subclone$Subclone)) %>%
              stats::setNames(c("Subclone", "Subclone_cellnum"))
-
   Subclone <- merge(Subclone, Cellnum, by = "Subclone")
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(Subclone)
 }
@@ -586,15 +587,17 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
 Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell, 
                               output = c("SubcloneCNVRegion", "SubcloneRegionCN"))
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 5.7_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 5.7_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
 
   s <- each_subclone %>%
        dplyr::filter(.data$Subclone_cellnum >= min_cell)
-
   Subclone_CN <- NULL
+  
   for (Label in unique(s$Subclone)) {
     ss <- s %>%
           dplyr::filter(.data$Subclone %in% Label) %>%
@@ -615,7 +618,6 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
               dplyr::mutate(Subclone = Label, CN = R_CN) %>%
               dplyr::select(c(.data$chr, .data$start, .data$end, .data$region, 
                               .data$Subclone, .data$CN))
-
     Subclone_CN <- Subclone_CN %>% rbind(Sub_CN)
   }
 
@@ -627,9 +629,9 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
   } else {
     message("ERROR: Not found the output")
   }
-
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
   
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
+
   return(Subclone_CN)
 }
 
@@ -662,10 +664,6 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
 #'   - `chromEnd`: End position in genoSeq.
 #'   - `name`: Name of cytogenetic band.
 #'   - `gieStain`: Giemsa stain results.
-#'   
-#' @param consecutive_region A numeric value specifying the minimum length criteria 
-#'  for filtering CNV regions, default=10^7 bp.
-#'
 #'
 #' @return A data frame recording CNV regions across subclones, containing the 
 #'  following columns:
@@ -676,27 +674,30 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
 #'   - `CNV_start`: Start position of the CNV region.
 #'   - `CNV_end`: End position of the CNV region.
 #'
-Total_cnvRegion <- function(input, Template, pqArm_file, consecutive_region)
+Total_cnvRegion <- function(input, Template, pqArm_file)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 5.8_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 5.8_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
-  CN_tem <- data.frame(GenomicRanges::seqnames(input[[1]]$bins), 
+  # Locked variable
+  consecutive_region <- getOption("consecutive_region")
+  
+  #--------------------- start below ---------------------
+ 
+  CN_tem <- data.frame(GenomicRanges::seqnames(input[[1]]$bins),
                        IRanges::ranges(input[[1]]$bins))
   CN_tem <- CN_tem %>% stats::setNames(c("chr", "start", "end", "width"))
-
   # consecutive_bins
   consecutive_bins = round(consecutive_region/CN_tem$width[1], digits = 0)
-
   Final_CNVr <- list()
   Final_CNV <- NULL
-  Final_CNVr$del <- Total_cnvRegion.DelAmp(Template = Template, 
-                                           CN_tem = CN_tem, 
+  Final_CNVr$del <- Total_cnvRegion.DelAmp(Template = Template,
+                                           CN_tem = CN_tem,
                                            method = c("Del"))
-  Final_CNVr$amp <- Total_cnvRegion.DelAmp(Template = Template, 
-                                           CN_tem = CN_tem, 
+  Final_CNVr$amp <- Total_cnvRegion.DelAmp(Template = Template,
+                                           CN_tem = CN_tem,
                                            method = c("Amp"))
   # Masked centromere region
   # pqArm_range <- pqArm_file.remake(FILE = pqArm_file)
@@ -705,23 +706,21 @@ Total_cnvRegion <- function(input, Template, pqArm_file, consecutive_region)
   for (CN_type in names(Final_CNVr)) {
     Final_CNVr[[CN_type]] <- Final_CNVr[[CN_type]] %>%
                              merge(Masked) %>%
-                             dplyr::filter((.data$start >= .data$MaskEnd | 
-                                              .data$end <= .data$MaskStart),
+                             dplyr::filter((.data$start >= .data$MaskEnd |
+                                            .data$end <= .data$MaskStart),
                                             .data$n_subclone != 0)
-
     Final_CNVr[[CN_type]] <- Final_CNVr[[CN_type]] %>%
                              dplyr::mutate(gap = cumsum(c(0, diff(.data$rows) != 1)),
                                            chr_gapno = paste0(.data$chr, "_", .data$gap)) %>%
                              dplyr::group_by(.data$chr_gapno) %>%
                              dplyr::filter(dplyr::n() > consecutive_bins)
-
     # filter CNV length
     if (nrow(Final_CNVr[[CN_type]]) != 0 ) {
       Final_CNVr[[CN_type]] <- Final_CNVr[[CN_type]] %>%
-                               dplyr::summarise(CNV_start = min(.data$start), 
+                               dplyr::summarise(CNV_start = min(.data$start),
                                                 CNV_end = max(.data$end)) %>%
-                               tidyr::separate(.data$chr_gapno, 
-                                               into = c("chr", "CNV_region"), 
+                               tidyr::separate(.data$chr_gapno,
+                                               into = c("chr", "CNV_region"),
                                                sep = "_") %>%
                                as.data.frame()
     }
@@ -731,13 +730,14 @@ Total_cnvRegion <- function(input, Template, pqArm_file, consecutive_region)
 
   if (nrow(Final_CNV) != 0) {
     Final_CNV <- Final_CNV %>%
-                 dplyr::mutate(chr = factor(.data$chr, 
-                                            levels = levels(CN_tem$chr))) %>%
+                 dplyr::mutate(chr = factor(.data$chr,
+                               levels = levels(CN_tem$chr))) %>%
                  dplyr::arrange(.data$chr) %>%
                  dplyr::mutate(CNV_region = seq_len(dplyr::n())) %>%
                  dplyr::select(c("chr", "CNV_region", "CN", "CNV_start", "CNV_end"))
   }
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(Final_CNV)
 }
@@ -777,10 +777,12 @@ Total_cnvRegion <- function(input, Template, pqArm_file, consecutive_region)
 #'
 Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 5.8.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 5.8.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   if (method == "Del") {
     s_chr <- Template %>% dplyr::filter(.data$CN < 2)
@@ -812,15 +814,15 @@ Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
     }
     for (i in 1:nrow(S)) {
       Selected <- ss %>%
-                  dplyr::filter(.data$start >= S$start[i], 
+                  dplyr::filter(.data$start >= S$start[i],
                                 .data$end <= S$end[i]) %>%
                   dplyr::pull(.data$rows)
       ss$n_subclone[Selected] <- ss$n_subclone[Selected] + 1
     }
     Final_CNVr <- rbind(Final_CNVr, ss)
   }
-
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(Final_CNVr)
 }
@@ -835,8 +837,8 @@ Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
 #' for the first and last affected bands.
 #'
 #' @param FILE Either a character string specifying the file path for output,
-#' or a connection open for writing. An empty string (\code{""}) indicates output 
-#' to the console.
+#'  or a connection open for writing. An empty string (\code{""}) indicates output 
+#'  to the console.
 #' @param pqArm_file In-build cytoband template for selection: `hg38`, `hg19`, 
 #'    `mm10`, `mm39`. Or a filepath of a table for cytoband information seen on 
 #'    Giemsa-stained chromosomes. It should include the following columns:
@@ -847,8 +849,9 @@ Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
 #'   - `name`: Name of cytogenetic band.
 #'   - `gieStain`: Giemsa stain results.
 #'
-#'
-#' @return A data frame mapping CNV regions to cytoband sites, containing the following columns:
+#' @return A data frame mapping CNV regions to cytoband sites, containing the 
+#'  following columns:
+#'  
 #'   - `chr`: Chromosome name (chr1, chr2, ...).
 #'   - `CNV_region`: The index of CNV regions.
 #'   - `CN`: Copy number state, categorized as either "amp" (Amplification) or "del" (Deletion).
@@ -859,19 +862,22 @@ Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
 #'
 cnvRegion.toPQarm <- function(FILE, pqArm_file)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 5.9_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 5.9_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
-  if (pqArm_file == "hg38" | pqArm_file == "hg19" | pqArm_file == "mm10" | pqArm_file == "mm39") {
+  #--------------------- start below ---------------------
+  
+  if (pqArm_file == "hg38" | pqArm_file == "hg19" | 
+      pqArm_file == "mm10" | pqArm_file == "mm39") {
     filename <- paste0(pqArm_file, "_cytoBand.txt.gz")
     pqArm_file <- system.file("extdata", filename, package = "cnvTree")
   }
   pqArm_range <- utils::read.table(gzfile(pqArm_file), sep = "\t", 
-                                   col.names = c("chr", "start", "end", "name","gieStain")) %>%
+                                   col.names = c("chr", "start", "end", 
+                                                 "name","gieStain")) %>%
                  dplyr::filter(.data$chr %in% FILE$chr)
-
   Intersect <- merge(FILE, pqArm_range, by = "chr") %>%
     dplyr::mutate(final_start = dplyr::case_when(.data$CNV_start<.data$start ~ 1,
                                                  .data$CNV_start>=.data$start & 
@@ -885,13 +891,13 @@ cnvRegion.toPQarm <- function(FILE, pqArm_file)
                   overlap = ifelse(.data$pattern %in% c(11, 33), 0, 1)) %>%
     dplyr::filter(.data$overlap == 1) %>%
     dplyr::arrange(.data$chr, .data$CNV_region, .data$start) %>%
-    dplyr::group_by(.data$CNV_region)  %>%
+    dplyr::group_by(.data$CNV_region) %>%
     dplyr::summarise(first_band = gdata::first(.data$name),
                      last_band = gdata::last(.data$name))
-
   Final_output <- merge(FILE, Intersect, by = "CNV_region")
 
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 
   return(Final_output)
 }
+

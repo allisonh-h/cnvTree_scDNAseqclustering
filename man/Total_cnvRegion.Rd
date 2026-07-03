@@ -4,7 +4,7 @@
 \alias{Total_cnvRegion}
 \title{Total_cnvRegion}
 \usage{
-Total_cnvRegion(input, Template, pqArm_file, consecutive_region)
+Total_cnvRegion(input, Template, pqArm_file)
 }
 \arguments{
 \item{input}{A named list where each element is a \code{GRanges} object representing
@@ -33,9 +33,6 @@ Giemsa-stained chromosomes. It should include the following columns:
 \item \code{name}: Name of cytogenetic band.
 \item \code{gieStain}: Giemsa stain results.
 }}
-
-\item{consecutive_region}{A numeric value specifying the minimum length criteria
-for filtering CNV regions, default=10^7 bp.}
 }
 \value{
 A data frame recording CNV regions across subclones, containing the

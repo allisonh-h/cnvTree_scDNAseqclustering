@@ -33,10 +33,12 @@
 #' 
 infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 8.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 8.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   if (RNAdataSource == "1") {
     cnv_regions <- readRDS(input_dir_RNA)
@@ -61,7 +63,6 @@ infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
           '1' Tabular data file
           '2' InferCNV output folder")
   }
-
   if (length(selected_groups) == 1) {
     cnv_region <- cnv_regions %>% 
                   filter(str_detect(cell_group_name, 
@@ -71,7 +72,7 @@ infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
              paste0("^(", stringr::str_flatten(selected_groups, collapse = "|"), ")\\."), ""),
              CNV_size = abs(start - end),
              CN = ifelse(state > 3, "amp", "del"))
-  } else { # LH: 01152025 ->
+  } else { # LH added 012025 --->>
     ## selected_group more than one
     cnv_regionlist <- vector("list", length(selected_groups))
 
@@ -90,10 +91,10 @@ infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
                              CN = ifelse(state > 3, "amp", "del"))
     }
     cnv_region <- bind_rows(cnv_regionlist)
-  } # LH: 01152025 <-
-    check_dims(x = cnv_region) ## LH: added function on 01052026
+  } # <<--- LH added 012025 
+    check_dims(x = cnv_region) ## LH added 012026
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(cnv_region)
 }
@@ -110,22 +111,23 @@ infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
 #'
 check_dims <- function(x, name = "selected_groups") 
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 8.1.1_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 8.1.1_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   d <- dim(x)
   if (is.null(d)) {
-    stop(name, " has no dimensions; LH")
+    stop(name, " has no dimensions")
   }
-  
   if (d[1] == 0) {
     stop(name, " has 0 rows (", d[1], " x ", d[2], ")", 
-         "; LH: selectied_groups not presented in the files")
+         "; selectied_groups not presented in the files")
   }
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 }
 
 
@@ -166,14 +168,15 @@ check_dims <- function(x, name = "selected_groups")
 #'
 infercnv_cnvgrouping <- function(input_dir_RNA, selected_groups, RNAdataSource) 
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 8.2_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" 8.2_cnvTree_", cnvTree_v_num)
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   if (RNAdataSource == "1") {
     cnv_groupings <- utils::read.delim2(input_dir_RNA, sep = " ")
-    
   } else if (RNAdataSource == "2") {
     all_dirs <- list.dirs(path = input_dir_RNA, 
                           recursive = TRUE, 
@@ -184,16 +187,15 @@ infercnv_cnvgrouping <- function(input_dir_RNA, selected_groups, RNAdataSource)
     File <- paste0(folders_2nd, "/infercnv.observation_groupings.txt")
     cnv_groupings <- read.table(File, header = TRUE)
   } else {
-    
     stop("Please define RNAdataSource for:
           '1' Tabular data file
           '2' InferCNV output folder")
   }
-  if (c("all_observations") %in% selected_groups) {# LH: 01162025; added section ->
+  if (c("all_observations") %in% selected_groups) { # LH 012025 added --->>
     cnv_grouping <- cnv_groupings %>% 
                     tibble::rownames_to_column(., "cellID") %>%
                     mutate(cell_group_name = Dendrogram.Group)
-  } else { # LH: 01162025; added section <-
+  } else { # <<--- LH 012025 added
     
     cnv_grouping <- cnv_groupings %>%
                     #Filter if EITHER column matches the selected_groups pattern
@@ -204,7 +206,7 @@ infercnv_cnvgrouping <- function(input_dir_RNA, selected_groups, RNAdataSource)
                       if ("Dendrogram.Group" %in% names(.)) Dendrogram.Group else NULL,
                       if ("cell_group.name" %in% names(.)) cell_group.name else NULL))
   }
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(cnv_grouping)
 }
@@ -230,20 +232,21 @@ infercnv_cnvgrouping <- function(input_dir_RNA, selected_groups, RNAdataSource)
 #'
 infercnv_groups_summary <- function(input_dir_RNA, selected_groups) 
 {
-  config_hid_path <- system.file("extdata", "cnvTree_config_hid.yaml", package = "cnvTree")
-  config_hid <- read_yaml(config_hid_path)
-  fucStep <- paste0(" 8.3_cnvTree_", config_hid$v_num)
-  DebugMsg(fucStep, "start", msg = config_hid$msg)
+  cnvTree_v_num <- getOption("cnvTree_v_num")
+  cnvTree_msg   <- getOption("cnvTree_msg")
+  fucStep <- paste0(" infercnv_groups_summary_", cnvTree_v_num) # function 8.3
+  DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
+  
+  #--------------------- start below ---------------------
   
   File <- paste0(input_dir_RNA, "/infercnv.observation_groupings.txt")
   cnv_groupings <- read.table(File, header = TRUE)
-  
   cnv_grouping_sum <- table(cnv_groupings$Dendrogram.Group) %>%
                       as.data.frame(.) %>%
                       setNames(c("group", "cell_num")) %>%
                       filter(grepl(paste(selected_groups, collapse = "|"), group))
   
-  DebugMsg(fucStep, "end", msg = config_hid$msg)
+  DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(cnv_grouping_sum)
 }

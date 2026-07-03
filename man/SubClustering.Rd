@@ -4,7 +4,7 @@
 \alias{SubClustering}
 \title{SubClustering}
 \usage{
-SubClustering(input, Consolidating_output, min_cell, overlap_region, dif_ratio)
+SubClustering(input, Consolidating_output)
 }
 \arguments{
 \item{input}{A named list where each element is a \code{GRanges} object representing
@@ -12,15 +12,6 @@ a single cell.}
 
 \item{Consolidating_output}{A data frame recording pqArm clustering and consolidating
 results for each cell. This table tracks the clustering history up to this stage.}
-
-\item{min_cell}{An integer specifying the minimum number of cells required for
-a cluster to be retained.}
-
-\item{overlap_region}{An integer representing the genomic region where copy
-number frequently changes.}
-
-\item{dif_ratio}{A numeric value defining the tolerance threshold for copy
-number differences between cells within a cluster.}
 }
 \value{
 A list containing two data frames:
@@ -29,14 +20,12 @@ A list containing two data frames:
 consolidating, and subclustering steps.
 \item \code{Subclone_CN}: Records each subclone's unique chromosome segment template
 and its copy number. It includes the following columns:
-\itemize{
 \item \code{chr}: Chromosome name (chr1, chr2, ...).
 \item \code{start}: Start position of the segment.
 \item \code{end}: End position of the segment.
 \item \code{region}: The defined region index
 \item \code{Subclone}: Subclone identifier.
 \item \code{CN}: Copy number value of the segment.
-}
 }
 }
 \description{
@@ -60,6 +49,6 @@ Consolidation_result <- clusterConsolidation(input = input_df,
                                              pqArm_file = config$pqArm_file)
 Subclone_output <- SubClustering(input = input_df,
                                  Consolidating_output = Consolidation_result)
- }
-
+}
+ 
 }

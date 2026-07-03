@@ -10,9 +10,7 @@ scDNA_CNVpattern(
   cellcutoff,
   pqArm_file,
   FILEpath,
-  FILEname,
-  sexchromosome,
-  smoothheatmap
+  FILEname
 )
 }
 \arguments{
@@ -21,8 +19,7 @@ the following columns:
 \itemize{
 \item \code{chr}: Chromosome name (chr1, chr2, ...).
 \item \code{CNV_region}: The index of CNV regions.
-\item \code{CN}: Copy number state, categorized as either "amp" (Amplification) or
-"del" (Deletion).
+\item \code{CN}: Copy number state, categorized as either "amp" (Amplification) or "del" (Deletion).
 \item \code{CNV_start}: Start position of the CNV region.
 \item \code{CNV_end}: End position of the CNV region.
 \item \code{first_band}: Cytoband label of the first affected band.
@@ -32,9 +29,9 @@ the following columns:
 \item{cellcutoff}{A numeric value defining the minimum number of cells required
 for a cluster to be included.}
 
-\item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19},
-\code{mm10}, \code{mm39}. Or a filepath of a table for cytoband information seen on
-Giemsa-stained chromosomes. It should include the following columns:
+\item{pqArm_file}{In-build cytoband template for selection: \code{hg38}, \code{hg19}, \code{mm10}, \code{mm39}.
+Or a filepath of a table for cytoband information seen on Giemsa-stained chromosomes.
+It should include the following columns:
 \itemize{
 \item \code{chrom}: Reference sequence chromosome or scaffold.
 \item \code{chromStart}: Start position in genoSeq.
@@ -47,12 +44,6 @@ Giemsa-stained chromosomes. It should include the following columns:
 file will be saved.}
 
 \item{FILEname}{A character string specifying the name of the output \code{.png} file.}
-
-\item{sexchromosome}{A logical value. If \code{TRUE}, the heatmap includes copy number
-information for sex chromosomes.}
-
-\item{smoothheatmap}{A logical value. If \code{TRUE}, the heatmap applies smoothing over
-a 10⁶ bp range in chromosome copy number data.}
 
 \item{Input}{A named list where each element is a \code{GRanges} object representing
 a single cell.}

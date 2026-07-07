@@ -71,7 +71,14 @@ infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
       mutate(cell_group_name = str_replace(cell_group_name, 
              paste0("^(", stringr::str_flatten(selected_groups, collapse = "|"), ")\\."), ""),
              CNV_size = abs(start - end),
-             CN = ifelse(state > 3, "amp", "del"))
+             CN_RNA = dplyr::case_when( #CN = ifelse(state > 3, "amp", "del")
+               state == 1 ~ "del",
+               state == 2 ~ "los",
+               state == 4 ~ "gan",
+               state == 5 ~ "amp",
+               state == 6 ~ "high_amp",
+               TRUE       ~ "unknown" # Fallback safeguard for NA or unexpected values
+             ))
   } else { # LH added 012025 --->>
     ## selected_group more than one
     cnv_regionlist <- vector("list", length(selected_groups))
@@ -88,7 +95,14 @@ infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
                                     stringr::str_flatten(selected_groups, collapse = "|"), 
                                     ")\\."), ""),
                              CNV_size = abs(start - end),
-                             CN = ifelse(state > 3, "amp", "del"))
+                             CN_RNA = dplyr::case_when( #CN = ifelse(state > 3, "amp", "del")
+                               state == 1 ~ "del",
+                               state == 2 ~ "los",
+                               state == 4 ~ "gan",
+                               state == 5 ~ "amp",
+                               state == 6 ~ "high_amp",
+                               TRUE       ~ "unknown" # Fallback safeguard for NA or unexpected values
+                             ))
     }
     cnv_region <- bind_rows(cnv_regionlist)
   } # <<--- LH added 012025 
@@ -96,6 +110,7 @@ infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
   
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
+  browser()
   return(cnv_region)
 }
 
@@ -208,6 +223,7 @@ infercnv_cnvgrouping <- function(input_dir_RNA, selected_groups, RNAdataSource)
   }
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
+  browser()
   return(cnv_grouping)
 }
 

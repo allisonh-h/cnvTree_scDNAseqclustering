@@ -44,7 +44,6 @@ changeFormat <- function(input_dir_DNA)
     rows_to_remove <- grepl("chrX|chrY|chrM", Bin_CN$seqnames)
     Bin_CN <- Bin_CN[!rows_to_remove, ]
   }
-  browser()
   data.table::setDT(Bin_CN)
   clean_chroms <- unique(str_remove(Bin_CN$seqnames, "(?i)chr"))
   is_numeric <- !is.na(suppressWarnings(as.numeric(clean_chroms)))

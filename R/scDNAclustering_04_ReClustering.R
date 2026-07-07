@@ -372,7 +372,7 @@ pqArm_reclusterBy_ratio_target <- function(pqArm_cluster, Cluster,
   } else {
     new_Chioce <- list()
     count = 0
-    while (nrow(Chioce_Result)>0) {
+    while (nrow(Chioce_Result) > 0) {
       count = count + 1
       #  select start merge cluster
       pattern <- c(Chioce_Result$less10[1], Chioce_Result$more10[1]) 
@@ -468,7 +468,8 @@ pqArm_reclustering_summary <- function(Data)
                    as.data.frame() %>%
                    dplyr::arrange(dplyr::desc(.data$Freq))
   cluster_table$Recluster_cluster <- seq_len(nrow(cluster_table))
-  colnames(cluster_table) <- c("Recluster_pattern", "Recluster_cellnum", "Recluster_cluster")
+  colnames(cluster_table) <- c("Recluster_pattern", "Recluster_cellnum", 
+                               "Recluster_cluster")
 
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   

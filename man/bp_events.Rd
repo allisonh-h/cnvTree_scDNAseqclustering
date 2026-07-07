@@ -14,7 +14,7 @@ a single cell.}
 columns:
 \itemize{
 \item \code{chr}: Chromosome name (chr1, chr2, ...).
-\item \code{site}: Breakpoint position.
+\item \code{site}: breakpoint position.
 \item \code{times}: The frequency of breakpoint occurrence.
 \item \code{events}: Number of distinct breakpoint events.
 \item \code{cover_nums}: Number of breakpoints covered within the specified range.

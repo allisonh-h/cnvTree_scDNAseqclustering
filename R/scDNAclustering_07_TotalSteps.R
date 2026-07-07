@@ -226,9 +226,6 @@ SubClustering <- function(input, Consolidating_output)
   min_cell <- getOption("min_cell")
   overlap_region <- getOption("overlap_region")
   dif_ratio <- getOption("dif_ratio")
-  #min_cell <- 5
-  #overlap_region <- 10**7
-  #dif_ratio <- 0.2
   
   #--------------------- start below ---------------------
   
@@ -244,6 +241,7 @@ SubClustering <- function(input, Consolidating_output)
   overlap_bp <- round((overlap_region/binsize), digits = 0)
 
   # Select enough cell number Reclusters, avoiding keep filtering
+  # LH: Here determined which reclustered groups are dropped out
   R <- Consolidating_output %>% dplyr::filter(.data$Recluster_cellnum >= min_cell)
   
   for (Recluster_label in unique(R$Recluster_cluster)) {
@@ -289,6 +287,8 @@ SubClustering <- function(input, Consolidating_output)
                               CN_region = cell_CNregion, 
                               each_subclone = cell_clustering,
                               min_cell = min_cell, 
+                              #Two options:"SubcloneCNVRegion", "SubcloneRegionCN" set
+                              #in function 5.7
                               output = "SubcloneRegionCN")
 
     Subclone_CNr <- rbind(Subclone_CNr, s_CN)
@@ -385,11 +385,11 @@ scDNA_Output <- function(input, Summary, pqArm_file, output_dir, cellcutoff)
   
   message("=== Step 05: Output cnvTree results ===")
   timestamp <- format(Sys.time(), "%m%d_%H")
-  
   # 1. cellID summary
   filename = paste0("/", timestamp, "_", "cnvTree.scDNAseq_grouping")
   writeOutput(data = Summary$final_cluster_output, 
-              filename = filename, path = output_dir)
+              filename = filename, 
+              path = output_dir)
   message("Output /cnvTree.scDNAseq_grouping.txt is done.")
 
   # 2. Each region copy number to subclone
@@ -418,6 +418,7 @@ scDNA_Output <- function(input, Summary, pqArm_file, output_dir, cellcutoff)
              The file cnvTree.scDNAseq_DefinedCNVregion.txt and 
              cnvTree.scDNAseq_DefinedCNVregion.txt was not generated.")
   }
+
   # 4. DNA superimpose
   if (nrow(CNV_Data) != 0){
     DNA_superimpose <- scDNA.superimpose(Template = Summary, DefinedCNVs = CNV_Data)

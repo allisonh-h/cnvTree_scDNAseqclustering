@@ -220,17 +220,25 @@ NEW_pqArm_DelNeuAmp <- function(matrix) ## function: 3.1.2 ##
 {
   new_matrix <- base::matrix(NA, nrow(matrix), ncol(matrix)) 
   
-  # strategy 1
+  # strategy 1 ================================================
+  #new_matrix[matrix < 2] <- 1                 # Total Deletion
+  #new_matrix[matrix == 2] <- 2                # Neutral
+  #new_matrix[matrix > 2]  <- 3                # Gain
+  
+  # strategy 2 ================================================
   #new_matrix[matrix <= 0 & matrix < 1] <- 0    # Deletion
   #new_matrix[matrix >= 1 & matrix < 2] <- 1    # Loss
   #new_matrix[matrix == 2] <- 2                 # Neutral
   #new_matrix[matrix > 2 & matrix <= 3]  <- 3   # Gain
   #new_matrix[matrix > 3] <- 4                  # Amplification
   
-  # strategy 2
-  new_matrix[matrix < 2] <- 1                 # Total Deletion
-  new_matrix[matrix == 2] <- 2                # Neutral
-  new_matrix[matrix > 2]  <- 3                # Gain
+  # strategy 3 ================================================
+  new_matrix[matrix <= 0 & matrix < 1] <- 0    # Deletion
+  new_matrix[matrix >= 1 & matrix < 2] <- 1    # Loss
+  new_matrix[matrix == 2] <- 2                 # Neutral
+  new_matrix[matrix > 2 & matrix <= 3]  <- 3   # Gain
+  new_matrix[matrix > 3 & matrix <= 4] <-  4   # Amplification
+  new_matrix[matrix > 4] <-  5                 # Deep Amplification
   
   dimnames(new_matrix) <- dimnames(matrix)
   
@@ -286,14 +294,16 @@ pqArm_file.cen <- function(FILE)
                         End  = max(.data$ChromEnd)) %>%
        as.data.frame()
   x <- x %>%
-    dplyr::filter(.data$cen_category %in% paste0(rep(Levels,each = 2), c("acen","gvar"))) %>%
-    dplyr::mutate(cen = stringr::str_sub(.data$cen_category, -4),
-                  chr = stringr::str_sub(.data$cen_category, end = -5)) %>%
-    dplyr::group_by(.data$chr) %>%
-    dplyr::summarise(MaskStart = min(.data$Start),
-                     MaskEnd  = max(.data$End)) %>%
-    dplyr::arrange(chr = factor(.data$chr, levels = Levels), .data$MaskStart) %>%
-    dplyr::select(c("chr", "MaskStart", "MaskEnd"))
+       dplyr::filter(.data$cen_category %in% paste0(rep(Levels,each = 2), 
+                                                    c("acen","gvar"))) %>%
+       dplyr::mutate(cen = stringr::str_sub(.data$cen_category, -4),
+                     chr = stringr::str_sub(.data$cen_category, end = -5)) %>%
+       dplyr::group_by(.data$chr) %>%
+       dplyr::summarise(MaskStart = min(.data$Start),
+                        MaskEnd  = max(.data$End)) %>%
+       dplyr::arrange(chr = factor(.data$chr, levels = Levels), 
+                                   .data$MaskStart) %>%
+       dplyr::select(c("chr", "MaskStart", "MaskEnd"))
   
   if (sexchromosome == FALSE) {
     rows_to_remove <- grepl("chrX|chrY|chrM", x$chr)

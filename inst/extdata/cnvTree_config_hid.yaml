@@ -12,19 +12,19 @@ dif_ratio: 0.2
 cluster: 1.0
 # min_cell: An integer specifying the minimum cell count required for a cluster  
 #   to be included in the output.
-min_cell: 5.0
+min_cell: 2.0
 # overlap_region: An integer representing genomic regions where copy number  
 #   frequently changes in the subclone clustering step.
 overlap_region: 1.0e+07
 # consecutive_region: A numeric value defining the minimum CNV region length  
 #   threshold for filtering CNV events in the final output.
-consecutive_region: 1000000.0
+consecutive_region: 1.0e+06
 # cores: An integer specifying the number of CPU cores to use for parallel 
 #   processing, default = 1.
 core: 1.0
 # sexchromosome: A logical value. If `TRUE`, the output includes sex chromosome
 # copy number information.
-sexchromosome: no
+sexchromosome: yes
 # smoothheatmap: A logical value. If `TRUE`, the final output applies smoothing  
 #   over a 10⁶ bp range in chromosome copy number visualizations.
 smoothheatmap: yes

@@ -133,8 +133,13 @@ writeOutput <- function(data, filename, path)
   DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
   #--------------------- start below ---------------------
-  
+
   FILEpath <- paste0(path, filename, ".txt")
+  
+  if (is.list(data)) { #LH added 072026 -->>
+    data <- sapply(data, function(x) paste(unlist(x), collapse = ", "))
+  }
+  #LH added 072026 <<--
   utils::write.table(data, file = FILEpath, row.names = FALSE, col.names = TRUE)
   
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)

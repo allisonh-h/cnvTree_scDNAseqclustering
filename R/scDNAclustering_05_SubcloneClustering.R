@@ -33,7 +33,7 @@ collect_cluster_bp <- function(input, Clustering_output, Recluster_label)
   selected_files <- Clustering_output %>%
                     dplyr::filter(.data$Recluster_cluster %in% Recluster_label) %>%
                     dplyr::pull(.data$cellID)
-  
+
   # Use lapply to gather breakpoints for all selected files at once
   breakpoints_list <- lapply(selected_files, function(i) {
     input[[i]]$breakpoints %>% as.data.frame() %>% dplyr::mutate(cellID = i)
@@ -41,7 +41,7 @@ collect_cluster_bp <- function(input, Clustering_output, Recluster_label)
   # Combine all the results using bind_rows, which is more efficient than rbind 
   # in a loop
   breakpoints <- dplyr::bind_rows(breakpoints_list)
-  
+
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(breakpoints)
@@ -96,6 +96,7 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
   chr <- unique(Template$seqnames) %>%
          factor(levels = levels(factor(Template$seqnames))) %>%
          sort()
+
   # binsize <- input$width[1]
   # 將10個bp轉換為實際數字
   bp <- NULL
@@ -103,16 +104,17 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
   
   bp_list <- lapply(chr, function(k) 
   { # 將位點從10**6轉換成bins的格式
+    # 將位點從10**6轉換成bins的格式
     chr_unique <- Template %>%
                   dplyr::filter(.data$seqnames %in% k) %>%
                   dplyr::mutate(site = round(.data$start / binsize, digits = 0)) %>%
                   dplyr::group_by(.data$site) %>%
                   dplyr::summarise(times = dplyr::n(), .groups = 'drop') %>%
                   dplyr::mutate(site = as.numeric(as.character(.data$site)))
+ 
     # 將其中點的數值做延伸並合併
     site_vec <- chr_unique$site
-    cover_matrix <- sapply(site_vec, function(x) 
-    {
+    cover_matrix <- sapply(site_vec, function(x) {
       cover_label <- site_vec %in% ((x - overlap):(x + overlap))
       cover_nums <- sum(cover_label)
       cover_times <- sum(chr_unique$times[cover_label])
@@ -127,7 +129,6 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
                 dplyr::filter(.data$cover_times >= overlap_times) %>%
                 dplyr::arrange(dplyr::desc(.data$cover_nums)) %>%
                 dplyr::pull(.data$site)
-    
     if (length(bp_order) > 0) {
       # 初始化bp_group
       bp_group <- data.frame()
@@ -146,29 +147,29 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
       return(bp_site_select)
     }
   })
-  
   #=============== OLD =================#
-  #bp <- dplyr::bind_rows(bp_list) %>%
-  #  dplyr::select(.data$chr, .data$site, .data$times, .data$events, .data$cover_nums, .data$cover_times) %>%
-  #  dplyr::mutate(binsize = binsize)
+  bp <- dplyr::bind_rows(bp_list) %>%
+    dplyr::select(.data$chr, .data$site, .data$times, .data$events, 
+                  .data$cover_nums, .data$cover_times) %>%
+    dplyr::mutate(binsize = binsize)
   #=============== OLD =================#
   
   #=============== NEW =================#
-  bp2 <- dplyr::bind_rows(bp_list)  ## LH: line added 12292025
-  print(!(all(dim(bp2) == c(0, 0))))  # LH: added 122025; FALSE if bp2 = 0x0
+  #bp2 <- dplyr::bind_rows(bp_list)  ## LH: line added 12292025
+  #print(!(all(dim(bp2) == c(0, 0))))  # LH: added 122025; FALSE if bp2 = 0x0
   
-  if (!(all(dim(bp2) == c(0, 0))) == TRUE) { ## LH: line added 12292025
-    bp <- dplyr::bind_rows(bp_list) %>%
-          dplyr::select(.data$chr, 
-                        .data$site, 
-                        .data$times, 
-                        .data$events, 
-                        .data$cover_nums, 
-                        .data$cover_times) %>%
-          dplyr::mutate(binsize = binsize)
-  } else {
-    bp <- NULL  ## LH: line added 12292025
-  }
+  #if (!(all(dim(bp2) == c(0, 0))) == TRUE) { ## LH: line added 12292025
+  #  bp <- dplyr::bind_rows(bp_list) %>%
+  #        dplyr::select(.data$chr, 
+  #                      .data$site, 
+  #                      .data$times, 
+  #                      .data$events, 
+  #                      .data$cover_nums, 
+  #                      .data$cover_times) %>%
+  #        dplyr::mutate(binsize = binsize)
+  #} else {
+   # bp <- NULL  ## LH: line added 12292025
+  #}
   #=============== NEW =================#
   
   cat("All the breakpoints in same Recluster group of cells ... \n")
@@ -191,7 +192,7 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
 #' @param Template A data frame recording significant breakpoints with the following 
 #'   columns:
 #'   - `chr`: Chromosome name (chr1, chr2, ...).
-#'   - `site`: Breakpoint position.
+#'   - `site`: breakpoint position.
 #'   - `times`: The frequency of breakpoint occurrence.
 #'   - `events`: Number of distinct breakpoint events.
 #'   - `cover_nums`: Number of breakpoints covered within the specified range.
@@ -299,7 +300,7 @@ event_region.bin <- function(input, Template)
                             event = ifelse(is.na(.data$event), 0, .data$event))
 
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-  
+
   return(Template)
 }
 
@@ -437,25 +438,48 @@ Region_CN <- function(input, Reclustering_output, Recluster_label, events)
                     dplyr::pull(.data$cellID)
 
   CN_matrix <- NEW_CN_seq(input = input, Template = selected_files) #LH 022025 modified
+
+  # ======================== Old script ========================================
   Smooth_CN <- data.frame()
   for (i in 1:nrow(events)) {
-    # cat("Dealing with chr", events$chr[i], " Region", events$region[i], "copy number......\n")
-    R_binsCN <- CN_matrix[events$event_binstart[i]:events$event_binend[i],selected_files]
-    R_CN <- sapply(1:ncol(R_binsCN), function(a) {
-      freq <- table(R_binsCN[ ,a]) %>%
-              as.data.frame() %>%
-              dplyr::arrange(dplyr::desc(.data$Freq)) %>%
-              dplyr::pull(.data$Var1) %>%
-              as.character() %>%
-              as.integer()
-      first_element <- freq[1]
-    })
-    Smooth_CN <- Smooth_CN %>% rbind(R_CN)
+  # cat("Dealing with chr", events$chr[i], " Region", events$region[i], "copy number......\n")
+  R_binsCN <- CN_matrix[events$event_binstart[i]:events$event_binend[i],selected_files]
+  R_CN <- sapply(1:ncol(R_binsCN), function(a) {
+    freq <- table(R_binsCN[ ,a]) %>%
+            as.data.frame() %>%
+            dplyr::arrange(dplyr::desc(.data$Freq)) %>%
+            dplyr::pull(.data$Var1) %>%
+            as.character() %>%
+            as.integer()
+    first_element <- freq[1]
+  })
+  Smooth_CN <- Smooth_CN %>% rbind(R_CN)
   }
   Smooth_CN <- Smooth_CN %>% stats::setNames(selected_files)
-
+  
+  # ========================= Old script========================================
+  
+  # ========================= New script========================================
+  # Helper function to find the mode of a numeric vector efficiently
+  #get_mode <- function(x) {
+  #  ux <- unique(x)
+  #  ux[which.max(tabulate(match(x, ux)))]
+  #}
+  #smooth_list <- lapply(seq_len(nrow(events)), function(i) {
+  #  subset_matrix <- CN_matrix[events$event_binstart[i]:events$event_binend[i], 
+  #                             selected_files, drop = FALSE]
+    # apply returns a flat vector of modes for the columns
+   # apply(subset_matrix, 2, get_mode)
+  #})
+  # FIX: Combine into a standard matrix first, then convert cleanly to data.frame
+  # This ensures it becomes regular numeric columns, NOT lists!
+  #Smooth_CN <- do.call(rbind, smooth_list) %>% as.data.frame()
+  # Re-assign names to make absolutely sure they match
+  #names(Smooth_CN) <- selected_files
+  # ========================= New script========================================
+  
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-
+  browser()
   return(Smooth_CN)
 }
 
@@ -550,7 +574,7 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
   Subclone <- merge(Subclone, Cellnum, by = "Subclone")
 
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-  
+  browser()
   return(Subclone)
 }
 
@@ -597,13 +621,13 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
   s <- each_subclone %>%
        dplyr::filter(.data$Subclone_cellnum >= min_cell)
   Subclone_CN <- NULL
-  
-  for (Label in unique(s$Subclone)) {
+
+  for(Label in unique(s$Subclone)){
     ss <- s %>%
           dplyr::filter(.data$Subclone %in% Label) %>%
           dplyr::pull(.data$cellID)
     s_CN <- CN_region[ ,ss]
-    R_CN <- sapply(1:nrow(s_CN), function(a) {
+    R_CN <- sapply(1:nrow(s_CN), function(a){
       freq <- as.numeric(s_CN[a, ]) %>%
               table() %>%
               as.data.frame() %>%
@@ -612,15 +636,14 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
               dplyr::pull(.data$CN) %>%
               as.character() %>%
               as.integer()
-      first_element <- freq[1]
     })
+    browser()
     Sub_CN <- sep_region %>%
               dplyr::mutate(Subclone = Label, CN = R_CN) %>%
               dplyr::select(c(.data$chr, .data$start, .data$end, .data$region, 
                               .data$Subclone, .data$CN))
     Subclone_CN <- Subclone_CN %>% rbind(Sub_CN)
   }
-
   # decide the output
   if (output == "SubcloneCNVRegion") {
     Subclone_CN <- Subclone_CN %>% dplyr::filter(!.data$CN %in% 2)
@@ -629,9 +652,8 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
   } else {
     message("ERROR: Not found the output")
   }
-  
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-
+  browser()
   return(Subclone_CN)
 }
 
@@ -693,12 +715,15 @@ Total_cnvRegion <- function(input, Template, pqArm_file)
   consecutive_bins = round(consecutive_region/CN_tem$width[1], digits = 0)
   Final_CNVr <- list()
   Final_CNV <- NULL
+
+  Template = Template
   Final_CNVr$del <- Total_cnvRegion.DelAmp(Template = Template,
                                            CN_tem = CN_tem,
                                            method = c("Del"))
   Final_CNVr$amp <- Total_cnvRegion.DelAmp(Template = Template,
                                            CN_tem = CN_tem,
                                            method = c("Amp"))
+  
   # Masked centromere region
   # pqArm_range <- pqArm_file.remake(FILE = pqArm_file)
   Masked <- pqArm_file.cen(FILE = pqArm_file)
@@ -784,11 +809,19 @@ Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
   
   #--------------------- start below ---------------------
   
-  if (method == "Del") {
+  if (method == "Del"){
     s_chr <- Template %>% dplyr::filter(.data$CN < 2)
-  } else if (method == "Amp") {
+  } else if (method == "Amp"){
     s_chr <- Template %>% dplyr::filter(.data$CN > 2)
   }
+  Template <- Template
+
+  #if (method == "Del"){
+   # s_chr <- Template %>% dplyr::filter(as.numeric(unlist(.data$CN)) < 2)
+  #} else if (method == "Amp"){
+  #  s_chr <- Template %>% dplyr::filter(as.numeric(unlist(.data$CN)) > 2)
+  #}
+
   s_chr <- s_chr %>%
            dplyr::arrange(.data$chr) %>%
            dplyr::select(.data$chr) %>%
@@ -823,7 +856,7 @@ Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
   }
   
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-  
+  browser()
   return(Final_CNVr)
 }
 
@@ -897,7 +930,7 @@ cnvRegion.toPQarm <- function(FILE, pqArm_file)
   Final_output <- merge(FILE, Intersect, by = "CNV_region")
 
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-
+  browser()
   return(Final_output)
 }
 

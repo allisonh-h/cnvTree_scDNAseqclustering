@@ -65,44 +65,33 @@ infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
   }
   if (length(selected_groups) == 1) {
     cnv_region <- cnv_regions %>% 
-                  filter(str_detect(cell_group_name, 
-                                    paste0("^", selected_groups, collapse = "|")), 
-                         !state %in% c(3)) %>% 
-      mutate(cell_group_name = str_replace(cell_group_name, 
-             paste0("^(", stringr::str_flatten(selected_groups, collapse = "|"), ")\\."), ""),
-             CNV_size = abs(start - end),
-             CN_RNA = dplyr::case_when( #CN = ifelse(state > 3, "amp", "del")
-               state == 1 ~ "del",
-               state == 2 ~ "los",
-               state == 4 ~ "gan",
-               state == 5 ~ "amp",
-               state == 6 ~ "high_amp",
-               TRUE       ~ "unknown" # Fallback safeguard for NA or unexpected values
-             ))
+                  filter(str_detect(cell_group_name, paste0("^(", paste(selected_groups, collapse = "|"), ")")), 
+                         state != 3) %>% 
+                  mutate(cell_group_name = str_replace(
+                      cell_group_name, 
+                      paste0("^(", stringr::str_flatten(selected_groups, collapse = "|"), ")\\."), 
+                             ""),
+                  CNV_size = abs(start - end),
+                  CN = ifelse(state > 3, "amp", "del"))
   } else { # LH added 012025 --->>
-    ## selected_group more than one
     cnv_regionlist <- vector("list", length(selected_groups))
-
-    for (i in 1:length(selected_groups)) {
+    cnv_regionlist <- vector("list", length(selected_groups))
+    
+    for (i in seq_along(selected_groups)) {
       selected_groups_index <- selected_groups[i]
       cnv_regionlist[[i]] <- cnv_regions %>% 
-                             filter(str_detect(cell_group_name, 
-                                               paste0("^", selected_groups_index, 
-                                                      collapse = "|")), 
-                                               !state %in% c(3)) %>% 
-                             mutate(cell_group_name = str_replace(cell_group_name, 
-                             paste0("^(", 
-                                    stringr::str_flatten(selected_groups, collapse = "|"), 
-                                    ")\\."), ""),
-                             CNV_size = abs(start - end),
-                             CN_RNA = dplyr::case_when( #CN = ifelse(state > 3, "amp", "del")
-                               state == 1 ~ "del",
-                               state == 2 ~ "los",
-                               state == 4 ~ "gan",
-                               state == 5 ~ "amp",
-                               state == 6 ~ "high_amp",
-                               TRUE       ~ "unknown" # Fallback safeguard for NA or unexpected values
-                             ))
+        filter(
+          str_detect(cell_group_name, paste0("^", selected_groups_index)), 
+          state != 3
+        ) %>% 
+        mutate(
+          cell_group_name = str_replace(
+            cell_group_name, 
+            paste0("^(", stringr::str_flatten(selected_groups, collapse = "|"), ")\\."), 
+            ""
+          ),
+          CNV_size = abs(start - end),
+          CN_RNA = ifelse(state > 3, "amp", "del"))
     }
     cnv_region <- bind_rows(cnv_regionlist)
   } # <<--- LH added 012025 
@@ -110,7 +99,6 @@ infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
   
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
-  browser()
   return(cnv_region)
 }
 
@@ -223,7 +211,6 @@ infercnv_cnvgrouping <- function(input_dir_RNA, selected_groups, RNAdataSource)
   }
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
-  browser()
   return(cnv_grouping)
 }
 

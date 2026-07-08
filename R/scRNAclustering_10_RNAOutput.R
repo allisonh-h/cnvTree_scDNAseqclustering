@@ -269,22 +269,22 @@ scDNA_output.format <- function(inputFILE, cellcutoff, filterZero)
                            pattern = "DefinedCNVregion.*\\.txt$", 
                            recursive = TRUE, 
                            full.names = TRUE)
-  browser()
+
   if (length(scDNA_file) == 0) stop("No DefinedCNVregion file found.")
   Determine_CNVs <- read.table(scDNA_file[1], header = TRUE) %>% 
-    mutate(CNV_region = as.character(CNV_region),
-           chr_index  = sub("chr", "", chr))
+                    mutate(CNV_region = as.character(CNV_region),
+                           chr_index  = sub("chr", "", chr))
   
   # 2. Load and filter DNA Cluster Data
   scDNAcluster_file <- list.files(path = inputFILE, 
                                   pattern = "DNAcluster.*\\.txt$", 
                                   recursive = TRUE, 
                                   full.names = TRUE)
-  browser()
+
   if (length(scDNAcluster_file) == 0) stop("No DNAcluster file found.")
   scDNAcluster <- read.table(scDNAcluster_file[1], header = TRUE) %>% 
-    filter(DNA_Cellnum >= cellcutoff) %>%
-    mutate(Subclone_no = paste0(DNA_cluster, " n = (", DNA_Cellnum, ")"))
+                  filter(DNA_Cellnum >= cellcutoff) %>%
+                  mutate(Subclone_no = paste0(DNA_cluster, " (n = ", DNA_Cellnum, ")"))
   
   # 3. Clean and reshape cluster data
   scDNAcluster_clean <- scDNAcluster %>% 
@@ -295,19 +295,19 @@ scDNA_output.format <- function(inputFILE, cellcutoff, filterZero)
                         mutate(CNV_region = sub("CNV", "", CNV_region),
                                Value = as.numeric(Value)) %>% 
                         pivot_wider(names_from = Subclone_no, values_from = Value)
-  browser()
+
   # 4. Merge datasets and construct cytoband headers
   combined_df <- full_join(Determine_CNVs, scDNAcluster_clean, by = "CNV_region") %>% 
                  mutate(CN_type = if_else(CN == "amp", "+", "-"),
-                 chr_cytoband = paste0(CN_type, " ", chr_index, 
-                                       " (", first_band, "-", last_band, ") "))
+                 chr_cytoband = paste0(chr_index, " (", first_band, "-", 
+                                       last_band, ") "))
+
   new_rownames <- combined_df$chr_cytoband
   is_negative_row <- combined_df$CN_type == "-"
   meta_cols <- c("CNV_region", "first_band", "last_band", "CNV_start", "CNV_end",  
-                 "chr", "CN_RNA", "chr_index", "CN_type", "chr_cytoband")
+                 "chr", "CN", "chr_index", "CN_type", "chr_cytoband")
   matrix_data <- combined_df %>% select(-any_of(meta_cols)) %>% as.matrix()
   rownames(matrix_data) <- new_rownames
-  browser()
   # Invert sign for deletion regions (-)
   matrix_data[is_negative_row, ] <- matrix_data[is_negative_row, ] * -1
   final_matrix <- t(matrix_data)
@@ -319,7 +319,6 @@ scDNA_output.format <- function(inputFILE, cellcutoff, filterZero)
   } else {
     Data_final_DNA <- final_matrix
   }
-  browser()
   return(Data_final_DNA)
   
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)

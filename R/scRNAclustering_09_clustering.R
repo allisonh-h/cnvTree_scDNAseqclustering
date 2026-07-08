@@ -42,7 +42,6 @@ superimpose.data <- function(inputFILE, DeterminedCNVs, cnv_ratio)
   
   Groups <- unique(inputFILE$cnv_grouping$cell_group_name)
   superimpose <- NULL
-  
   for (groups in 1:length(Groups)) {
     intersection <- NULL
     # check defined CNVs in each group

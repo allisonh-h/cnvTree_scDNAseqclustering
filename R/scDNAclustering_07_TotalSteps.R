@@ -518,13 +518,13 @@ cnvTree_scDNAclustering <- function(input_dir_DNA,
   DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
   # Locked variable
-  #difratio_chr <- getOption("difratio_chr")
-  #min_cell <- getOption("min_cell")
-  #overlap_region <- getOption("overlap_region")
-  #dif_ratio <- getOption("dif_ratio")
-  #smoothheatmap <- getOption("smoothheatmap")
-  #sexchromosome <- getOption("sexchromosome")
-  #consecutive_region <- getOption("consecutive_region")
+  difratio_chr <- getOption("difratio_chr")
+  min_cell <- getOption("min_cell")
+  overlap_region <- getOption("overlap_region")
+  dif_ratio <- getOption("dif_ratio")
+  smoothheatmap <- getOption("smoothheatmap")
+  sexchromosome <- getOption("sexchromosome")
+  consecutive_region <- getOption("consecutive_region")
   
   #--------------------- start below ---------------------
   
@@ -608,14 +608,14 @@ cnvTree_scDNAclustering_df <- function(input_dir_DNA,
   DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
   # Locked variable
-  #difratio_chr <- getOption("difratio_chr")
-  #min_cell <- getOption("min_cell")
-  #overlap_region <- getOption("overlap_region")
-  #dif_ratio <- getOption("dif_ratio")
-  #smoothheatmap <- getOption("smoothheatmap")
-  #sexchromosome <- getOption("sexchromosome")
-  #consecutive_region <- getOption("consecutive_region")
-  #cores <- getOption("cores")
+  difratio_chr <- getOption("difratio_chr")
+  min_cell <- getOption("min_cell")
+  overlap_region <- getOption("overlap_region")
+  dif_ratio <- getOption("dif_ratio")
+  smoothheatmap <- getOption("smoothheatmap")
+  sexchromosome <- getOption("sexchromosome")
+  consecutive_region <- getOption("consecutive_region")
+  cores <- getOption("cores")
   
   #--------------------- start below ---------------------
   

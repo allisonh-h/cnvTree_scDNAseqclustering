@@ -148,28 +148,28 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
     }
   })
   #=============== OLD =================#
-  bp <- dplyr::bind_rows(bp_list) %>%
-    dplyr::select(.data$chr, .data$site, .data$times, .data$events, 
-                  .data$cover_nums, .data$cover_times) %>%
-    dplyr::mutate(binsize = binsize)
+  #bp <- dplyr::bind_rows(bp_list) %>%
+   # dplyr::select(.data$chr, .data$site, .data$times, .data$events, 
+    #              .data$cover_nums, .data$cover_times) %>%
+    #dplyr::mutate(binsize = binsize)
   #=============== OLD =================#
   
   #=============== NEW =================#
-  #bp2 <- dplyr::bind_rows(bp_list)  ## LH: line added 12292025
-  #print(!(all(dim(bp2) == c(0, 0))))  # LH: added 122025; FALSE if bp2 = 0x0
+  bp2 <- dplyr::bind_rows(bp_list)  ## LH: line added 12292025
+  print(!(all(dim(bp2) == c(0, 0))))  # LH: added 122025; FALSE if bp2 = 0x0
   
-  #if (!(all(dim(bp2) == c(0, 0))) == TRUE) { ## LH: line added 12292025
-  #  bp <- dplyr::bind_rows(bp_list) %>%
-  #        dplyr::select(.data$chr, 
-  #                      .data$site, 
-  #                      .data$times, 
-  #                      .data$events, 
-  #                      .data$cover_nums, 
-  #                      .data$cover_times) %>%
-  #        dplyr::mutate(binsize = binsize)
-  #} else {
-   # bp <- NULL  ## LH: line added 12292025
-  #}
+  if (!(all(dim(bp2) == c(0, 0))) == TRUE) { ## LH: line added 12292025
+    bp <- dplyr::bind_rows(bp_list) %>%
+          dplyr::select(.data$chr, 
+                        .data$site, 
+                        .data$times, 
+                        .data$events, 
+                        .data$cover_nums, 
+                        .data$cover_times) %>%
+          dplyr::mutate(binsize = binsize)
+  } else {
+    bp <- NULL  ## LH: line added 12292025
+  }
   #=============== NEW =================#
   
   cat("All the breakpoints in same Recluster group of cells ... \n")
@@ -460,26 +460,23 @@ Region_CN <- function(input, Reclustering_output, Recluster_label, events)
   # ========================= Old script========================================
   
   # ========================= New script========================================
-  # Helper function to find the mode of a numeric vector efficiently
-  #get_mode <- function(x) {
+   ##Helper function to find the mode of a numeric vector efficiently
+   #get_mode <- function(x) {
   #  ux <- unique(x)
   #  ux[which.max(tabulate(match(x, ux)))]
   #}
-  #smooth_list <- lapply(seq_len(nrow(events)), function(i) {
+  # smooth_list <- lapply(seq_len(nrow(events)), function(i) {
   #  subset_matrix <- CN_matrix[events$event_binstart[i]:events$event_binend[i], 
   #                             selected_files, drop = FALSE]
-    # apply returns a flat vector of modes for the columns
+    ## apply returns a flat vector of modes for the columns
    # apply(subset_matrix, 2, get_mode)
   #})
-  # FIX: Combine into a standard matrix first, then convert cleanly to data.frame
-  # This ensures it becomes regular numeric columns, NOT lists!
   #Smooth_CN <- do.call(rbind, smooth_list) %>% as.data.frame()
-  # Re-assign names to make absolutely sure they match
   #names(Smooth_CN) <- selected_files
   # ========================= New script========================================
-  
+ 
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-  browser()
+
   return(Smooth_CN)
 }
 
@@ -574,7 +571,7 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
   Subclone <- merge(Subclone, Cellnum, by = "Subclone")
 
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-  browser()
+
   return(Subclone)
 }
 
@@ -621,13 +618,12 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
   s <- each_subclone %>%
        dplyr::filter(.data$Subclone_cellnum >= min_cell)
   Subclone_CN <- NULL
-
-  for(Label in unique(s$Subclone)){
+  for (Label in unique(s$Subclone)) {
     ss <- s %>%
           dplyr::filter(.data$Subclone %in% Label) %>%
           dplyr::pull(.data$cellID)
     s_CN <- CN_region[ ,ss]
-    R_CN <- sapply(1:nrow(s_CN), function(a){
+    R_CN <- sapply(1:nrow(s_CN), function(a) {
       freq <- as.numeric(s_CN[a, ]) %>%
               table() %>%
               as.data.frame() %>%
@@ -636,8 +632,8 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
               dplyr::pull(.data$CN) %>%
               as.character() %>%
               as.integer()
+      first_element <- freq[1]
     })
-    browser()
     Sub_CN <- sep_region %>%
               dplyr::mutate(Subclone = Label, CN = R_CN) %>%
               dplyr::select(c(.data$chr, .data$start, .data$end, .data$region, 
@@ -653,7 +649,7 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
     message("ERROR: Not found the output")
   }
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-  browser()
+
   return(Subclone_CN)
 }
 
@@ -763,7 +759,7 @@ Total_cnvRegion <- function(input, Template, pqArm_file)
   }
 
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-  
+
   return(Final_CNV)
 }
 
@@ -815,13 +811,7 @@ Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
     s_chr <- Template %>% dplyr::filter(.data$CN > 2)
   }
   Template <- Template
-
-  #if (method == "Del"){
-   # s_chr <- Template %>% dplyr::filter(as.numeric(unlist(.data$CN)) < 2)
-  #} else if (method == "Amp"){
-  #  s_chr <- Template %>% dplyr::filter(as.numeric(unlist(.data$CN)) > 2)
-  #}
-
+  
   s_chr <- s_chr %>%
            dplyr::arrange(.data$chr) %>%
            dplyr::select(.data$chr) %>%
@@ -856,7 +846,7 @@ Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
   }
   
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-  browser()
+
   return(Final_CNVr)
 }
 
@@ -930,7 +920,7 @@ cnvRegion.toPQarm <- function(FILE, pqArm_file)
   Final_output <- merge(FILE, Intersect, by = "CNV_region")
 
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-  browser()
+
   return(Final_output)
 }
 

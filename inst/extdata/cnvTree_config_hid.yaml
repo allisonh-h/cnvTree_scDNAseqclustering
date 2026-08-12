@@ -1,31 +1,16 @@
-# cnvTree_v_num: cnvTree version
-cnvTree_v_num: v040
-# cnvTree_msg: trancing function flows for debugging if 'TRUE'
+cnvTree_v_num: v041
 cnvTree_msg: yes
-# difratio_chr: A numeric value defining the threshold for acceptable difference  
-#   ratios across different chromosomes.
 difratio_chr: 0.3
-# dif_ratio: A numeric value defining the tolerance threshold for copy number 
-#   differences between cells within a cluster.
 dif_ratio: 0.2
-# cluster: The assigned cluster label (k = 2)
 cluster: 1.0
-# min_cell: An integer specifying the minimum cell count required for a cluster  
-#   to be included in the output.
 min_cell: 2.0
-# overlap_region: An integer representing genomic regions where copy number  
-#   frequently changes in the subclone clustering step.
+min_cell_subclone: 2
 overlap_region: 1.0e+07
-# consecutive_region: A numeric value defining the minimum CNV region length  
-#   threshold for filtering CNV events in the final output.
-consecutive_region: 1.0e+06
-# cores: An integer specifying the number of CPU cores to use for parallel 
-#   processing, default = 1.
+consecutive_region: 1.0e+07
 core: 1.0
-# sexchromosome: A logical value. If `TRUE`, the output includes sex chromosome
-# copy number information.
-sexchromosome: yes
-# smoothheatmap: A logical value. If `TRUE`, the final output applies smoothing  
-#   over a 10⁶ bp range in chromosome copy number visualizations.
+sexchromosome: no
 smoothheatmap: yes
-
+msg: yes
+v_num: v041
+multiFiles: no
+sexchromosome_plot: no

@@ -237,15 +237,38 @@ select_groups <- function(input_dir_RNA, RNAdataSource)
     }
   } else if (RNAdataSource == "2") { # InferCNV data
     print("datatype: InferCNV files")
-    all_dirs <- list.dirs(path = input_dir_RNA, recursive = TRUE, full.names = TRUE)
-    dir_depths <- lengths(gregexpr("/", all_dirs))
-    max_depth <- max(dir_depths)
-    folders_pth <- all_dirs[dir_depths == (max_depth - 1)][1]
-    File <- list.files(folders_pth, full.names = TRUE)
-    File <- File[grepl("cnv_regions", File) & 
-                   grepl("HMM_CNV_predictions", File)]
-    cnv_regions <- read.table(File, sep = "\t", quote = "", comment.char = "", 
+    #======= new =======
+    matching_files <- list.files(path = input_dir_RNA, 
+                                 pattern = "HMM_CNV_predictions.*cnv_regions", 
+                                 recursive = TRUE, full.names = TRUE)
+    if (length(matching_files) == 0) {
+      stop("No matching CNV prediction files found in: ", input_dir_RNA)
+    }
+    
+    if (length(matching_files) > 1) {
+      # Count path separators (handles both '/' and '\')
+      file_depths <- lengths(gregexpr("[/\\\\]", matching_files))
+      RNA_file <- matching_files[which.max(file_depths)]
+    } else {
+      RNA_file <- matching_files[1]
+    }
+    cnv_regions <- read.table(RNA_file, sep = "\t", quote = "", comment.char = "", 
                               fill = TRUE, header = TRUE)
+    
+    cat("Successfully loaded file from:\n", RNA_file, "\n")
+    
+    #======= new =======
+    #======= old =======
+    #all_dirs <- list.dirs(path = input_dir_RNA, recursive = TRUE, full.names = TRUE)
+    #dir_depths <- lengths(gregexpr("/", all_dirs))
+    #max_depth <- max(dir_depths)
+    #folders_pth <- all_dirs[dir_depths == (max_depth - 1)][1]
+    #File <- list.files(folders_pth, full.names = TRUE)
+    #File <- File[grepl("cnv_regions", File) & 
+    #               grepl("HMM_CNV_predictions", File)]
+    #cnv_regions <- read.table(File, sep = "\t", quote = "", comment.char = "", 
+    #                          fill = TRUE, header = TRUE)
+    #======= old =======
   } else {
     stop("Please set `config$RNAdataSource = 1 or 2`")
   }

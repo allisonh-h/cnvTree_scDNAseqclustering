@@ -24,6 +24,7 @@
   options(dif_ratio          = cnvTree_config_hid$dif_ratio)
   options(consecutive_region = cnvTree_config_hid$consecutive_region)
   options(difratio_chr       = cnvTree_config_hid$difratio_chr)
+  options(min_cell_subclone  = cnvTree_config_hid$min_cell_subclone)
 }
 
 

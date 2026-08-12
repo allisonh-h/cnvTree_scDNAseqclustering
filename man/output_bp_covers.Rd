@@ -33,11 +33,12 @@ A data frame recording significant breakpoints with the following
 columns:
 \itemize{
 \item \code{chr}: Chromosome name (chr1, chr2, ...).
-\item \code{site}: Breakpoint position.
-\item \code{times}: The frequency of breakpoint occurrence.
-\item \code{events}: Number of distinct breakpoint events.
+\item \code{site}: Breakpoints position, calculated as a normalized genomic coordinate
+index rounded by binsize.
+\item \code{times}: The frequency of breakpoints occurrence.
+\item \code{events}: Number of distinct breakpoints events.
 \item \code{cover_nums}: Number of breakpoints covered within the specified range.
-\item \code{cover_times}: Number of times a breakpoint is covered.
+\item \code{cover_times}: Number of times a breakpoints is covered.
 \item \code{binsize}: Fixed-bin size used in the calculation.
 }
 }

@@ -139,8 +139,6 @@ scRNA_superimpose <- function(RNA_output, DeterminedCNVs, cnv_ratio)
 #'  files will be saved.
 #' @param DeterminedCNVs A data frame detailing the high-confidence CNV regions. 
 #'  This is passed directly to the `scRNA_CNVpattern()` plotting function.
-#' @param cellcutoff A numeric value specifying the minimum number of cells required 
-#'  for a cluster to be retained.
 #' @param cellcutoffRNA A numeric threshold specifying the minimum number of cells 
 #'  required to retain an RNA cluster during the formatting step.
 #' @param filterZero A logical value (\code{TRUE} or \code{FALSE}). If \code{TRUE},  
@@ -158,8 +156,8 @@ scRNA_superimpose <- function(RNA_output, DeterminedCNVs, cnv_ratio)
 #'    of the CNV patterns.
 #' }
 #'
-scRNA_output <- function(Summary, output_dir, DeterminedCNVs, cellcutoff, 
-                         cellcutoffRNA, filterZero) 
+scRNA_output <- function(Summary, output_dir, DeterminedCNVs, cellcutoffRNA,
+                         filterZero) 
 {
   cnvTree_v_num <- getOption("cnvTree_v_num")
   cnvTree_msg   <- getOption("cnvTree_msg")
@@ -194,8 +192,8 @@ scRNA_output <- function(Summary, output_dir, DeterminedCNVs, cellcutoff,
   
   # 4. DNA clusters output
   Data_final_DNA <- scDNA_output.format(inputFILE = output_dir, 
-                                      cellcutoff = cellcutoff,
-                                      filterZero = filterZero)
+                                        cellcutoffRNA = cellcutoffRNA,
+                                        filterZero = filterZero)
   filename = paste0("/", timestamp, "_", "cnvTree.scDNAseq_Fig_CNVpattern.png")
   CNVpattern(Input = Data_final_DNA, 
              FILEname = filename,
@@ -223,8 +221,6 @@ scRNA_output <- function(Summary, output_dir, DeterminedCNVs, cellcutoff,
 #'  results (tables and plots) will be saved.
 #' @param DeterminedCNVs A data frame detailing the high-confidence CNV regions (chromosome, 
 #'   copy number state, and cytoband boundaries).
-#' @param cellcutoff A numeric value specifying the minimum number of cells required 
-#'  for a cluster to be retained.
 #' @param cellcutoffRNA A numeric threshold specifying the minimum number of cells 
 #'   required to retain an RNA cluster during the formatting step.
 #' @param filterZero A logical value (\code{TRUE} or \code{FALSE}). If \code{TRUE},  
@@ -246,8 +242,8 @@ scRNA_output <- function(Summary, output_dir, DeterminedCNVs, cellcutoff,
 #' @export
 #' 
 cnvTree_scRNAclustering <- function(input_dir_RNA, selected_groups, output_dir, 
-                                    cellcutoff, cellcutoffRNA, RNAdataSource, 
-                                    cnv_ratio, filterZero) 
+                                    cellcutoffRNA, RNAdataSource, cnv_ratio, 
+                                    filterZero) 
 { 
   cnvTree_v_num <- getOption("cnvTree_v_num")
   cnvTree_msg   <- getOption("cnvTree_msg")
@@ -283,7 +279,6 @@ cnvTree_scRNAclustering <- function(input_dir_RNA, selected_groups, output_dir,
     
   scRNA_output(Summary = Superimpose_output, 
                output_dir = output_dir, 
-               cellcutoff = cellcutoff,
                cellcutoffRNA = cellcutoffRNA,
                DeterminedCNVs = Determine_CNVs,
                filterZero = filterZero)

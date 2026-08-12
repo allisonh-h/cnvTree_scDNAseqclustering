@@ -4,14 +4,7 @@
 \alias{scRNA_output}
 \title{scRNA_output}
 \usage{
-scRNA_output(
-  Summary,
-  output_dir,
-  DeterminedCNVs,
-  cellcutoff,
-  cellcutoffRNA,
-  filterZero
-)
+scRNA_output(Summary, output_dir, DeterminedCNVs, cellcutoffRNA, filterZero)
 }
 \arguments{
 \item{Summary}{A list object containing the final clustering results. It must
@@ -20,9 +13,6 @@ function).}
 
 \item{DeterminedCNVs}{A data frame detailing the high-confidence CNV regions.
 This is passed directly to the \code{scRNA_CNVpattern()} plotting function.}
-
-\item{cellcutoff}{A numeric value specifying the minimum number of cells required
-for a cluster to be retained.}
 
 \item{cellcutoffRNA}{A numeric threshold specifying the minimum number of cells
 required to retain an RNA cluster during the formatting step.}

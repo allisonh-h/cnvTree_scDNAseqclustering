@@ -286,7 +286,6 @@ SubClustering <- function(input, Consolidating_output)
     s_CN <- Subclone_CNregion(sep_region = consensus_bp_template, 
                               CN_region = cell_CNregion, 
                               each_subclone = cell_clustering,
-                              min_cell = min_cell, 
                               #Two options:"SubcloneCNVRegion", "SubcloneRegionCN" set
                               #in function 5.7
                               output = "SubcloneRegionCN")

@@ -8,7 +8,6 @@ cnvTree_scRNAclustering(
   input_dir_RNA,
   selected_groups,
   output_dir,
-  cellcutoff,
   cellcutoffRNA,
   RNAdataSource,
   cnv_ratio,
@@ -21,9 +20,6 @@ InferCNV outputs.}
 
 \item{selected_groups}{A character vector of group names to retain during the
 parsing step.}
-
-\item{cellcutoff}{A numeric value specifying the minimum number of cells required
-for a cluster to be retained.}
 
 \item{cellcutoffRNA}{A numeric threshold specifying the minimum number of cells
 required to retain an RNA cluster during the formatting step.}

@@ -55,11 +55,14 @@ scRNA_output.format <- function(inputFILE, cellcutoffRNA, filterZero, Determined
   Data_clean <- Data_clean %>% 
                 select(!c(RNA_Cellnum, sum_cnv, RNA_cluster)) %>% 
                 mutate(across(everything(), as.numeric)) 
+
   custom_colnames <- DeterminedCNVs %>%
-                     mutate(chr = sub("^chr", "", chr),
-                            CN_type = ifelse(CN == "amp", "+", "-"),
-                            chr_cytoband = paste0(CN_type, " ", chr, " (", 
-                                                  first_band, "-", last_band, ")")) %>%
+                     mutate(
+                     chr = sub("^chr", "", chr),
+                     CN_type = if_else(CN == "amp", "+", "-"),
+                     chr_cytoband = paste0(CN_type, chr, " (", first_band, "-", 
+                                           last_band, ")")
+                     ) %>%
                      pull(chr_cytoband)
   # Subset your custom names to match the number of columns
   target_colnames <- custom_colnames[1:ncol(Data_clean)]
@@ -70,7 +73,7 @@ scRNA_output.format <- function(inputFILE, cellcutoffRNA, filterZero, Determined
   # Make the subset names unique
   unique_colnames <- make.unique(target_colnames)
   colnames(Data_clean) <- unique_colnames
-  
+
   if (filterZero == TRUE) {
     # 計算總和、過濾 0 的欄位、並移除總和列（保留原本設定好的 rownames）
     Total_row <- Data_clean %>% 
@@ -90,7 +93,8 @@ scRNA_output.format <- function(inputFILE, cellcutoffRNA, filterZero, Determined
       Data_final_RNA[, i] <- as.integer(Data_final_RNA[, i]) * -1
     }
   }
-  
+  colnames(Data_final_RNA) <- gsub("^[+-]", "", colnames(Data_final_RNA))
+
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
   
   return(Data_final_RNA)
@@ -136,8 +140,8 @@ CNVpattern <- function(Input, FILEpath, FILEname, patternType)
   mode(mat_data) <- "character" 
   # 抓出純染色體號碼，用來比對何時要劃分界線
   col_names_clean <- colnames(mat_data)
-  chr_labels <- gsub("^[-+]\\s+([0-9XY]+)\\s+\\(.*$", "\\1", col_names_clean)
-  
+  chr_labels <- gsub("^([0-9XY]+)\\s+\\(.*$", "\\1", col_names_clean)
+
   # 確保名稱是文字，對應矩陣裡的 "-1", "0", "1"
   if (patternType == "scDNA") {
     CNVpattern_title <- "Defined CNV regions \n(scDNA clusters)"
@@ -157,6 +161,7 @@ CNVpattern <- function(Input, FILEpath, FILEname, patternType)
       width = png_w,
       height = png_h,
       res = 100)
+
   # ---熱圖建構 (使用轉換後的 mat_data) ---
   Oncoscan <- ComplexHeatmap::Heatmap(mat_data,
                                       name = "CNV exist",
@@ -245,7 +250,7 @@ CNVpattern <- function(Input, FILEpath, FILEname, patternType)
 #' features.
 #'
 #' @param inputFILE Character. The directory path where the source text files are located.
-#' @param cellcutoff Numeric. The minimum cell count threshold required to retain a 
+#' @param cellcutoffRNA Numeric. The minimum cell count threshold required to retain a 
 #'   clone.
 #' @param filterZero Logical. If \code{TRUE}, columns (CNV regions) with a total 
 #'   sum of 0 across all subclones will be removed.
@@ -254,7 +259,7 @@ CNVpattern <- function(Input, FILEpath, FILEname, patternType)
 #'   columns represent formatted genomic regions (cytobands) containing copy number 
 #'   values.
 #' 
-scDNA_output.format <- function(inputFILE, cellcutoff, filterZero) 
+scDNA_output.format <- function(inputFILE, cellcutoffRNA, filterZero) 
 {
   cnvTree_v_num <- getOption("cnvTree_v_num")
   cnvTree_msg   <- getOption("cnvTree_msg")
@@ -274,7 +279,7 @@ scDNA_output.format <- function(inputFILE, cellcutoff, filterZero)
   Determine_CNVs <- read.table(scDNA_file[1], header = TRUE) %>% 
                     mutate(CNV_region = as.character(CNV_region),
                            chr_index  = sub("chr", "", chr))
-  
+
   # 2. Load and filter DNA Cluster Data
   scDNAcluster_file <- list.files(path = inputFILE, 
                                   pattern = "DNAcluster.*\\.txt$", 
@@ -283,23 +288,22 @@ scDNA_output.format <- function(inputFILE, cellcutoff, filterZero)
 
   if (length(scDNAcluster_file) == 0) stop("No DNAcluster file found.")
   scDNAcluster <- read.table(scDNAcluster_file[1], header = TRUE) %>% 
-                  filter(DNA_Cellnum >= cellcutoff) %>%
+                  filter(DNA_Cellnum >= cellcutoffRNA) %>%
                   mutate(Subclone_no = paste0(DNA_cluster, " (n = ", DNA_Cellnum, ")"))
-  
   # 3. Clean and reshape cluster data
   scDNAcluster_clean <- scDNAcluster %>% 
                         select(-DNA_cluster, -DNA_Cellnum) %>% 
-                        pivot_longer(cols = -Subclone_no, 
-                                     names_to = "CNV_region", 
-                                     values_to = "Value") %>% 
+                        tidyr::pivot_longer(cols = -Subclone_no, 
+                                            names_to = "CNV_region", 
+                                            values_to = "Value") %>% 
                         mutate(CNV_region = sub("CNV", "", CNV_region),
                                Value = as.numeric(Value)) %>% 
-                        pivot_wider(names_from = Subclone_no, values_from = Value)
+                        tidyr::pivot_wider(names_from = Subclone_no, values_from = Value)
 
   # 4. Merge datasets and construct cytoband headers
   combined_df <- full_join(Determine_CNVs, scDNAcluster_clean, by = "CNV_region") %>% 
                  mutate(CN_type = if_else(CN == "amp", "+", "-"),
-                 chr_cytoband = paste0(chr_index, " (", first_band, "-", 
+                 chr_cytoband = paste0(CN_type, chr_index, " (", first_band, "-", 
                                        last_band, ") "))
 
   new_rownames <- combined_df$chr_cytoband
@@ -311,7 +315,6 @@ scDNA_output.format <- function(inputFILE, cellcutoff, filterZero)
   # Invert sign for deletion regions (-)
   matrix_data[is_negative_row, ] <- matrix_data[is_negative_row, ] * -1
   final_matrix <- t(matrix_data)
-  
   # 5. Filter out columns where the sum of values is 0
   if (filterZero) {
     non_zero_cols <- colSums(final_matrix, na.rm = TRUE) != 0
@@ -319,6 +322,8 @@ scDNA_output.format <- function(inputFILE, cellcutoff, filterZero)
   } else {
     Data_final_DNA <- final_matrix
   }
+  colnames(Data_final_DNA) <- gsub("^[+-]", "", colnames(Data_final_DNA))
+
   return(Data_final_DNA)
   
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)

@@ -44,20 +44,43 @@ infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
     cnv_regions <- readRDS(input_dir_RNA)
     
   } else if (RNAdataSource == "2") {
-    all_dirs <- list.dirs(path = input_dir_RNA, 
-                          recursive = TRUE, 
-                          full.names = TRUE)
-    dir_depths <- lengths(gregexpr("/", all_dirs))
-    max_depth <- max(dir_depths)
-    folders_2nd <- all_dirs[dir_depths == (max_depth - 1)][1] # InferCNV files
-    File <- list.files(folders_2nd, full.names = TRUE)
-    File <- File[grepl("cnv_regions", File) & grepl("HMM_CNV_predictions", File)]
+    #======= new =======
+    matching_files <- list.files(path = input_dir_RNA, 
+                                 pattern = "HMM_CNV_predictions.*cnv_regions", 
+                                 recursive = TRUE, full.names = TRUE)
+    if (length(matching_files) == 0) {
+      stop("No matching CNV prediction files found in: ", input_dir_RNA)
+    }
+    
+    if (length(matching_files) > 1) {
+      # Count path separators (handles both '/' and '\')
+      file_depths <- lengths(gregexpr("[/\\\\]", matching_files))
+      RNA_file <- matching_files[which.max(file_depths)]
+    } else {
+      RNA_file <- matching_files[1]
+    }
+    cnv_regions <- read.table(RNA_file, sep = "\t", quote = "", comment.char = "", 
+                              fill = TRUE, header = TRUE)
+    
+    cat("Successfully loaded file from:\n", RNA_file, "\n")
+    
+    #======= new =======
+    #======= old =======
+    #all_dirs <- list.dirs(path = input_dir_RNA, 
+    #                      recursive = TRUE, 
+    #                      full.names = TRUE)
+    #dir_depths <- lengths(gregexpr("/", all_dirs))
+    #max_depth <- max(dir_depths)
+    #folders_2nd <- all_dirs[dir_depths == (max_depth - 1)][1] # InferCNV files
+    #File <- list.files(folders_2nd, full.names = TRUE)
+    #File <- File[grepl("cnv_regions", File) & grepl("HMM_CNV_predictions", File)]
 
-    cnv_regions <- read.table(File, sep = "\t", 
-                              quote = "", 
-                              comment.char = "", 
-                              fill = TRUE, 
-                              header = TRUE)
+    #cnv_regions <- read.table(File, sep = "\t", 
+    #                          quote = "", 
+    #                          comment.char = "", 
+    #                          fill = TRUE, 
+    #                          header = TRUE)
+    #======= old =======
   } else {
     stop("Please define RNAdataSource for:
           '1' Tabular data file
@@ -98,7 +121,7 @@ infercnv_cnvregion <- function(input_dir_RNA, selected_groups, RNAdataSource)
     check_dims(x = cnv_region) ## LH added 012026
   
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-  
+
   return(cnv_region)
 }
 
@@ -181,14 +204,33 @@ infercnv_cnvgrouping <- function(input_dir_RNA, selected_groups, RNAdataSource)
   if (RNAdataSource == "1") {
     cnv_groupings <- utils::read.delim2(input_dir_RNA, sep = " ")
   } else if (RNAdataSource == "2") {
-    all_dirs <- list.dirs(path = input_dir_RNA, 
-                          recursive = TRUE, 
-                          full.names = TRUE)
-    dir_depths <- lengths(gregexpr("/", all_dirs))
-    max_depth <- max(dir_depths)
-    folders_2nd <- all_dirs[dir_depths == (max_depth - 1)][1] # InferCNV files
-    File <- paste0(folders_2nd, "/infercnv.observation_groupings.txt")
-    cnv_groupings <- read.table(File, header = TRUE)
+    #======= new =======
+    matching_files <- list.files(path = input_dir_RNA, 
+                                 pattern = "infercnv.observation_groupings.txt", 
+                                 recursive = TRUE, full.names = TRUE)
+    if (length(matching_files) == 0) {
+      stop("No /infercnv.observation_groupings.txt found in: ", input_dir_RNA)
+    }
+    
+    if (length(matching_files) > 1) {
+      # Count path separators (handles both '/' and '\')
+      file_depths <- lengths(gregexpr("[/\\\\]", matching_files))
+      RNA_file2 <- matching_files[which.max(file_depths)]
+    } else {
+      RNA_file2 <- matching_files[1]
+    }
+    cnv_groupings <- read.table(RNA_file2, header = TRUE)
+    #======= new =======
+    #======= old =======
+    #all_dirs <- list.dirs(path = input_dir_RNA, 
+    #                      recursive = TRUE, 
+    #                      full.names = TRUE)
+    #dir_depths <- lengths(gregexpr("/", all_dirs))
+    #max_depth <- max(dir_depths)
+    #folders_2nd <- all_dirs[dir_depths == (max_depth - 1)][1] # InferCNV files
+    #File <- paste0(folders_2nd, "/infercnv.observation_groupings.txt")
+    #cnv_groupings <- read.table(File, header = TRUE)
+    #======= old =======
   } else {
     stop("Please define RNAdataSource for:
           '1' Tabular data file
@@ -210,7 +252,7 @@ infercnv_cnvgrouping <- function(input_dir_RNA, selected_groups, RNAdataSource)
                       if ("cell_group.name" %in% names(.)) cell_group.name else NULL))
   }
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-  
+
   return(cnv_grouping)
 }
 

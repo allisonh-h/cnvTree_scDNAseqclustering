@@ -29,7 +29,7 @@ collect_cluster_bp <- function(input, Clustering_output, Recluster_label)
   DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
   #--------------------- start below ---------------------
-  
+
   selected_files <- Clustering_output %>%
                     dplyr::filter(.data$Recluster_cluster %in% Recluster_label) %>%
                     dplyr::pull(.data$cellID)
@@ -38,12 +38,12 @@ collect_cluster_bp <- function(input, Clustering_output, Recluster_label)
   breakpoints_list <- lapply(selected_files, function(i) {
     input[[i]]$breakpoints %>% as.data.frame() %>% dplyr::mutate(cellID = i)
   })
-  # Combine all the results using bind_rows, which is more efficient than rbind 
-  # in a loop
+  
+  # Combine all the results using bind_rows, which is more efficient than rbind in a loop
   breakpoints <- dplyr::bind_rows(breakpoints_list)
 
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-  
+
   return(breakpoints)
 }
 
@@ -77,11 +77,12 @@ collect_cluster_bp <- function(input, Clustering_output, Recluster_label)
 #'   columns:
 #'   
 #'   - `chr`: Chromosome name (chr1, chr2, ...).
-#'   - `site`: Breakpoint position.
-#'   - `times`: The frequency of breakpoint occurrence.
-#'   - `events`: Number of distinct breakpoint events.
+#'   - `site`: Breakpoints position, calculated as a normalized genomic coordinate 
+#'      index rounded by binsize.
+#'   - `times`: The frequency of breakpoints occurrence.
+#'   - `events`: Number of distinct breakpoints events.
 #'   - `cover_nums`: Number of breakpoints covered within the specified range.
-#'   - `cover_times`: Number of times a breakpoint is covered.
+#'   - `cover_times`: Number of times a breakpoints is covered.
 #'   - `binsize`: Fixed-bin size used in the calculation.
 #'
 output_bp_covers <- function(Template, binsize, overlap, overlap_times)
@@ -101,21 +102,21 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
   # 將10個bp轉換為實際數字
   bp <- NULL
   bp_list <- vector("list", length(chr))
-  
+
   bp_list <- lapply(chr, function(k) 
-  { # 將位點從10**6轉換成bins的格式
-    # 將位點從10**6轉換成bins的格式
+  { 
     chr_unique <- Template %>%
                   dplyr::filter(.data$seqnames %in% k) %>%
-                  dplyr::mutate(site = round(.data$start / binsize, digits = 0)) %>%
+                  # 將位點(site)從10**6轉換成bins的格式
+                  dplyr::mutate(site = round(.data$start/binsize, digits = 0)) %>%
                   dplyr::group_by(.data$site) %>%
                   dplyr::summarise(times = dplyr::n(), .groups = 'drop') %>%
                   dplyr::mutate(site = as.numeric(as.character(.data$site)))
- 
+
     # 將其中點的數值做延伸並合併
     site_vec <- chr_unique$site
     cover_matrix <- sapply(site_vec, function(x) {
-      cover_label <- site_vec %in% ((x - overlap):(x + overlap))
+      cover_label <- site_vec %in% ((x-overlap):(x+overlap))
       cover_nums <- sum(cover_label)
       cover_times <- sum(chr_unique$times[cover_label])
       return(c(cover_nums, cover_times))
@@ -129,12 +130,14 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
                 dplyr::filter(.data$cover_times >= overlap_times) %>%
                 dplyr::arrange(dplyr::desc(.data$cover_nums)) %>%
                 dplyr::pull(.data$site)
+
     if (length(bp_order) > 0) {
       # 初始化bp_group
       bp_group <- data.frame()
       count <- 1
+
       while (length(bp_order) > 0) {
-        select_label <- which(bp_order %in% ((bp_order[1] - overlap):(bp_order[1] + overlap)))
+        select_label <- which(bp_order %in% ((bp_order[1]-overlap):(bp_order[1]+overlap))) #overlap; not 750;LH
         bp_group_1 <- data.frame(breakpoints = bp_order[select_label], events = count)
         bp_group <- dplyr::bind_rows(bp_group, bp_group_1)
         bp_order <- bp_order[-select_label]
@@ -144,16 +147,9 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
       bp_group <- bp_group %>% dplyr::mutate(chr = k)
       bp_site_select <- merge(chr_unique, bp_group, 
                               by.x = "site", by.y = "breakpoints")
-      return(bp_site_select)
+      return(bp_site_select) 
     }
   })
-  #=============== OLD =================#
-  #bp <- dplyr::bind_rows(bp_list) %>%
-   # dplyr::select(.data$chr, .data$site, .data$times, .data$events, 
-    #              .data$cover_nums, .data$cover_times) %>%
-    #dplyr::mutate(binsize = binsize)
-  #=============== OLD =================#
-  
   #=============== NEW =================#
   bp2 <- dplyr::bind_rows(bp_list)  ## LH: line added 12292025
   print(!(all(dim(bp2) == c(0, 0))))  # LH: added 122025; FALSE if bp2 = 0x0
@@ -164,7 +160,7 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
                         .data$site, 
                         .data$times, 
                         .data$events, 
-                        .data$cover_nums, 
+                        .data$cover_nums,
                         .data$cover_times) %>%
           dplyr::mutate(binsize = binsize)
   } else {
@@ -175,6 +171,7 @@ output_bp_covers <- function(Template, binsize, overlap, overlap_times)
   cat("All the breakpoints in same Recluster group of cells ... \n")
   
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
+
   
   return(bp)
 }
@@ -223,7 +220,6 @@ bp_events <- function(input, Template, binsize)
   Template$chr <- factor(Template$chr, levels = nums) # 更加安全的做法是直接轉換因子
   # binsize <- Template$binsize[1]
   event_region <- NULL
-
     event_region_list <- lapply(nums, function(k) {
     event <- unique(Template$events[which(Template$chr == k)])
     # 使用 lapply 來處理每個 event
@@ -249,9 +245,9 @@ bp_events <- function(input, Template, binsize)
                   dplyr::arrange(.data$chr)
   event_region <- event_region.bin(input = input, Template = event_region)
   event_region$binsize <- binsize
-
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-  
+
+ 
   return(event_region)
 }
 
@@ -301,6 +297,7 @@ event_region.bin <- function(input, Template)
 
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 
+  
   return(Template)
 }
 
@@ -400,7 +397,8 @@ bp_region <- function(event, binsize)
             dplyr::arrange(.data$chr)
 
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
-
+  
+  
   return(region)
 }
 
@@ -436,7 +434,6 @@ Region_CN <- function(input, Reclustering_output, Recluster_label, events)
   selected_files <- Reclustering_output %>%
                     dplyr::filter(.data$Recluster_cluster %in% Recluster_label) %>%
                     dplyr::pull(.data$cellID)
-
   CN_matrix <- NEW_CN_seq(input = input, Template = selected_files) #LH 022025 modified
 
   # ======================== Old script ========================================
@@ -444,8 +441,9 @@ Region_CN <- function(input, Reclustering_output, Recluster_label, events)
   for (i in 1:nrow(events)) {
   # cat("Dealing with chr", events$chr[i], " Region", events$region[i], "copy number......\n")
   R_binsCN <- CN_matrix[events$event_binstart[i]:events$event_binend[i],selected_files]
-  R_CN <- sapply(1:ncol(R_binsCN), function(a) {
-    freq <- table(R_binsCN[ ,a]) %>%
+  R_binsCN_df <- as.data.frame(R_binsCN) # LH remember to change back to R_binsCN
+  R_CN <- sapply(1:ncol(R_binsCN_df), function(a) {
+    freq <- table(R_binsCN_df[ ,a]) %>%
             as.data.frame() %>%
             dplyr::arrange(dplyr::desc(.data$Freq)) %>%
             dplyr::pull(.data$Var1) %>%
@@ -456,7 +454,6 @@ Region_CN <- function(input, Reclustering_output, Recluster_label, events)
   Smooth_CN <- Smooth_CN %>% rbind(R_CN)
   }
   Smooth_CN <- Smooth_CN %>% stats::setNames(selected_files)
-  
   # ========================= Old script========================================
   
   # ========================= New script========================================
@@ -477,6 +474,7 @@ Region_CN <- function(input, Reclustering_output, Recluster_label, events)
  
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 
+ 
   return(Smooth_CN)
 }
 
@@ -512,8 +510,10 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
   DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
   #--------------------- start below ---------------------
-  
+
+  #colnames(CN_incells_input) <- make.unique(colnames(CN_incells_input)) #LH remember to remove this code
   cell_code <- c(colnames(CN_incells_input))
+  
   difChr_num <- NULL
   message("Calculating cell to cell different ratio ......")
   # Convert 'event_region' to data.table
@@ -572,6 +572,7 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
 
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 
+
   return(Subclone)
 }
 
@@ -589,8 +590,8 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
 #'  and each row maps to a chromosome segment from the segment template.
 #' @param each_subclone A data frame recording the clustering history, including 
 #'  pqArm clustering, re-clustering, and subclone clustering results for each cell.
-#' @param min_cell An integer specifying the minimum cell count required for a 
-#'  cluster to be included in the output.
+#' @param min_cell_subclone An integer specifying the minimum cell count required for a 
+#'  cluster to be included in the subclone
 #' @param output A character string specifying the column name in `each_subclone` 
 #'  to be used as output information.
 #'
@@ -605,7 +606,7 @@ Subclone_clustering <- function(CN_incells_input, event_region, dif_ratio,
 #'   - `Subclone`: Subclone identifier.
 #'   - `CN`: Copy number for the corresponding segment.
 #'
-Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell, 
+Subclone_CNregion <- function(sep_region, CN_region, each_subclone, 
                               output = c("SubcloneCNVRegion", "SubcloneRegionCN"))
 {
   cnvTree_v_num <- getOption("cnvTree_v_num")
@@ -613,16 +614,20 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
   fucStep <- paste0(" 5.7_cnvTree_", cnvTree_v_num)
   DebugMsg(fucStep, "start", cnvTree_msg = cnvTree_msg)
   
+  # Locked variable
+  min_cell_subclone <- getOption("min_cell_subclone")
+  
   #--------------------- start below ---------------------
-
+  
   s <- each_subclone %>%
-       dplyr::filter(.data$Subclone_cellnum >= min_cell)
+       dplyr::filter(.data$Subclone_cellnum >= min_cell_subclone)
   Subclone_CN <- NULL
   for (Label in unique(s$Subclone)) {
     ss <- s %>%
           dplyr::filter(.data$Subclone %in% Label) %>%
           dplyr::pull(.data$cellID)
-    s_CN <- CN_region[ ,ss]
+    s_CN <- CN_region[ ,ss] #old remember to change back
+    #s_CN <- subset(CN_region, colnames(CN_region) %in% ss) #new remember to change back
     R_CN <- sapply(1:nrow(s_CN), function(a) {
       freq <- as.numeric(s_CN[a, ]) %>%
               table() %>%
@@ -649,6 +654,7 @@ Subclone_CNregion <- function(sep_region, CN_region, each_subclone, min_cell,
     message("ERROR: Not found the output")
   }
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
+
 
   return(Subclone_CN)
 }
@@ -757,8 +763,8 @@ Total_cnvRegion <- function(input, Template, pqArm_file)
                  dplyr::mutate(CNV_region = seq_len(dplyr::n())) %>%
                  dplyr::select(c("chr", "CNV_region", "CN", "CNV_start", "CNV_end"))
   }
-
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
+
 
   return(Final_CNV)
 }
@@ -844,8 +850,8 @@ Total_cnvRegion.DelAmp <- function(Template, CN_tem, method = c("Del", "Amp"))
     }
     Final_CNVr <- rbind(Final_CNVr, ss)
   }
-  
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
+
 
   return(Final_CNVr)
 }
@@ -921,6 +927,7 @@ cnvRegion.toPQarm <- function(FILE, pqArm_file)
 
   DebugMsg(fucStep, "end", cnvTree_msg = cnvTree_msg)
 
+ 
   return(Final_output)
 }
 

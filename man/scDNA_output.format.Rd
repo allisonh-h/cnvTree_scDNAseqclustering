@@ -4,12 +4,12 @@
 \alias{scDNA_output.format}
 \title{Format Single-Cell DNA Copy Number Variant (CNV) Cluster Data}
 \usage{
-scDNA_output.format(inputFILE, cellcutoff, filterZero)
+scDNA_output.format(inputFILE, cellcutoffRNA, filterZero)
 }
 \arguments{
 \item{inputFILE}{Character. The directory path where the source text files are located.}
 
-\item{cellcutoff}{Numeric. The minimum cell count threshold required to retain a
+\item{cellcutoffRNA}{Numeric. The minimum cell count threshold required to retain a
 clone.}
 
 \item{filterZero}{Logical. If \code{TRUE}, columns (CNV regions) with a total

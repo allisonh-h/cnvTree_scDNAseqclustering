@@ -8,7 +8,6 @@ Subclone_CNregion(
   sep_region,
   CN_region,
   each_subclone,
-  min_cell,
   output = c("SubcloneCNVRegion", "SubcloneRegionCN")
 )
 }
@@ -22,11 +21,11 @@ and each row maps to a chromosome segment from the segment template.}
 \item{each_subclone}{A data frame recording the clustering history, including
 pqArm clustering, re-clustering, and subclone clustering results for each cell.}
 
-\item{min_cell}{An integer specifying the minimum cell count required for a
-cluster to be included in the output.}
-
 \item{output}{A character string specifying the column name in \code{each_subclone}
 to be used as output information.}
+
+\item{min_cell_subclone}{An integer specifying the minimum cell count required for a
+cluster to be included in the subclone}
 }
 \value{
 A data frame recording each subclone's unique chromosome segment template
